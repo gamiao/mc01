@@ -1,0 +1,23 @@
+<ion-side-menus enable-menu-with-back-views="false">
+    <ion-side-menu-content>
+        <ion-nav-bar class="bar-stable">
+            <ion-nav-back-button></ion-nav-back-button>
+            <ion-nav-buttons side="left">
+                <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+            </ion-nav-buttons>
+        </ion-nav-bar>
+        <ion-nav-view name="side-menu21"></ion-nav-view>
+    </ion-side-menu-content>
+    <ion-side-menu side="left" id="side-menu21">
+        <ion-header-bar class="bar-stable">
+            <div class="title">菜单</div>
+        </ion-header-bar>
+        <ion-content padding="false" class="side-menu-left has-header">
+            <a ui-sref="side-menu21.page1" menu-close="" id="side-menu21-button1" class=" button button-positive  button-block ">首页</a>
+            <a ui-sref="side-menu21.page2" menu-close="" id="side-menu21-button2" class=" button button-positive  button-block ">已下单</a>
+            <a ui-sref="side-menu21.page3" menu-close="" id="side-menu21-button3" class=" button button-positive  button-block ">历史订单</a>
+            <a ui-sref="side-menu21.page4" menu-close="" id="side-menu21-button4" class=" button button-positive  button-block ">个人资料</a>
+            <button id="side-menu21-button5" class=" button button-dark  button-block ">退出登录</button>
+        </ion-content>
+    </ion-side-menu>
+</ion-side-menus>

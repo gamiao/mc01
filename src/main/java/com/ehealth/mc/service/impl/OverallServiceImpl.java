@@ -16,9 +16,9 @@ import org.apache.olingo.server.api.uri.UriResourceNavigation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ehealth.mc.odata.processor.McEdmProvider;
 import com.ehealth.mc.odata.util.Util;
 import com.ehealth.mc.service.DoctorService;
+import com.ehealth.mc.service.OrderService;
 import com.ehealth.mc.service.OverallService;
 import com.ehealth.mc.service.PatientService;
 import com.ehealth.mc.service.util.EntityUtil;
@@ -33,12 +33,20 @@ public class OverallServiceImpl implements OverallService {
 	@Autowired
 	PatientService patientService;
 
+	@Autowired
+	OrderService orderService;
+
 	@Override
 	public EntityCollection findAll(EdmEntitySet edmEntitySet) {
 		EntityCollection entityCollection = new EntityCollection();
 		if (McEdmUtil.ES_DOCTORS_NAME.equals(edmEntitySet.getName())) {
 			List<Entity> entityList = entityCollection.getEntities();
 			List<Entity> queryResult = dcotorService.findAll();
+			entityList.addAll(queryResult);
+			return entityCollection;
+		} else if (McEdmUtil.ES_ORDERS_NAME.equals(edmEntitySet.getName())) {
+			List<Entity> entityList = entityCollection.getEntities();
+			List<Entity> queryResult = orderService.findAll();
 			entityList.addAll(queryResult);
 			return entityCollection;
 		}

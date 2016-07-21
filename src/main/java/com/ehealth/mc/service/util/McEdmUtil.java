@@ -31,6 +31,9 @@ public class McEdmUtil {
 	public static final String ET_PATIENT_NAME = "Patient";
 	public static final FullQualifiedName ET_PATIENT_FQN = new FullQualifiedName(
 			NAMESPACE, ET_PATIENT_NAME);
+	public static final String ET_ORDER_DETAIL_NAME = "OrderDetail";
+	public static final FullQualifiedName ET_ORDER_DETAIL_FQN = new FullQualifiedName(
+			NAMESPACE, ET_ORDER_DETAIL_NAME);
 	public static final String ET_ORDER_NAME = "Order";
 	public static final FullQualifiedName ET_ORDER_FQN = new FullQualifiedName(
 			NAMESPACE, ET_ORDER_NAME);
@@ -39,6 +42,7 @@ public class McEdmUtil {
 	public static final String ES_DOCTORS_NAME = "Doctors";
 	public static final String ES_PATIENTS_NAME = "Patients";
 	public static final String ES_ORDERS_NAME = "Orders";
+	public static final String ES_ORDER_DETAILS_NAME = "OrderDetails";
 
 	public static final CsdlEntityContainerInfo getEntityContainerInfo(
 			FullQualifiedName entityContainerName) {
@@ -62,6 +66,7 @@ public class McEdmUtil {
 		List<CsdlEntityType> entityTypes = new ArrayList<CsdlEntityType>();
 		entityTypes.add(getEntityType(ET_DOCTOR_FQN));
 		entityTypes.add(getEntityType(ET_PATIENT_FQN));
+		entityTypes.add(getEntityType(ET_ORDER_DETAIL_FQN));
 		entityTypes.add(getEntityType(ET_ORDER_FQN));
 		schema.setEntityTypes(entityTypes);
 
@@ -77,11 +82,8 @@ public class McEdmUtil {
 
 	public static final CsdlEntityType getEntityType(
 			FullQualifiedName entityTypeName) {
-		// this method is called for one of the EntityTypes that are configured
-		// in the Schema
+		// is called for one of the EntityTypes configured in the Schema
 		if (entityTypeName.equals(ET_DOCTOR_FQN)) {
-
-			// create EntityType properties
 			CsdlProperty id = new CsdlProperty().setName("ID").setType(
 					EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
 			CsdlProperty name = new CsdlProperty().setName("Name").setType(
@@ -115,8 +117,6 @@ public class McEdmUtil {
 
 			return entityType;
 		} else if (entityTypeName.equals(ET_PATIENT_FQN)) {
-
-			// create EntityType properties
 			CsdlProperty id = new CsdlProperty().setName("ID").setType(
 					EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
 			CsdlProperty name = new CsdlProperty().setName("Name").setType(
@@ -140,9 +140,68 @@ public class McEdmUtil {
 
 			// configure EntityType
 			CsdlEntityType entityType = new CsdlEntityType();
-			entityType.setName(ES_DOCTORS_NAME);
+			entityType.setName(ES_PATIENTS_NAME);
 			entityType.setProperties(Arrays.asList(id, name, gender, avatar,
 					address, mobile, birthday));
+			entityType.setKey(Collections.singletonList(propertyRef));
+
+			return entityType;
+		} else if (entityTypeName.equals(ET_ORDER_DETAIL_FQN)) {
+			CsdlProperty id = new CsdlProperty().setName("ID").setType(
+					EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
+			CsdlProperty type = new CsdlProperty().setName("Type").setType(
+					EdmPrimitiveTypeKind.String.getFullQualifiedName());
+			CsdlProperty title = new CsdlProperty().setName("Title").setType(
+					EdmPrimitiveTypeKind.String.getFullQualifiedName());
+			CsdlProperty description = new CsdlProperty()
+					.setName("Description").setType(
+							EdmPrimitiveTypeKind.String.getFullQualifiedName());
+			CsdlProperty pictures = new CsdlProperty().setName("Pics").setType(
+					EdmPrimitiveTypeKind.String.getFullQualifiedName());
+
+			// create CsdlPropertyRef for Key element
+			CsdlPropertyRef propertyRef = new CsdlPropertyRef();
+			propertyRef.setName("ID");
+
+			// configure EntityType
+			CsdlEntityType entityType = new CsdlEntityType();
+			entityType.setName(ES_ORDER_DETAILS_NAME);
+			entityType.setProperties(Arrays.asList(id, type, title,
+					description, pictures));
+			entityType.setKey(Collections.singletonList(propertyRef));
+
+			return entityType;
+		} else if (entityTypeName.equals(ET_ORDER_FQN)) {
+			// create EntityType properties
+			CsdlProperty id = new CsdlProperty().setName("ID").setType(
+					EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
+			CsdlProperty status = new CsdlProperty().setName("Status").setType(
+					EdmPrimitiveTypeKind.String.getFullQualifiedName());
+			CsdlProperty isArchived = new CsdlProperty()
+					.setName("IsArchived")
+					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+			CsdlProperty isEnabled = new CsdlProperty()
+					.setName("IsEnabled")
+					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+			CsdlProperty isDeleted = new CsdlProperty()
+					.setName("IsDeleted")
+					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+			CsdlProperty patient = new CsdlProperty().setName("Patient")
+					.setType(ET_PATIENT_FQN);
+			CsdlProperty doctor = new CsdlProperty().setName("Doctor").setType(
+					ET_DOCTOR_FQN);
+			CsdlProperty orderDetail = new CsdlProperty().setName("Detail")
+					.setType(ET_ORDER_DETAIL_FQN);
+
+			// create CsdlPropertyRef for Key element
+			CsdlPropertyRef propertyRef = new CsdlPropertyRef();
+			propertyRef.setName("ID");
+
+			// configure EntityType
+			CsdlEntityType entityType = new CsdlEntityType();
+			entityType.setName(ES_ORDERS_NAME);
+			entityType.setProperties(Arrays.asList(id, status, isArchived,
+					isEnabled, isDeleted, patient, doctor, orderDetail));
 			entityType.setKey(Collections.singletonList(propertyRef));
 
 			return entityType;
@@ -156,6 +215,7 @@ public class McEdmUtil {
 		List<CsdlEntitySet> entitySets = new ArrayList<CsdlEntitySet>();
 		entitySets.add(getEntitySet(CONTAINER, ES_DOCTORS_NAME));
 		entitySets.add(getEntitySet(CONTAINER, ES_PATIENTS_NAME));
+		entitySets.add(getEntitySet(CONTAINER, ES_ORDER_DETAILS_NAME));
 		entitySets.add(getEntitySet(CONTAINER, ES_ORDERS_NAME));
 
 		// create EntityContainer
@@ -178,6 +238,11 @@ public class McEdmUtil {
 				CsdlEntitySet entitySet = new CsdlEntitySet();
 				entitySet.setName(ES_PATIENTS_NAME);
 				entitySet.setType(ET_PATIENT_FQN);
+				return entitySet;
+			} else if (entitySetName.equals(ES_ORDER_DETAILS_NAME)) {
+				CsdlEntitySet entitySet = new CsdlEntitySet();
+				entitySet.setName(ES_ORDER_DETAILS_NAME);
+				entitySet.setType(ET_ORDER_DETAIL_FQN);
 				return entitySet;
 			} else if (entitySetName.equals(ES_ORDERS_NAME)) {
 				CsdlEntitySet entitySet = new CsdlEntitySet();

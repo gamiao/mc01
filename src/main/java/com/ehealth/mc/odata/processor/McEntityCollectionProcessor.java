@@ -18,18 +18,12 @@
  */
 package com.ehealth.mc.odata.processor;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 import org.apache.olingo.commons.api.data.ContextURL;
-import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
-import org.apache.olingo.commons.api.data.Property;
-import org.apache.olingo.commons.api.data.ValueType;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
-import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.commons.api.format.ContentType;
 import org.apache.olingo.commons.api.http.HttpHeader;
 import org.apache.olingo.commons.api.http.HttpStatusCode;
@@ -47,23 +41,14 @@ import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.api.uri.UriResource;
 import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 
-import com.ehealth.mc.bo.Doctor;
-import com.ehealth.mc.service.DoctorService;
+import com.ehealth.mc.service.OverallService;
 
-/**
- * This class is invoked by the Olingo framework when the the OData service is
- * invoked order to display a list/collection of data (entities). This is the
- * case if an EntitySet is requested by the user. Such an example URL would be:
- * http://localhost:8080/ExampleService1/ExampleService1.svc/Products
- */
 public class McEntityCollectionProcessor implements EntityCollectionProcessor {
 
 	private OData odata;
 	private ServiceMetadata serviceMetadata;
+	private OverallService overallService;
 
-	private DoctorService doctorService;
-
-	// our processor is initialized with the OData context object
 	public void init(OData odata, ServiceMetadata serviceMetadata) {
 		this.odata = odata;
 		this.serviceMetadata = serviceMetadata;
@@ -108,84 +93,13 @@ public class McEntityCollectionProcessor implements EntityCollectionProcessor {
 				responseFormat.toContentTypeString());
 	}
 
-	/**
-	 * Helper method for providing some sample data
-	 * 
-	 * @param edmEntitySet
-	 *            for which the data is requested
-	 * @return data of requested entity set
-	 */
-	private EntityCollection getData(EdmEntitySet edmEntitySet) {
-
-		EntityCollection productsCollection = new EntityCollection();
-		// check for which EdmEntitySet the data is requested
-		if (McEdmProvider.ES_DOCTORS_NAME.equals(edmEntitySet.getName())) {
-			List<Entity> productList = productsCollection.getEntities();
-			
-
-			List<Entity> queryResult = getDoctorService().findAll();
-			
-			productList.addAll(queryResult);
-/*
-			// add some sample product entities
-			final Entity e1 = new Entity()
-					.addProperty(
-							new Property(null, "ID", ValueType.PRIMITIVE, 1))
-					.addProperty(
-							new Property(null, "Name", ValueType.PRIMITIVE,
-									"Notebook Basic 15"))
-					.addProperty(
-							new Property(null, "Description",
-									ValueType.PRIMITIVE,
-									"Notebook Basic, 1.7GHz - 15 XGA - 1024MB DDR2 SDRAM - 40GB"));
-			e1.setId(createId("Doctors", 1));
-			productList.add(e1);
-
-			final Entity e2 = new Entity()
-					.addProperty(
-							new Property(null, "ID", ValueType.PRIMITIVE, 2))
-					.addProperty(
-							new Property(null, "Name", ValueType.PRIMITIVE,
-									"1UMTS PDA"))
-					.addProperty(
-							new Property(null, "Description",
-									ValueType.PRIMITIVE,
-									"Ultrafast 3G UMTS/HSDPA Pocket PC, supports GSM network"));
-			e2.setId(createId("Doctors", 1));
-			productList.add(e2);
-
-			final Entity e3 = new Entity()
-					.addProperty(
-							new Property(null, "ID", ValueType.PRIMITIVE, 3))
-					.addProperty(
-							new Property(null, "Name", ValueType.PRIMITIVE,
-									"Ergo Screen"))
-					.addProperty(
-							new Property(null, "Description",
-									ValueType.PRIMITIVE,
-									"19 Optimum Resolution 1024 x 768 @ 85Hz, resolution 1280 x 960"));
-			e3.setId(createId("Doctors", 1));
-			productList.add(e3);
-			*/
-		}
-
-		return productsCollection;
+	private EntityCollection getData(EdmEntitySet edmEntitySet)
+			throws ODataApplicationException, SerializerException {
+		return overallService.findAll(edmEntitySet);
 	}
 
-	private URI createId(String entitySetName, Object id) {
-		try {
-			return new URI(entitySetName + "(" + String.valueOf(id) + ")");
-		} catch (URISyntaxException e) {
-			throw new ODataRuntimeException("Unable to create id for entity: "
-					+ entitySetName, e);
-		}
+	public void setOverallService(OverallService overallService) {
+		this.overallService = overallService;
 	}
 
-	public DoctorService getDoctorService() {
-		return doctorService;
-	}
-
-	public void setDoctorService(DoctorService doctorService) {
-		this.doctorService = doctorService;
-	}
 }

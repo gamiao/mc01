@@ -1,8 +1,12 @@
 package com.ehealth.mc.service.util;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.data.ValueType;
+import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 
 import com.ehealth.mc.bo.Doctor;
 
@@ -10,7 +14,6 @@ public class EntityConvertUtil {
 
 	public static Entity getEntity(Doctor d) {
 		if (d != null) {
-
 			Entity e = new Entity();
 			e.addProperty(new Property(null, "ID", ValueType.PRIMITIVE, d
 					.getId()));
@@ -28,10 +31,19 @@ public class EntityConvertUtil {
 					.getBirthday()));
 			e.addProperty(new Property(null, "MedicalLevel",
 					ValueType.PRIMITIVE, d.getMedicalLevel()));
-
+			e.setId(createId("Doctors", d.getId()));
 			return e;
 		}
 		return null;
+	}
+
+	public static URI createId(String entitySetName, Object id) {
+		try {
+			return new URI(entitySetName + "(" + String.valueOf(id) + ")");
+		} catch (URISyntaxException e) {
+			throw new ODataRuntimeException("Unable to create id for entity: "
+					+ entitySetName, e);
+		}
 	}
 
 }

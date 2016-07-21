@@ -1,21 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package com.ehealth.mc.web;
 
 import java.io.IOException;
@@ -35,17 +17,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.ehealth.mc.dao.DoctorDAO;
 import com.ehealth.mc.odata.processor.McEdmProvider;
 import com.ehealth.mc.odata.processor.McEntityCollectionProcessor;
-import com.ehealth.mc.service.DoctorService;
+import com.ehealth.mc.odata.processor.McEntityProcessor;
+import com.ehealth.mc.service.OverallService;
 
-/**
- * This class represents a standard HttpServlet implementation. It is used as
- * main entry point for the web application that carries the OData service. The
- * implementation of this HttpServlet simply delegates the user requests to the
- * ODataHttpHandler
- */
 public class EntryServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
@@ -58,23 +34,25 @@ public class EntryServlet extends HttpServlet {
 			IOException {
 
 		try {
-
 			fixHeaders(resp);
+			ApplicationContext ac = WebApplicationContextUtils
+					.getWebApplicationContext(req.getSession()
+							.getServletContext());
+			OverallService overallService = (OverallService) ac
+					.getBean("overallService");
+
 			OData odata = OData.newInstance();
 			ServiceMetadata edm = odata.createServiceMetadata(
 					new McEdmProvider(), new ArrayList<EdmxReference>());
 			ODataHttpHandler handler = odata.createHandler(edm);
+			McEntityProcessor entityProcessor = new McEntityProcessor();
 			McEntityCollectionProcessor collectionProcessor = new McEntityCollectionProcessor();
 
-			ApplicationContext ac = WebApplicationContextUtils
-					.getWebApplicationContext(req.getSession()
-							.getServletContext());
-			DoctorDAO doctorDAO = (DoctorDAO) ac.getBean("doctorDAO");
-			DoctorService doctorService = (DoctorService) ac
-					.getBean("doctorService");
-			collectionProcessor.setDoctorService(doctorService);
+			entityProcessor.setOverallService(overallService);
+			collectionProcessor.setOverallService(overallService);
 
 			handler.register(collectionProcessor);
+			handler.register(entityProcessor);
 
 			// let the handler do the work
 			handler.process(req, resp);

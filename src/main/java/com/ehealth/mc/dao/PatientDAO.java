@@ -5,11 +5,11 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.ehealth.mc.bo.Doctor;
+import com.ehealth.mc.bo.Patient;
 
 @Repository
-public interface DoctorDAO extends CrudRepository<Doctor, Integer> {
+public interface PatientDAO extends CrudRepository<Patient, Integer> {
 
-	List<Doctor> findById(Integer id);
+	List<Patient> findById(Integer id);
 
 }

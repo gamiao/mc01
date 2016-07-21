@@ -20,6 +20,9 @@ import com.ehealth.mc.odata.processor.McEdmProvider;
 import com.ehealth.mc.odata.util.Util;
 import com.ehealth.mc.service.DoctorService;
 import com.ehealth.mc.service.OverallService;
+import com.ehealth.mc.service.PatientService;
+import com.ehealth.mc.service.util.EntityUtil;
+import com.ehealth.mc.service.util.McEdmUtil;
 
 @Service("overallService")
 public class OverallServiceImpl implements OverallService {
@@ -27,10 +30,13 @@ public class OverallServiceImpl implements OverallService {
 	@Autowired
 	DoctorService dcotorService;
 
+	@Autowired
+	PatientService patientService;
+
 	@Override
 	public EntityCollection findAll(EdmEntitySet edmEntitySet) {
 		EntityCollection entityCollection = new EntityCollection();
-		if (McEdmProvider.ES_DOCTORS_NAME.equals(edmEntitySet.getName())) {
+		if (McEdmUtil.ES_DOCTORS_NAME.equals(edmEntitySet.getName())) {
 			List<Entity> entityList = entityCollection.getEntities();
 			List<Entity> queryResult = dcotorService.findAll();
 			entityList.addAll(queryResult);
@@ -74,8 +80,11 @@ public class OverallServiceImpl implements OverallService {
 	public Entity readEntityData(EdmEntitySet edmEntitySet,
 			List<UriParameter> keyParams) throws ODataApplicationException {
 		EdmEntityType edmEntityType = edmEntitySet.getEntityType();
-		if (edmEntitySet.getName().equals(McEdmProvider.ES_DOCTORS_NAME)) {
+		if (edmEntitySet.getName().equals(McEdmUtil.ES_DOCTORS_NAME)) {
 			return getEntity(edmEntityType, keyParams, dcotorService.findAll());
+		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_PATIENTS_NAME)) {
+			String idValue = EntityUtil.getKeyText(keyParams, "ID");
+			return patientService.findById(Integer.valueOf(idValue));
 		}
 		return null;
 	}

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.ehealth.mc.bo.Doctor;
 import com.ehealth.mc.dao.DoctorDAO;
 import com.ehealth.mc.service.DoctorService;
-import com.ehealth.mc.service.util.EntityConvertUtil;
+import com.ehealth.mc.service.util.EntityUtil;
 
 @Service("doctorService")
 public class DoctorServiceImpl implements DoctorService {
@@ -28,7 +28,7 @@ public class DoctorServiceImpl implements DoctorService {
 			if (result != null) {
 				Iterator<Doctor> i = result.iterator();
 				while (i.hasNext()) {
-					Entity e = EntityConvertUtil.getEntity(i.next());
+					Entity e = EntityUtil.getEntity(i.next());
 					eList.add(e);
 				}
 				return eList;

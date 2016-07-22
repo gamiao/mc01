@@ -21,7 +21,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public List<Entity> findAll() {
-		
+
 		List<Entity> eList = new ArrayList<Entity>();
 		if (orderHeaderDAO != null) {
 
@@ -34,6 +34,16 @@ public class OrderServiceImpl implements OrderService {
 				}
 				return eList;
 			}
+		}
+		return null;
+	}
+
+	@Override
+	public Entity findById(Integer id) {
+		List<OrderHeader> ohList = orderHeaderDAO.findById(id);
+		if (ohList != null && ohList.size() > 0) {
+			OrderHeader result = ohList.get(0);
+			return EntityUtil.getEntity(result);
 		}
 		return null;
 	}

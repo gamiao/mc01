@@ -73,6 +73,14 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
+		<!-- hibernate begin -->
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-ehcache</artifactId>
+			<version>4.3.10.Final</version>
+		</dependency>
+
 		<!-- javax begin -->
 
 		<dependency>

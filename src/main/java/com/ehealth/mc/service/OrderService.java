@@ -8,4 +8,6 @@ public interface OrderService {
 
 	List<Entity> findAll();
 
+	Entity findById(Integer id);
+
 }

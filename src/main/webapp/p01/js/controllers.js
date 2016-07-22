@@ -2,7 +2,7 @@ angular.module('app.controllers', [])
 
 .controller("MyController",function($scope,$odataresource){
     $scope.results = 
-        $odataresource("http://localhost:18080/mc01/McService.svc/Doctors")
+        $odataresource("http://localhost:58080/mc01/McService.svc/Orders")
         .odata()
         .query();
 })

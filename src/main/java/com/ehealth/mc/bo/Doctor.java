@@ -9,8 +9,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "doctor")
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class Doctor implements Serializable{
 
 	private static final long serialVersionUID = -7997871599991354097L;

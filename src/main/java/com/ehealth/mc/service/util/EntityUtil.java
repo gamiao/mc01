@@ -89,6 +89,7 @@ public class EntityUtil {
 		if (e != null) {
 			ComplexValue cv = new ComplexValue();
 			cv.getValue().addAll(e.getProperties());
+			cv.setId(e.getId());
 			return cv;
 		}
 		return null;

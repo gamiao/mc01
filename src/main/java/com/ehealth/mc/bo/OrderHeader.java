@@ -1,6 +1,7 @@
 package com.ehealth.mc.bo;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,11 +10,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "order_header")
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class OrderHeader implements Serializable {
 
 	private static final long serialVersionUID = 8176352130924072536L;
@@ -34,6 +40,9 @@ public class OrderHeader implements Serializable {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "od_id")
 	private OrderDetail orderDetail;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "orderHeader")
+	private List<OrderConversation> orderConversations;
 
 	@Column(name = "status")
 	private String status;
@@ -109,6 +118,14 @@ public class OrderHeader implements Serializable {
 
 	public void setIsDeleted(int isDeleted) {
 		this.isDeleted = isDeleted;
+	}
+
+	public List<OrderConversation> getOrderConversations() {
+		return orderConversations;
+	}
+
+	public void setOrderConversations(List<OrderConversation> orderConversations) {
+		this.orderConversations = orderConversations;
 	}
 
 	public static long getSerialversionuid() {

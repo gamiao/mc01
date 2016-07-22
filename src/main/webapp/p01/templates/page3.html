@@ -1,10 +1,10 @@
-<ion-view title="历史订单" id="page3" class=" ">
+<ion-view title="åŽ†å�²è®¢å�•" id="page3" class=" ">
     <ion-content padding="true" class="has-header" ng-controller="MyController">
-        <ion-list id="page3-list3" class=" " ng-repeat="doctor in results">
+        <ion-list id="page3-list3" class=" " ng-repeat="order in results">
             <ion-item class="item-thumbnail-left" ui-sref="side-menu21.100345">
-                <img src="img/{{doctor.Avatar}}">
-                <h2>{{doctor.Name}}</h2>
-                <p>{{doctor.MedicalLevel}}</p>
+                <img src="img/{{order.Doctor.Avatar}}">
+                <h2>{{order.Doctor.Name}}</h2>
+                <p>{{order.Doctor.MedicalLevel}}</p>
             </ion-item>
         </ion-list>
     </ion-content>

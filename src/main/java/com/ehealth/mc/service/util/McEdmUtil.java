@@ -36,6 +36,9 @@ public class McEdmUtil {
 	public static final String ET_ORDER_DETAIL_NAME = "OrderDetail";
 	public static final FullQualifiedName ET_ORDER_DETAIL_FQN = new FullQualifiedName(
 			NAMESPACE, ET_ORDER_DETAIL_NAME);
+	public static final String ET_ORDER_CONV_NAME = "OrderConv";
+	public static final FullQualifiedName ET_ORDER_CONV_FQN = new FullQualifiedName(
+			NAMESPACE, ET_ORDER_CONV_NAME);
 	public static final String ET_ORDER_NAME = "Order";
 	public static final FullQualifiedName ET_ORDER_FQN = new FullQualifiedName(
 			NAMESPACE, ET_ORDER_NAME);
@@ -45,6 +48,7 @@ public class McEdmUtil {
 	public static final String ES_PATIENTS_NAME = "Patients";
 	public static final String ES_ORDERS_NAME = "Orders";
 	public static final String ES_ORDER_DETAILS_NAME = "OrderDetails";
+	public static final String ES_ORDER_CONVS_NAME = "OrderConvs";
 
 	// Complex Type Names
 	public static final FullQualifiedName CT_DOCTOR_NAME = new FullQualifiedName(
@@ -188,6 +192,31 @@ public class McEdmUtil {
 			entityType.setKey(Collections.singletonList(propertyRef));
 
 			return entityType;
+		} else if (entityTypeName.equals(ET_ORDER_CONV_FQN)) {
+			CsdlProperty id = new CsdlProperty().setName("ID").setType(
+					EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
+			CsdlProperty type = new CsdlProperty().setName("Type").setType(
+					EdmPrimitiveTypeKind.String.getFullQualifiedName());
+			CsdlProperty title = new CsdlProperty().setName("Title").setType(
+					EdmPrimitiveTypeKind.String.getFullQualifiedName());
+			CsdlProperty description = new CsdlProperty()
+					.setName("Description").setType(
+							EdmPrimitiveTypeKind.String.getFullQualifiedName());
+			CsdlProperty pictures = new CsdlProperty().setName("Pics").setType(
+					EdmPrimitiveTypeKind.String.getFullQualifiedName());
+
+			// create CsdlPropertyRef for Key element
+			CsdlPropertyRef propertyRef = new CsdlPropertyRef();
+			propertyRef.setName("ID");
+
+			// configure EntityType
+			CsdlEntityType entityType = new CsdlEntityType();
+			entityType.setName(ES_ORDER_CONVS_NAME);
+			entityType.setProperties(Arrays.asList(id, type, title,
+					description, pictures));
+			entityType.setKey(Collections.singletonList(propertyRef));
+
+			return entityType;
 		} else if (entityTypeName.equals(ET_ORDER_FQN)) {
 			// create EntityType properties
 			CsdlProperty id = new CsdlProperty().setName("ID").setType(
@@ -204,7 +233,6 @@ public class McEdmUtil {
 					.setName("IsDeleted")
 					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 
-			//
 			CsdlProperty patient = new CsdlProperty().setName("Patient")
 					.setType(CT_PATIENT_NAME);
 			CsdlProperty doctor = new CsdlProperty().setName("Doctor").setType(
@@ -213,21 +241,10 @@ public class McEdmUtil {
 					CT_ORDER_DETAIL_NAME);
 
 			List<CsdlNavigationProperty> navPropList = new ArrayList<CsdlNavigationProperty>();
-
-			// navigation property: many-to-one, null not allowed (product must
-			// have a category)
-			/*
-			 * CsdlNavigationProperty patientNavProp = new
-			 * CsdlNavigationProperty()
-			 * .setName("Patient").setType(ET_PATIENT_FQN) .setNullable(true);
-			 * navPropList.add(patientNavProp); CsdlNavigationProperty
-			 * doctorNavProp = new CsdlNavigationProperty()
-			 * .setName("Doctor").setType(ET_DOCTOR_FQN).setNullable(true);
-			 * navPropList.add(doctorNavProp); CsdlNavigationProperty
-			 * orderDetailNavProp = new CsdlNavigationProperty()
-			 * .setName("Detail").setType(ET_ORDER_DETAIL_FQN)
-			 * .setNullable(true); navPropList.add(orderDetailNavProp);
-			 */
+			CsdlNavigationProperty convs = new CsdlNavigationProperty()
+					.setName("Convs").setCollection(true)
+					.setType(ET_ORDER_CONV_FQN);
+			navPropList.add(convs);
 
 			// create CsdlPropertyRef for Key element
 			CsdlPropertyRef propertyRef = new CsdlPropertyRef();

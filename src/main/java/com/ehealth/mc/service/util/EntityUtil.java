@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import org.apache.olingo.commons.api.data.ComplexValue;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.data.ValueType;
@@ -84,6 +85,15 @@ public class EntityUtil {
 		return null;
 	}
 
+	public static ComplexValue getComplexValue(Entity e) {
+		if (e != null) {
+			ComplexValue cv = new ComplexValue();
+			cv.getValue().addAll(e.getProperties());
+			return cv;
+		}
+		return null;
+	}
+
 	public static Entity getEntity(OrderHeader d) {
 		if (d != null) {
 			Entity e = new Entity();
@@ -97,12 +107,12 @@ public class EntityUtil {
 					d.getIsEnabled()));
 			e.addProperty(new Property(null, "IsDeleted", ValueType.PRIMITIVE,
 					d.getIsDeleted()));
-			e.addProperty(new Property(null, "Patient", ValueType.PRIMITIVE,
-					getEntity(d.getPatient())));
-			e.addProperty(new Property(null, "Doctor", ValueType.PRIMITIVE,
-					getEntity(d.getDoctor())));
-			e.addProperty(new Property(null, "Detail", ValueType.PRIMITIVE,
-					getEntity(d.getOrderDetail())));
+			e.addProperty(new Property(null, "Patient", ValueType.COMPLEX,
+					getComplexValue(getEntity(d.getPatient()))));
+			e.addProperty(new Property(null, "Doctor", ValueType.COMPLEX,
+					getComplexValue(getEntity(d.getDoctor()))));
+			e.addProperty(new Property(null, "Detail", ValueType.COMPLEX,
+					getComplexValue(getEntity(d.getOrderDetail()))));
 			e.setId(createId(McEdmUtil.ES_ORDERS_NAME, d.getId()));
 			return e;
 		}

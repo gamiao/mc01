@@ -22,11 +22,13 @@ import java.util.List;
 
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlAbstractEdmProvider;
+import org.apache.olingo.commons.api.edm.provider.CsdlComplexType;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityContainer;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityContainerInfo;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
 import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
+import org.apache.olingo.commons.api.ex.ODataException;
 
 import com.ehealth.mc.service.util.McEdmUtil;
 
@@ -63,5 +65,11 @@ public class McEdmProvider extends CsdlAbstractEdmProvider {
 	public CsdlEntityContainerInfo getEntityContainerInfo(
 			FullQualifiedName entityContainerName) {
 		return McEdmUtil.getEntityContainerInfo(entityContainerName);
+	}
+
+	@Override
+	public CsdlComplexType getComplexType(
+			final FullQualifiedName complexTypeName) throws ODataException {
+		return McEdmUtil.getComplexType(complexTypeName);
 	}
 }

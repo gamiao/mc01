@@ -7,10 +7,12 @@ import java.util.List;
 
 import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeKind;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
+import org.apache.olingo.commons.api.edm.provider.CsdlComplexType;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityContainer;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityContainerInfo;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
+import org.apache.olingo.commons.api.edm.provider.CsdlNavigationProperty;
 import org.apache.olingo.commons.api.edm.provider.CsdlProperty;
 import org.apache.olingo.commons.api.edm.provider.CsdlPropertyRef;
 import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
@@ -44,6 +46,14 @@ public class McEdmUtil {
 	public static final String ES_ORDERS_NAME = "Orders";
 	public static final String ES_ORDER_DETAILS_NAME = "OrderDetails";
 
+	// Complex Type Names
+	public static final FullQualifiedName CT_DOCTOR_NAME = new FullQualifiedName(
+			NAMESPACE, "CTDoctor");
+	public static final FullQualifiedName CT_PATIENT_NAME = new FullQualifiedName(
+			NAMESPACE, "CTPatient");
+	public static final FullQualifiedName CT_ORDER_DETAIL_NAME = new FullQualifiedName(
+			NAMESPACE, "CTOrderDetail");
+
 	public static final CsdlEntityContainerInfo getEntityContainerInfo(
 			FullQualifiedName entityContainerName) {
 		// This method is invoked when displaying the service document
@@ -69,6 +79,13 @@ public class McEdmUtil {
 		entityTypes.add(getEntityType(ET_ORDER_DETAIL_FQN));
 		entityTypes.add(getEntityType(ET_ORDER_FQN));
 		schema.setEntityTypes(entityTypes);
+
+		// ComplexTypes
+		List<CsdlComplexType> complexTypes = new ArrayList<CsdlComplexType>();
+		complexTypes.add(getComplexType(CT_DOCTOR_NAME));
+		complexTypes.add(getComplexType(CT_PATIENT_NAME));
+		complexTypes.add(getComplexType(CT_ORDER_DETAIL_NAME));
+		schema.setComplexTypes(complexTypes);
 
 		// add EntityContainer
 		schema.setEntityContainer(getEntityContainer());
@@ -186,12 +203,31 @@ public class McEdmUtil {
 			CsdlProperty isDeleted = new CsdlProperty()
 					.setName("IsDeleted")
 					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+
+			//
 			CsdlProperty patient = new CsdlProperty().setName("Patient")
-					.setType(ET_PATIENT_FQN);
+					.setType(CT_PATIENT_NAME);
 			CsdlProperty doctor = new CsdlProperty().setName("Doctor").setType(
-					ET_DOCTOR_FQN);
-			CsdlProperty orderDetail = new CsdlProperty().setName("Detail")
-					.setType(ET_ORDER_DETAIL_FQN);
+					CT_DOCTOR_NAME);
+			CsdlProperty detail = new CsdlProperty().setName("Detail").setType(
+					CT_ORDER_DETAIL_NAME);
+
+			List<CsdlNavigationProperty> navPropList = new ArrayList<CsdlNavigationProperty>();
+
+			// navigation property: many-to-one, null not allowed (product must
+			// have a category)
+			/*
+			 * CsdlNavigationProperty patientNavProp = new
+			 * CsdlNavigationProperty()
+			 * .setName("Patient").setType(ET_PATIENT_FQN) .setNullable(true);
+			 * navPropList.add(patientNavProp); CsdlNavigationProperty
+			 * doctorNavProp = new CsdlNavigationProperty()
+			 * .setName("Doctor").setType(ET_DOCTOR_FQN).setNullable(true);
+			 * navPropList.add(doctorNavProp); CsdlNavigationProperty
+			 * orderDetailNavProp = new CsdlNavigationProperty()
+			 * .setName("Detail").setType(ET_ORDER_DETAIL_FQN)
+			 * .setNullable(true); navPropList.add(orderDetailNavProp);
+			 */
 
 			// create CsdlPropertyRef for Key element
 			CsdlPropertyRef propertyRef = new CsdlPropertyRef();
@@ -201,8 +237,9 @@ public class McEdmUtil {
 			CsdlEntityType entityType = new CsdlEntityType();
 			entityType.setName(ES_ORDERS_NAME);
 			entityType.setProperties(Arrays.asList(id, status, isArchived,
-					isEnabled, isDeleted, patient, doctor, orderDetail));
+					isEnabled, isDeleted, patient, doctor, detail));
 			entityType.setKey(Collections.singletonList(propertyRef));
+			entityType.setNavigationProperties(navPropList);
 
 			return entityType;
 		}
@@ -250,6 +287,29 @@ public class McEdmUtil {
 				entitySet.setType(ET_ORDER_FQN);
 				return entitySet;
 			}
+		}
+		return null;
+	}
+
+	public static final CsdlComplexType getComplexType(
+			final FullQualifiedName complexTypeName) {
+		if (CT_DOCTOR_NAME.equals(complexTypeName)) {
+			return new CsdlComplexType()
+					.setName(CT_DOCTOR_NAME.getName())
+					.setProperties(getEntityType(ET_DOCTOR_FQN).getProperties())
+					.setOpenType(true);
+		} else if (CT_PATIENT_NAME.equals(complexTypeName)) {
+			return new CsdlComplexType()
+					.setName(CT_PATIENT_NAME.getName())
+					.setProperties(
+							getEntityType(ET_PATIENT_FQN).getProperties())
+					.setOpenType(true);
+		} else if (CT_ORDER_DETAIL_NAME.equals(complexTypeName)) {
+			return new CsdlComplexType()
+					.setName(CT_ORDER_DETAIL_NAME.getName())
+					.setProperties(
+							getEntityType(ET_ORDER_DETAIL_FQN).getProperties())
+					.setOpenType(true);
 		}
 		return null;
 	}

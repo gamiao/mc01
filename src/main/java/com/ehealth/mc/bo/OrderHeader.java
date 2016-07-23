@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -41,7 +42,7 @@ public class OrderHeader implements Serializable {
 	@JoinColumn(name = "od_id")
 	private OrderDetail orderDetail;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "orderHeader")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "orderHeader", fetch = FetchType.LAZY)
 	private List<OrderConversation> orderConversations;
 
 	@Column(name = "status")

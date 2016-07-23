@@ -21,4 +21,8 @@ public interface OverallService {
 	public EntityCollection findAll(EdmEntitySet edmEntitySet)
 			throws ODataApplicationException;
 
+	public EntityCollection getRelatedEntityCollection(Entity entity,
+			UriResourceNavigation navigationResource)
+			throws ODataApplicationException;
+
 }

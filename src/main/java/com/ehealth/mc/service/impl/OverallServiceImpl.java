@@ -89,10 +89,20 @@ public class OverallServiceImpl implements OverallService {
 			List<UriParameter> keyParams) throws ODataApplicationException {
 		EdmEntityType edmEntityType = edmEntitySet.getEntityType();
 		if (edmEntitySet.getName().equals(McEdmUtil.ES_DOCTORS_NAME)) {
-			return getEntity(edmEntityType, keyParams, dcotorService.findAll());
+			Integer idValue = EntityUtil.getID(keyParams);
+			if (idValue != null) {
+				return dcotorService.findById(idValue.intValue());
+			}
 		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_PATIENTS_NAME)) {
-			String idValue = EntityUtil.getKeyText(keyParams, "ID");
-			return patientService.findById(Integer.valueOf(idValue));
+			Integer idValue = EntityUtil.getID(keyParams);
+			if (idValue != null) {
+				return patientService.findById(idValue.intValue());
+			}
+		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_ORDERS_NAME)) {
+			Integer idValue = EntityUtil.getID(keyParams);
+			if (idValue != null) {
+				return orderService.findById(idValue.intValue());
+			}
 		}
 		return null;
 	}

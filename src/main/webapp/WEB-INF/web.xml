@@ -34,4 +34,13 @@
 		<servlet-name>McServlet</servlet-name>
 		<url-pattern>/McService.svc/*</url-pattern>
 	</servlet-mapping>
+
+	<filter>
+		<filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
+		<filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
+		<url-pattern>/McService.svc/*</url-pattern>
+	</filter-mapping>
 </web-app>

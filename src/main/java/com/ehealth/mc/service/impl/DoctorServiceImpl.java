@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ehealth.mc.bo.Doctor;
+import com.ehealth.mc.bo.Patient;
 import com.ehealth.mc.dao.DoctorDAO;
 import com.ehealth.mc.service.DoctorService;
 import com.ehealth.mc.service.util.EntityUtil;
@@ -33,6 +34,16 @@ public class DoctorServiceImpl implements DoctorService {
 				}
 				return eList;
 			}
+		}
+		return null;
+	}
+
+	@Override
+	public Entity findById(Integer id) {
+		List<Doctor> list = dcotorDAO.findById(id);
+		if (list != null && list.size() > 0) {
+			Doctor result = list.get(0);
+			return EntityUtil.getEntity(result);
 		}
 		return null;
 	}

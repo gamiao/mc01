@@ -8,4 +8,6 @@ public interface DoctorService {
 
 	List<Entity> findAll();
 
+	Entity findById(Integer id);
+
 }

@@ -13,6 +13,7 @@ import org.apache.olingo.commons.api.edm.provider.CsdlEntityContainerInfo;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
 import org.apache.olingo.commons.api.edm.provider.CsdlNavigationProperty;
+import org.apache.olingo.commons.api.edm.provider.CsdlNavigationPropertyBinding;
 import org.apache.olingo.commons.api.edm.provider.CsdlProperty;
 import org.apache.olingo.commons.api.edm.provider.CsdlPropertyRef;
 import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
@@ -36,12 +37,12 @@ public class McEdmUtil {
 	public static final String ET_ORDER_DETAIL_NAME = "OrderDetail";
 	public static final FullQualifiedName ET_ORDER_DETAIL_FQN = new FullQualifiedName(
 			NAMESPACE, ET_ORDER_DETAIL_NAME);
-	public static final String ET_ORDER_CONV_NAME = "OrderConv";
-	public static final FullQualifiedName ET_ORDER_CONV_FQN = new FullQualifiedName(
-			NAMESPACE, ET_ORDER_CONV_NAME);
 	public static final String ET_ORDER_NAME = "Order";
 	public static final FullQualifiedName ET_ORDER_FQN = new FullQualifiedName(
 			NAMESPACE, ET_ORDER_NAME);
+	public static final String ET_ORDER_CONV_NAME = "OrderConv";
+	public static final FullQualifiedName ET_ORDER_CONV_FQN = new FullQualifiedName(
+			NAMESPACE, ET_ORDER_CONV_NAME);
 
 	// Entity Set Names
 	public static final String ES_DOCTORS_NAME = "Doctors";
@@ -242,8 +243,8 @@ public class McEdmUtil {
 
 			List<CsdlNavigationProperty> navPropList = new ArrayList<CsdlNavigationProperty>();
 			CsdlNavigationProperty convs = new CsdlNavigationProperty()
-					.setName("Convs").setCollection(true)
-					.setType(ET_ORDER_CONV_FQN);
+					.setName("OrderConvs").setType(ET_ORDER_CONV_FQN)
+					.setCollection(true).setNullable(true);
 			navPropList.add(convs);
 
 			// create CsdlPropertyRef for Key element
@@ -298,10 +299,22 @@ public class McEdmUtil {
 				entitySet.setName(ES_ORDER_DETAILS_NAME);
 				entitySet.setType(ET_ORDER_DETAIL_FQN);
 				return entitySet;
+			} else if (entitySetName.equals(ES_ORDER_CONVS_NAME)) {
+				CsdlEntitySet entitySet = new CsdlEntitySet();
+				entitySet.setName(ES_ORDER_CONVS_NAME);
+				entitySet.setType(ET_ORDER_CONV_FQN);
+				return entitySet;
 			} else if (entitySetName.equals(ES_ORDERS_NAME)) {
 				CsdlEntitySet entitySet = new CsdlEntitySet();
 				entitySet.setName(ES_ORDERS_NAME);
 				entitySet.setType(ET_ORDER_FQN);
+				List<CsdlNavigationPropertyBinding> navigationPropertyBindings = new ArrayList<CsdlNavigationPropertyBinding>();
+				CsdlNavigationPropertyBinding orderConvBd = new CsdlNavigationPropertyBinding();
+				orderConvBd.setTarget("OrderConvs");
+				orderConvBd.setPath("OrderConvs");
+				navigationPropertyBindings.add(orderConvBd);
+				entitySet
+						.setNavigationPropertyBindings(navigationPropertyBindings);
 				return entitySet;
 			}
 		}

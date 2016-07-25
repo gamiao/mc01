@@ -7,13 +7,15 @@ import java.util.List;
 import org.apache.olingo.commons.api.data.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ehealth.mc.bo.OrderHeader;
 import com.ehealth.mc.dao.OrderHeaderDAO;
 import com.ehealth.mc.service.OrderService;
-import com.ehealth.mc.service.util.EntityUtil;
+import com.ehealth.mc.service.util.EntityConvertUtil;
 
 @Service("orderService")
+@Transactional
 public class OrderServiceImpl implements OrderService {
 
 	@Autowired
@@ -29,7 +31,7 @@ public class OrderServiceImpl implements OrderService {
 			if (result != null) {
 				Iterator<OrderHeader> i = result.iterator();
 				while (i.hasNext()) {
-					Entity e = EntityUtil.getEntity(i.next());
+					Entity e = EntityConvertUtil.getEntity(i.next());
 					eList.add(e);
 				}
 				return eList;
@@ -43,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
 		List<OrderHeader> ohList = orderHeaderDAO.findById(id);
 		if (ohList != null && ohList.size() > 0) {
 			OrderHeader result = ohList.get(0);
-			return EntityUtil.getEntity(result);
+			return EntityConvertUtil.getEntity(result);
 		}
 		return null;
 	}

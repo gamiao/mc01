@@ -6,17 +6,23 @@ import java.util.Locale;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
 import org.apache.olingo.commons.api.data.Link;
+import org.apache.olingo.commons.api.data.Property;
+import org.apache.olingo.commons.api.data.ValueType;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
 import org.apache.olingo.commons.api.edm.EdmNavigationProperty;
 import org.apache.olingo.commons.api.http.HttpStatusCode;
+import org.apache.olingo.server.api.OData;
 import org.apache.olingo.server.api.ODataApplicationException;
+import org.apache.olingo.server.api.ODataRequest;
+import org.apache.olingo.server.api.ServiceMetadata;
+import org.apache.olingo.server.api.deserializer.DeserializerException;
 import org.apache.olingo.server.api.uri.UriParameter;
-import org.apache.olingo.server.api.uri.UriResourceNavigation;
+import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.ehealth.mc.odata.util.Util;
 import com.ehealth.mc.service.DoctorService;
 import com.ehealth.mc.service.OrderService;
 import com.ehealth.mc.service.OverallService;
@@ -25,16 +31,17 @@ import com.ehealth.mc.service.util.EntityUtil;
 import com.ehealth.mc.service.util.McEdmUtil;
 
 @Service("overallService")
+@Transactional
 public class OverallServiceImpl implements OverallService {
 
 	@Autowired
-	DoctorService dcotorService;
+	private DoctorService dcotorService;
 
 	@Autowired
-	PatientService patientService;
+	private PatientService patientService;
 
 	@Autowired
-	OrderService orderService;
+	private OrderService orderService;
 
 	@Override
 	public EntityCollection findAll(EdmEntitySet edmEntitySet) {
@@ -53,41 +60,152 @@ public class OverallServiceImpl implements OverallService {
 		return null;
 	}
 
-	private Entity getEntity(EdmEntityType edmEntityType,
-			List<UriParameter> keyParams, List<Entity> entityList)
-			throws ODataApplicationException {
+	@Override
+	public Entity createEntityData(ODataRequest request,
+			EdmEntitySet edmEntitySet, Entity requestEntity, OData odata,
+			ServiceMetadata edm) throws ODataApplicationException {
 
-		// the list of entities at runtime
-		EntityCollection entitySet = getEntityCollection(entityList);
+		EdmEntityType edmEntityType = edmEntitySet.getEntityType();
 
-		/* generic approach to find the requested entity */
-		Entity requestedEntity = Util.findEntity(edmEntityType, entitySet,
-				keyParams);
+		String rawServiceUri = request.getRawBaseUri();
 
-		if (requestedEntity == null) {
-			// this variable is null if our data doesn't contain an entity for
-			// the requested key
-			// Throw suitable exception
-			throw new ODataApplicationException(
-					"Entity for requested key doesn't exist",
-					HttpStatusCode.NOT_FOUND.getStatusCode(), Locale.ENGLISH);
+		if (edmEntitySet.getName().equals(McEdmUtil.ES_DOCTORS_NAME)) {
+			return createEntity(edmEntitySet, edmEntityType, requestEntity,
+					dcotorService.findAll(), rawServiceUri, odata, edm);
 		}
 
-		return requestedEntity;
+		return null;
 	}
 
-	private EntityCollection getEntityCollection(final List<Entity> entityList) {
+	public Entity createEntityData(EdmEntitySet edmEntitySet,
+			Entity entityToCreate, String rawServiceUri, OData odata,
+			ServiceMetadata edm) throws ODataApplicationException {
 
-		EntityCollection retEntitySet = new EntityCollection();
-		retEntitySet.getEntities().addAll(entityList);
+		EdmEntityType edmEntityType = edmEntitySet.getEntityType();
 
-		return retEntitySet;
+		if (edmEntitySet.getName().equals(McEdmUtil.ES_DOCTORS_NAME)) {
+			return createEntity(edmEntitySet, edmEntityType, entityToCreate,
+					dcotorService.findAll(), rawServiceUri, odata, edm);
+		}
+
+		return null;
+	}
+
+	public Entity createEntity(EdmEntitySet edmEntitySet,
+			EdmEntityType edmEntityType, Entity entity,
+			List<Entity> entityList, final String rawServiceUri, OData odata,
+			ServiceMetadata edm) throws ODataApplicationException {
+
+		// 1.) Create the entity
+		final Entity newEntity = new Entity();
+		newEntity.setType(entity.getType());
+
+		// Create the new key of the entity
+		int newId = 1;
+		while (EntityUtil.entityIdExists(newId, entityList)) {
+			newId++;
+		}
+
+		// Add all provided properties
+		newEntity.getProperties().addAll(entity.getProperties());
+
+		// Add the key property
+		newEntity.getProperties().add(
+				new Property(null, "ID", ValueType.PRIMITIVE, newId));
+		newEntity.setId(EntityUtil.createId(newEntity, "ID"));
+
+		dcotorService.save(newEntity);
+
+		// 2.1.) Apply binding links
+		for (final Link link : entity.getNavigationBindings()) {
+			final EdmNavigationProperty edmNavigationProperty = edmEntityType
+					.getNavigationProperty(link.getTitle());
+			final EdmEntitySet targetEntitySet = (EdmEntitySet) edmEntitySet
+					.getRelatedBindingTarget(link.getTitle());
+
+			if (edmNavigationProperty.isCollection()
+					&& link.getBindingLinks() != null) {
+				for (final String bindingLink : link.getBindingLinks()) {
+					final Entity relatedEntity = readEntityByBindingLink(
+							bindingLink, targetEntitySet, rawServiceUri, odata,
+							edm);
+					EntityUtil.createLink(edmNavigationProperty, newEntity,
+							relatedEntity);
+				}
+			} else if (!edmNavigationProperty.isCollection()
+					&& link.getBindingLink() != null) {
+				final Entity relatedEntity = readEntityByBindingLink(
+						link.getBindingLink(), targetEntitySet, rawServiceUri,
+						odata, edm);
+				EntityUtil.createLink(edmNavigationProperty, newEntity,
+						relatedEntity);
+			}
+		}
+
+		// 2.2.) Create nested entities
+		for (final Link link : entity.getNavigationLinks()) {
+			final EdmNavigationProperty edmNavigationProperty = edmEntityType
+					.getNavigationProperty(link.getTitle());
+			final EdmEntitySet targetEntitySet = (EdmEntitySet) edmEntitySet
+					.getRelatedBindingTarget(link.getTitle());
+
+			if (edmNavigationProperty.isCollection()
+					&& link.getInlineEntitySet() != null) {
+				for (final Entity nestedEntity : link.getInlineEntitySet()
+						.getEntities()) {
+					final Entity newNestedEntity = createEntityData(
+							targetEntitySet, nestedEntity, rawServiceUri,
+							odata, edm);
+					EntityUtil.createLink(edmNavigationProperty, newEntity,
+							newNestedEntity);
+				}
+			} else if (!edmNavigationProperty.isCollection()
+					&& link.getInlineEntity() != null) {
+				final Entity newNestedEntity = createEntityData(
+						targetEntitySet, link.getInlineEntity(), rawServiceUri,
+						odata, edm);
+				EntityUtil.createLink(edmNavigationProperty, newEntity,
+						newNestedEntity);
+			}
+		}
+
+		entityList.add(newEntity);
+
+		return newEntity;
+	}
+
+	private Entity readEntityByBindingLink(final String entityId,
+			final EdmEntitySet edmEntitySet, final String rawServiceUri,
+			OData odata, ServiceMetadata edm) throws ODataApplicationException {
+
+		UriResourceEntitySet entitySetResource = null;
+		try {
+			entitySetResource = odata.createUriHelper().parseEntityId(
+					edm.getEdm(), entityId, rawServiceUri);
+
+			if (!entitySetResource.getEntitySet().getName()
+					.equals(edmEntitySet.getName())) {
+				throw new ODataApplicationException(
+						"Execpted an entity-id for entity set "
+								+ edmEntitySet.getName()
+								+ " but found id for entity set "
+								+ entitySetResource.getEntitySet().getName(),
+						HttpStatusCode.BAD_REQUEST.getStatusCode(),
+						Locale.ENGLISH);
+			}
+		} catch (DeserializerException e) {
+			throw new ODataApplicationException(entityId
+					+ " is not a valid entity-Id",
+					HttpStatusCode.BAD_REQUEST.getStatusCode(), Locale.ENGLISH);
+		}
+
+		return readEntityData(entitySetResource.getEntitySet(),
+				entitySetResource.getKeyPredicates());
 	}
 
 	@Override
 	public Entity readEntityData(EdmEntitySet edmEntitySet,
 			List<UriParameter> keyParams) throws ODataApplicationException {
-		EdmEntityType edmEntityType = edmEntitySet.getEntityType();
 		if (edmEntitySet.getName().equals(McEdmUtil.ES_DOCTORS_NAME)) {
 			Integer idValue = EntityUtil.getID(keyParams);
 			if (idValue != null) {
@@ -106,37 +224,4 @@ public class OverallServiceImpl implements OverallService {
 		}
 		return null;
 	}
-
-	@Override
-	public Entity getRelatedEntity(Entity entity,
-			UriResourceNavigation navigationResource)
-			throws ODataApplicationException {
-
-		final EdmNavigationProperty edmNavigationProperty = navigationResource
-				.getProperty();
-
-		if (edmNavigationProperty.isCollection()) {
-			return Util.findEntity(edmNavigationProperty.getType(),
-					getRelatedEntityCollection(entity, navigationResource),
-					navigationResource.getKeyPredicates());
-		} else {
-			final Link link = entity.getNavigationLink(edmNavigationProperty
-					.getName());
-			return link == null ? null : link.getInlineEntity();
-		}
-	}
-
-	public EntityCollection getRelatedEntityCollection(Entity entity,
-			UriResourceNavigation navigationResource) {
-		return getRelatedEntityCollection(entity, navigationResource
-				.getProperty().getName());
-	}
-
-	public EntityCollection getRelatedEntityCollection(Entity entity,
-			String navigationPropertyName) {
-		final Link link = entity.getNavigationLink(navigationPropertyName);
-		return link == null ? new EntityCollection() : link
-				.getInlineEntitySet();
-	}
-
 }

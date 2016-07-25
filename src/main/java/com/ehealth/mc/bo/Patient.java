@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -20,7 +21,8 @@ public class Patient implements Serializable {
 	private static final long serialVersionUID = 5102103807670530942L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "patient_gen")
+	@SequenceGenerator(name = "patient_gen", sequenceName = "patient_gen", allocationSize = 1)
 	@Column(name = "id")
 	private Integer id;
 

@@ -35,15 +35,16 @@ public class EntryServlet extends HttpServlet {
 
 		try {
 			fixHeaders(resp);
+
+			OData odata = OData.newInstance();
+			ServiceMetadata edm = odata.createServiceMetadata(
+					new McEdmProvider(), new ArrayList<EdmxReference>());
 			ApplicationContext ac = WebApplicationContextUtils
 					.getWebApplicationContext(req.getSession()
 							.getServletContext());
 			OverallService overallService = (OverallService) ac
 					.getBean("overallService");
-
-			OData odata = OData.newInstance();
-			ServiceMetadata edm = odata.createServiceMetadata(
-					new McEdmProvider(), new ArrayList<EdmxReference>());
+			
 			ODataHttpHandler handler = odata.createHandler(edm);
 			McEntityProcessor entityProcessor = new McEntityProcessor();
 			McEntityCollectionProcessor collectionProcessor = new McEntityCollectionProcessor();

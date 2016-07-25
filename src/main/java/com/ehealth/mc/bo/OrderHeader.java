@@ -13,10 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "order_header")
@@ -26,20 +29,24 @@ public class OrderHeader implements Serializable {
 	private static final long serialVersionUID = 8176352130924072536L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "order_header_gen")  
+	@SequenceGenerator(name = "order_header_gen", sequenceName = "order_header_gen", allocationSize = 1) 
 	@Column(name = "id")
 	private Integer id;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "d_id")
+	@Fetch(FetchMode.JOIN)
 	private Doctor doctor;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "p_id")
+	@Fetch(FetchMode.JOIN)
 	private Patient patient;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "od_id")
+	@Fetch(FetchMode.JOIN)
 	private OrderDetail orderDetail;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "orderHeader", fetch = FetchType.LAZY)

@@ -3,8 +3,11 @@ package com.ehealth.mc.service.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeKind;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlComplexType;
@@ -59,6 +62,36 @@ public class McEdmUtil {
 	public static final FullQualifiedName CT_ORDER_DETAIL_NAME = new FullQualifiedName(
 			NAMESPACE, "CTOrderDetail");
 
+	// Entity configurations
+	public static final Map<String, String> EntityToSetMap = new HashMap<String, String>();
+	public static final List<CsdlEntityType> AllEntityTypeFQN = new ArrayList<CsdlEntityType>();
+	public static final List<CsdlComplexType> AllComplexTypeFQN = new ArrayList<CsdlComplexType>();
+	public static final List<CsdlEntitySet> AllEntitySetFQN = new ArrayList<CsdlEntitySet>();
+
+	static {
+		AllEntityTypeFQN.add(getEntityType(ET_DOCTOR_FQN));
+		AllEntityTypeFQN.add(getEntityType(ET_PATIENT_FQN));
+		AllEntityTypeFQN.add(getEntityType(ET_ORDER_DETAIL_FQN));
+		AllEntityTypeFQN.add(getEntityType(ET_ORDER_FQN));
+		AllEntityTypeFQN.add(getEntityType(ET_ORDER_CONV_FQN));
+
+		AllComplexTypeFQN.add(getComplexType(CT_DOCTOR_NAME));
+		AllComplexTypeFQN.add(getComplexType(CT_PATIENT_NAME));
+		AllComplexTypeFQN.add(getComplexType(CT_ORDER_DETAIL_NAME));
+
+		AllEntitySetFQN.add(getEntitySet(CONTAINER, ES_DOCTORS_NAME));
+		AllEntitySetFQN.add(getEntitySet(CONTAINER, ES_PATIENTS_NAME));
+		AllEntitySetFQN.add(getEntitySet(CONTAINER, ES_ORDER_DETAILS_NAME));
+		AllEntitySetFQN.add(getEntitySet(CONTAINER, ES_ORDERS_NAME));
+		AllEntitySetFQN.add(getEntitySet(CONTAINER, ES_ORDER_CONVS_NAME));
+
+		EntityToSetMap.put(ET_DOCTOR_NAME, ES_DOCTORS_NAME);
+		EntityToSetMap.put(ET_PATIENT_NAME, ES_PATIENTS_NAME);
+		EntityToSetMap.put(ET_ORDER_DETAIL_NAME, ES_ORDER_DETAILS_NAME);
+		EntityToSetMap.put(ET_ORDER_NAME, ES_ORDERS_NAME);
+		EntityToSetMap.put(ET_ORDER_CONV_NAME, ES_ORDER_CONVS_NAME);
+	}
+
 	public static final CsdlEntityContainerInfo getEntityContainerInfo(
 			FullQualifiedName entityContainerName) {
 		// This method is invoked when displaying the service document
@@ -79,17 +112,12 @@ public class McEdmUtil {
 
 		// add EntityTypes
 		List<CsdlEntityType> entityTypes = new ArrayList<CsdlEntityType>();
-		entityTypes.add(getEntityType(ET_DOCTOR_FQN));
-		entityTypes.add(getEntityType(ET_PATIENT_FQN));
-		entityTypes.add(getEntityType(ET_ORDER_DETAIL_FQN));
-		entityTypes.add(getEntityType(ET_ORDER_FQN));
+		entityTypes.addAll(AllEntityTypeFQN);
 		schema.setEntityTypes(entityTypes);
 
 		// ComplexTypes
 		List<CsdlComplexType> complexTypes = new ArrayList<CsdlComplexType>();
-		complexTypes.add(getComplexType(CT_DOCTOR_NAME));
-		complexTypes.add(getComplexType(CT_PATIENT_NAME));
-		complexTypes.add(getComplexType(CT_ORDER_DETAIL_NAME));
+		complexTypes.addAll(AllComplexTypeFQN);
 		schema.setComplexTypes(complexTypes);
 
 		// add EntityContainer
@@ -268,10 +296,7 @@ public class McEdmUtil {
 	public static final CsdlEntityContainer getEntityContainer() {
 		// create EntitySets
 		List<CsdlEntitySet> entitySets = new ArrayList<CsdlEntitySet>();
-		entitySets.add(getEntitySet(CONTAINER, ES_DOCTORS_NAME));
-		entitySets.add(getEntitySet(CONTAINER, ES_PATIENTS_NAME));
-		entitySets.add(getEntitySet(CONTAINER, ES_ORDER_DETAILS_NAME));
-		entitySets.add(getEntitySet(CONTAINER, ES_ORDERS_NAME));
+		entitySets.addAll(AllEntitySetFQN);
 
 		// create EntityContainer
 		CsdlEntityContainer entityContainer = new CsdlEntityContainer();
@@ -319,6 +344,14 @@ public class McEdmUtil {
 			}
 		}
 		return null;
+	}
+
+	public static final String getEntitySetName(Entity entity) {
+		String entitySetName = EntityToSetMap.get(entity.getType());
+		if (entitySetName != null) {
+			return entitySetName;
+		}
+		return entity.getType();
 	}
 
 	public static final CsdlComplexType getComplexType(

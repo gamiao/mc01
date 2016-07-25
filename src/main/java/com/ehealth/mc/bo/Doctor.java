@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -15,12 +16,13 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "doctor")
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-public class Doctor implements Serializable{
+public class Doctor implements Serializable {
 
 	private static final long serialVersionUID = -7997871599991354097L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "doctor_gen")
+	@SequenceGenerator(name = "doctor_gen", sequenceName = "doctor_gen", allocationSize = 1)
 	@Column(name = "id")
 	private Integer id;
 

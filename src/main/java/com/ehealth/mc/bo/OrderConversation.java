@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -24,7 +25,8 @@ public class OrderConversation implements Serializable {
 	private static final long serialVersionUID = -5671018062113749028L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "order_conv_gen")
+	@SequenceGenerator(name = "order_conv_gen", sequenceName = "order_conv_gen", allocationSize = 1)
 	@Column(name = "id")
 	private Integer id;
 

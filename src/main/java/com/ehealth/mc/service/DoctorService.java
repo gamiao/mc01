@@ -10,4 +10,6 @@ public interface DoctorService {
 
 	Entity findById(Integer id);
 
+	public Entity save(Entity e);
+
 }

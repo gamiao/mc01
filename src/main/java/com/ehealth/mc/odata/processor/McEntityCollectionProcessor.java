@@ -47,8 +47,8 @@ import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 import org.apache.olingo.server.api.uri.UriResourceFunction;
 import org.apache.olingo.server.api.uri.UriResourceNavigation;
 
-import com.ehealth.mc.odata.util.Util;
 import com.ehealth.mc.service.OverallService;
+import com.ehealth.mc.service.util.EntityUtil;
 
 public class McEntityCollectionProcessor implements EntityCollectionProcessor {
 
@@ -155,7 +155,7 @@ public class McEntityCollectionProcessor implements EntityCollectionProcessor {
 				UriResourceNavigation uriResourceNavigation = (UriResourceNavigation) secondSegment;
 				EdmNavigationProperty edmNavigationProperty = uriResourceNavigation
 						.getProperty();
-				responseEntitySet = overallService.getRelatedEntityCollection(
+				responseEntitySet = EntityUtil.getRelatedEntityCollection(
 						firstEntity, uriResourceNavigation);
 				edmEntityType = edmEntitySet.getEntityType();
 				ContextURL contextUrl = ContextURL.with()

@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -20,7 +21,8 @@ public class OrderDetail implements Serializable {
 	private static final long serialVersionUID = 7047335901689944237L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "order_detail_gen")
+	@SequenceGenerator(name = "order_detail_gen", sequenceName = "order_detail_gen", allocationSize = 1)
 	@Column(name = "id")
 	private Integer id;
 

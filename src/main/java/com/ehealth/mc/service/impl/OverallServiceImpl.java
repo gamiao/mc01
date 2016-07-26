@@ -6,8 +6,6 @@ import java.util.Locale;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
 import org.apache.olingo.commons.api.data.Link;
-import org.apache.olingo.commons.api.data.Property;
-import org.apache.olingo.commons.api.data.ValueType;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
 import org.apache.olingo.commons.api.edm.EdmNavigationProperty;
@@ -71,7 +69,10 @@ public class OverallServiceImpl implements OverallService {
 
 		if (edmEntitySet.getName().equals(McEdmUtil.ES_DOCTORS_NAME)) {
 			return createEntity(edmEntitySet, edmEntityType, requestEntity,
-					dcotorService.findAll(), rawServiceUri, odata, edm);
+					rawServiceUri, odata, edm);
+		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_PATIENTS_NAME)) {
+			return createEntity(edmEntitySet, edmEntityType, requestEntity,
+					rawServiceUri, odata, edm);
 		}
 
 		return null;
@@ -85,7 +86,10 @@ public class OverallServiceImpl implements OverallService {
 
 		if (edmEntitySet.getName().equals(McEdmUtil.ES_DOCTORS_NAME)) {
 			return createEntity(edmEntitySet, edmEntityType, entityToCreate,
-					dcotorService.findAll(), rawServiceUri, odata, edm);
+					rawServiceUri, odata, edm);
+		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_PATIENTS_NAME)) {
+			return createEntity(edmEntitySet, edmEntityType, entityToCreate,
+					rawServiceUri, odata, edm);
 		}
 
 		return null;
@@ -93,28 +97,20 @@ public class OverallServiceImpl implements OverallService {
 
 	public Entity createEntity(EdmEntitySet edmEntitySet,
 			EdmEntityType edmEntityType, Entity entity,
-			List<Entity> entityList, final String rawServiceUri, OData odata,
-			ServiceMetadata edm) throws ODataApplicationException {
+			final String rawServiceUri, OData odata, ServiceMetadata edm)
+			throws ODataApplicationException {
+
+		Entity createdEntity = null;
 
 		// 1.) Create the entity
 		final Entity newEntity = new Entity();
 		newEntity.setType(entity.getType());
 
-		// Create the new key of the entity
-		int newId = 1;
-		while (EntityUtil.entityIdExists(newId, entityList)) {
-			newId++;
-		}
-
 		// Add all provided properties
 		newEntity.getProperties().addAll(entity.getProperties());
+		// newEntity.setId(EntityUtil.createId(newEntity, "ID"));
 
-		// Add the key property
-		newEntity.getProperties().add(
-				new Property(null, "ID", ValueType.PRIMITIVE, newId));
-		newEntity.setId(EntityUtil.createId(newEntity, "ID"));
-
-		dcotorService.save(newEntity);
+		createdEntity = createEntity(newEntity);
 
 		// 2.1.) Apply binding links
 		for (final Link link : entity.getNavigationBindings()) {
@@ -169,9 +165,18 @@ public class OverallServiceImpl implements OverallService {
 			}
 		}
 
-		entityList.add(newEntity);
+		return createdEntity;
+	}
 
-		return newEntity;
+	private Entity createEntity(final Entity newEntity) {
+		if (newEntity.getType().equals(
+				McEdmUtil.ET_DOCTOR_FQN.getFullQualifiedNameAsString())) {
+			return dcotorService.save(newEntity);
+		} else if (newEntity.getType().equals(
+				McEdmUtil.ET_PATIENT_FQN.getFullQualifiedNameAsString())) {
+			return patientService.save(newEntity);
+		}
+		return null;
 	}
 
 	private Entity readEntityByBindingLink(final String entityId,

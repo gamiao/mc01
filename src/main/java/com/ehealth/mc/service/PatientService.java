@@ -6,4 +6,6 @@ public interface PatientService {
 
 	Entity findById(Integer id);
 
+	public Entity save(Entity e);
+
 }

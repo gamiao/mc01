@@ -49,6 +49,7 @@ public class DoctorServiceImpl implements DoctorService {
 		return null;
 	}
 
+	@Override
 	public Entity save(Entity e) {
 		Doctor objToSave = EntityConvertUtil.getDoctor(e);
 		if (objToSave != null) {

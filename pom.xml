@@ -32,6 +32,7 @@
 		<junit.version>4.12</junit.version>
 		<odata.version>4.3.0-SNAPSHOT</odata.version>
 		<slf4j.version>1.7.11</slf4j.version>
+		<dbh2.version>1.4.191</dbh2.version>
 	</properties>
 
 	<dependencies>
@@ -50,6 +51,15 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		
+		
+		<!-- H2 DB -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>${dbh2.version}</version>
+		</dependency>
+		
 
 		<!-- spring begin -->
 		<dependency>

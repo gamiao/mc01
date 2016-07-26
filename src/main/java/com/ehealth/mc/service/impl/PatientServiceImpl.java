@@ -29,4 +29,17 @@ public class PatientServiceImpl implements PatientService {
 		return null;
 	}
 
+	@Override
+	public Entity save(Entity e) {
+		Patient objToSave = EntityConvertUtil.getPatient(e);
+		if (objToSave != null) {
+			Patient result = patientDAO.save(objToSave);
+			if (result != null) {
+				Entity resultEntity = EntityConvertUtil.getEntity(result);
+				return resultEntity;
+			}
+		}
+		return null;
+	}
+
 }

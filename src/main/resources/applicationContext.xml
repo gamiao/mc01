@@ -49,7 +49,7 @@
 	<!--指定实现JPA的适配器 -->
 	<bean id="hibernateJpaVendorAdapter"
 		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-		<property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" />
+		<property name="databasePlatform" value="org.hibernate.dialect.H2Dialect" />
 	</bean>
 
 	<!-- Jpa 事务配置 -->

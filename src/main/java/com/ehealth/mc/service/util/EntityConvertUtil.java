@@ -37,6 +37,24 @@ public class EntityConvertUtil {
 
 	}
 
+	public static Patient getPatient(Entity e) {
+		if (e != null) {
+			Patient d = new Patient();
+			if (isValidId(getPropertyStringValue(e, "ID"))) {
+				d.setId(Integer.valueOf((getPropertyStringValue(e, "ID"))));
+			}
+			d.setAddress(getPropertyStringValue(e, "Address"));
+			d.setAvatar(getPropertyStringValue(e, "Avatar"));
+			d.setBirthday(getPropertyStringValue(e, "Birthday"));
+			d.setChineseName(getPropertyStringValue(e, "Name"));
+			// d.setGender(getPropertyStringValue("Gender"));
+			d.setMobile(getPropertyStringValue(e, "Mobile"));
+			return d;
+		}
+		return null;
+
+	}
+
 	private static boolean isValidId(String string) {
 		return false;
 	}

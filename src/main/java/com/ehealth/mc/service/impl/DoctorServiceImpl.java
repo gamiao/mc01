@@ -19,19 +19,18 @@ import com.ehealth.mc.service.util.EntityConvertUtil;
 public class DoctorServiceImpl implements DoctorService {
 
 	@Autowired
-	DoctorDAO dcotorDAO;
+	DoctorDAO doctorDAO;
 
 	@Override
-	public List<Entity> findAll() {
-		List<Entity> eList = new ArrayList<Entity>();
-		if (dcotorDAO != null) {
+	public List<Doctor> findAll() {
+		List<Doctor> eList = new ArrayList<Doctor>();
+		if (doctorDAO != null) {
 
-			Iterable<Doctor> result = dcotorDAO.findAll();
+			Iterable<Doctor> result = doctorDAO.findAll();
 			if (result != null) {
 				Iterator<Doctor> i = result.iterator();
 				while (i.hasNext()) {
-					Entity e = EntityConvertUtil.getEntity(i.next());
-					eList.add(e);
+					eList.add(i.next());
 				}
 				return eList;
 			}
@@ -40,23 +39,21 @@ public class DoctorServiceImpl implements DoctorService {
 	}
 
 	@Override
-	public Entity findById(Integer id) {
-		List<Doctor> list = dcotorDAO.findById(id);
-		if (list != null && list.size() > 0) {
-			Doctor result = list.get(0);
-			return EntityConvertUtil.getEntity(result);
+	public Doctor findById(Integer id) {
+		List<Doctor> resultList = doctorDAO.findById(id);
+		if (resultList != null && resultList.size() == 1) {
+			return resultList.get(0);
 		}
 		return null;
 	}
 
 	@Override
-	public Entity save(Entity e) {
-		Doctor objToSave = EntityConvertUtil.getDoctor(e);
+	public Doctor save(Entity e, Doctor originalObj) {
+		Doctor objToSave = EntityConvertUtil.getDoctor(e, originalObj);
 		if (objToSave != null) {
-			Doctor result = dcotorDAO.save(objToSave);
+			Doctor result = doctorDAO.save(objToSave);
 			if (result != null) {
-				Entity resultEntity = EntityConvertUtil.getEntity(result);
-				return resultEntity;
+				return result;
 			}
 		}
 		return null;

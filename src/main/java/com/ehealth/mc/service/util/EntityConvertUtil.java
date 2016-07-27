@@ -1,6 +1,8 @@
 package com.ehealth.mc.service.util;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.olingo.commons.api.Constants;
 import org.apache.olingo.commons.api.data.ComplexValue;
@@ -18,41 +20,43 @@ import com.ehealth.mc.bo.Patient;
 
 public class EntityConvertUtil {
 
-	public static Doctor getDoctor(Entity e) {
+	public static Doctor getDoctor(Entity e, Doctor oldObj) {
 		if (e != null) {
-			Doctor d = new Doctor();
-			if (isValidId(getPropertyStringValue(e, "ID"))) {
-				d.setId(getInteger((getPropertyStringValue(e, "ID"))));
+			Doctor newObj = null;
+			if (oldObj != null) {
+				newObj = oldObj;
+			} else {
+				newObj = new Doctor();
 			}
-			d.setAddress(getPropertyStringValue(e, "Address"));
-			d.setAvatar(getPropertyStringValue(e, "Avatar"));
-			d.setBirthday(getPropertyStringValue(e, "Birthday"));
-			d.setChineseName(getPropertyStringValue(e, "Name"));
+			newObj.setAddress(getPropertyStringValue(e, "Address"));
+			newObj.setAvatar(getPropertyStringValue(e, "Avatar"));
+			newObj.setBirthday(getPropertyStringValue(e, "Birthday"));
+			newObj.setChineseName(getPropertyStringValue(e, "Name"));
 			// d.setGender(getPropertyStringValue("Gender"));
-			d.setMedicalLevel(getPropertyStringValue(e, "MedicalLevel"));
-			d.setMobile(getPropertyStringValue(e, "Mobile"));
-			return d;
+			newObj.setMedicalLevel(getPropertyStringValue(e, "MedicalLevel"));
+			newObj.setMobile(getPropertyStringValue(e, "Mobile"));
+			return newObj;
 		}
 		return null;
-
 	}
 
-	public static Patient getPatient(Entity e) {
+	public static Patient getPatient(Entity e, Patient oldObj) {
 		if (e != null) {
-			Patient d = new Patient();
-			if (isValidId(getPropertyStringValue(e, "ID"))) {
-				d.setId(getInteger((getPropertyStringValue(e, "ID"))));
+			Patient newObj = null;
+			if (oldObj != null) {
+				newObj = oldObj;
+			} else {
+				newObj = new Patient();
 			}
-			d.setAddress(getPropertyStringValue(e, "Address"));
-			d.setAvatar(getPropertyStringValue(e, "Avatar"));
-			d.setBirthday(getPropertyStringValue(e, "Birthday"));
-			d.setChineseName(getPropertyStringValue(e, "Name"));
+			newObj.setAddress(getPropertyStringValue(e, "Address"));
+			newObj.setAvatar(getPropertyStringValue(e, "Avatar"));
+			newObj.setBirthday(getPropertyStringValue(e, "Birthday"));
+			newObj.setChineseName(getPropertyStringValue(e, "Name"));
 			// d.setGender(getPropertyStringValue("Gender"));
-			d.setMobile(getPropertyStringValue(e, "Mobile"));
-			return d;
+			newObj.setMobile(getPropertyStringValue(e, "Mobile"));
+			return newObj;
 		}
 		return null;
-
 	}
 
 	private static boolean isValidId(String string) {
@@ -80,7 +84,6 @@ public class EntityConvertUtil {
 				}
 			}
 		}
-
 		return null;
 	}
 
@@ -148,6 +151,35 @@ public class EntityConvertUtil {
 			e.setId(EntityUtil.createId(McEdmUtil.ES_ORDER_DETAILS_NAME,
 					d.getId()));
 			return e;
+		}
+		return null;
+	}
+
+	public static List<Entity> getOrderEntityList(List<OrderHeader> objList) {
+		if (objList != null && objList.size() > 0) {
+			List<Entity> entityList = new ArrayList<Entity>();
+			for (OrderHeader obj : objList) {
+				Entity entity = getEntity(obj);
+				if (entity != null) {
+					entityList.add(entity);
+				}
+			}
+			return entityList;
+		}
+
+		return null;
+	}
+
+	public static List<Entity> getDoctorEntityList(List<Doctor> objList) {
+		if (objList != null && objList.size() > 0) {
+			List<Entity> entityList = new ArrayList<Entity>();
+			for (Doctor obj : objList) {
+				Entity entity = getEntity(obj);
+				if (entity != null) {
+					entityList.add(entity);
+				}
+			}
+			return entityList;
 		}
 		return null;
 	}
@@ -317,7 +349,11 @@ public class EntityConvertUtil {
 		return null;
 	}
 
-	private static Integer getInteger(String str) {
+	public static Integer getID(Entity e) {
+		return getInteger((getPropertyStringValue(e, "ID")));
+	}
+
+	public static Integer getInteger(String str) {
 		if (str != null) {
 			try {
 				Integer idValue = Integer.valueOf(str);

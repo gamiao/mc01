@@ -20,23 +20,21 @@ public class PatientServiceImpl implements PatientService {
 	PatientDAO patientDAO;
 
 	@Override
-	public Entity findById(Integer id) {
-		List<Patient> patientList = patientDAO.findById(id);
-		if (patientList != null && patientList.size() > 0) {
-			Patient result = patientList.get(0);
-			return EntityConvertUtil.getEntity(result);
+	public Patient findById(Integer id) {
+		List<Patient> resultList = patientDAO.findById(id);
+		if (resultList != null && resultList.size() == 1) {
+			return resultList.get(0);
 		}
 		return null;
 	}
 
 	@Override
-	public Entity save(Entity e) {
-		Patient objToSave = EntityConvertUtil.getPatient(e);
+	public Patient save(Entity e, Patient originalObj) {
+		Patient objToSave = EntityConvertUtil.getPatient(e, originalObj);
 		if (objToSave != null) {
 			Patient result = patientDAO.save(objToSave);
 			if (result != null) {
-				Entity resultEntity = EntityConvertUtil.getEntity(result);
-				return resultEntity;
+				return result;
 			}
 		}
 		return null;

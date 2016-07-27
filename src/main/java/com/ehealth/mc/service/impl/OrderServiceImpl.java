@@ -18,7 +18,9 @@ import com.ehealth.mc.dao.DoctorDAO;
 import com.ehealth.mc.dao.OrderDetailDAO;
 import com.ehealth.mc.dao.OrderHeaderDAO;
 import com.ehealth.mc.dao.PatientDAO;
+import com.ehealth.mc.service.DoctorService;
 import com.ehealth.mc.service.OrderService;
+import com.ehealth.mc.service.PatientService;
 import com.ehealth.mc.service.util.EntityConvertUtil;
 
 @Service("orderService")
@@ -32,23 +34,22 @@ public class OrderServiceImpl implements OrderService {
 	OrderDetailDAO orderDetailDAO;
 
 	@Autowired
-	DoctorDAO doctorDAO;
+	private DoctorService doctorService;
 
 	@Autowired
-	PatientDAO patientDAO;
+	private PatientService patientService;
 
 	@Override
-	public List<Entity> findAll() {
+	public List<OrderHeader> findAll() {
 
-		List<Entity> eList = new ArrayList<Entity>();
+		List<OrderHeader> eList = new ArrayList<OrderHeader>();
 		if (orderHeaderDAO != null) {
 
 			Iterable<OrderHeader> result = orderHeaderDAO.findAll();
 			if (result != null) {
 				Iterator<OrderHeader> i = result.iterator();
 				while (i.hasNext()) {
-					Entity e = EntityConvertUtil.getEntity(i.next());
-					eList.add(e);
+					eList.add(i.next());
 				}
 				return eList;
 			}
@@ -57,17 +58,16 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public Entity findById(Integer id) {
-		List<OrderHeader> ohList = orderHeaderDAO.findById(id);
-		if (ohList != null && ohList.size() > 0) {
-			OrderHeader result = ohList.get(0);
-			return EntityConvertUtil.getEntity(result);
+	public OrderHeader findById(Integer id) {
+		List<OrderHeader> resultList = orderHeaderDAO.findById(id);
+		if (resultList != null && resultList.size() == 1) {
+			return resultList.get(0);
 		}
 		return null;
 	}
 
 	@Override
-	public Entity save(Entity e) {
+	public OrderHeader save(Entity e) {
 		Patient patient = null;
 		Doctor doctor = null;
 		OrderDetail orderDetail = null;
@@ -76,29 +76,13 @@ public class OrderServiceImpl implements OrderService {
 		if (patientID == null) {
 			return null;// Patient does not exist
 		} else {
-			List<Patient> patientResultList = patientDAO.findById(patientID);
-			if (patientResultList == null) {
-				return null;// Patient does not exist
-			} else if (patientResultList.size() == 0) {
-				return null;// Patient does not exist
-			} else if (patientResultList.size() > 2) {
-				return null;// Duplicated patients
-			}
-			patient = patientResultList.get(0);
+			patient = patientService.findById(patientID);
 		}
 
 		Integer doctorID = EntityConvertUtil.getDoctorIDFromOrderEntity(e);
 
 		if (doctorID != null) {
-			List<Doctor> doctorResultList = doctorDAO.findById(doctorID);
-			if (doctorResultList == null) {
-				return null;// Doctor does not exist
-			} else if (doctorResultList.size() == 0) {
-				return null;// Doctor does not exist
-			} else if (doctorResultList.size() > 2) {
-				return null;// Duplicated doctors
-			}
-			doctor = doctorResultList.get(0);
+			doctor = doctorService.findById(doctorID);
 		}
 
 		ComplexValue odToSave = EntityConvertUtil.getOrderDetailComplexValue(e);
@@ -117,7 +101,7 @@ public class OrderServiceImpl implements OrderService {
 			return null;
 		}
 
-		return EntityConvertUtil.getEntity(orderHeader);
+		return orderHeader;
 	}
 
 	private OrderHeader saveOrderHeader(Entity e, Patient patient,

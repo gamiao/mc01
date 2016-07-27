@@ -2,10 +2,12 @@ package com.ehealth.mc.service;
 
 import org.apache.olingo.commons.api.data.Entity;
 
+import com.ehealth.mc.bo.Patient;
+
 public interface PatientService {
 
-	Entity findById(Integer id);
+	Patient findById(Integer id);
 
-	Entity save(Entity e);
+	Patient save(Entity e, Patient originalObj);
 
 }

@@ -4,12 +4,14 @@ import java.util.List;
 
 import org.apache.olingo.commons.api.data.Entity;
 
+import com.ehealth.mc.bo.OrderHeader;
+
 public interface OrderService {
 
-	List<Entity> findAll();
+	List<OrderHeader> findAll();
 
-	Entity findById(Integer id);
+	OrderHeader findById(Integer id);
 
-	Entity save(Entity e);
+	OrderHeader save(Entity e);
 
 }

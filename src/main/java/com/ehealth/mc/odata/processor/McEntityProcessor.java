@@ -30,6 +30,7 @@ import org.apache.olingo.commons.api.edm.EdmEntityType;
 import org.apache.olingo.commons.api.edm.EdmNavigationProperty;
 import org.apache.olingo.commons.api.format.ContentType;
 import org.apache.olingo.commons.api.http.HttpHeader;
+import org.apache.olingo.commons.api.http.HttpMethod;
 import org.apache.olingo.commons.api.http.HttpStatusCode;
 import org.apache.olingo.server.api.OData;
 import org.apache.olingo.server.api.ODataApplicationException;
@@ -91,7 +92,6 @@ public class McEntityProcessor implements EntityProcessor, MediaEntityProcessor 
 			UriInfo uriInfo, ContentType requestFormat,
 			ContentType responseFormat) throws ODataApplicationException,
 			ODataLibraryException {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -358,7 +358,33 @@ public class McEntityProcessor implements EntityProcessor, MediaEntityProcessor 
 			UriInfo uriInfo, ContentType requestFormat,
 			ContentType responseFormat) throws ODataApplicationException,
 			ODataLibraryException {
-		// TODO Auto-generated method stub
+
+		// 1. Retrieve the entity set which belongs to the requested entity
+		List<UriResource> resourcePaths = uriInfo.getUriResourceParts();
+		// Note: only in our example we can assume that the first segment is the
+		// EntitySet
+		UriResourceEntitySet uriResourceEntitySet = (UriResourceEntitySet) resourcePaths
+				.get(0);
+		EdmEntitySet edmEntitySet = uriResourceEntitySet.getEntitySet();
+		EdmEntityType edmEntityType = edmEntitySet.getEntityType();
+
+		// 2. update the data in backend
+		// 2.1. retrieve the payload from the PUT request for the entity to be
+		// updated
+		InputStream requestInputStream = request.getBody();
+		ODataDeserializer deserializer = this.odata
+				.createDeserializer(requestFormat);
+		DeserializerResult result = deserializer.entity(requestInputStream,
+				edmEntityType);
+		Entity requestEntity = result.getEntity();
+		// 2.2 do the modification in backend
+		List<UriParameter> keyPredicates = uriResourceEntitySet
+				.getKeyPredicates();
+		this.overallService.updateEntityData(request, keyPredicates,
+				edmEntitySet, requestEntity, odata, serviceMetadata);
+
+		// 3. configure the response object
+		response.setStatusCode(HttpStatusCode.NO_CONTENT.getStatusCode());
 
 	}
 

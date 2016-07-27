@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
+import org.apache.olingo.commons.api.http.HttpMethod;
 import org.apache.olingo.server.api.OData;
 import org.apache.olingo.server.api.ODataApplicationException;
 import org.apache.olingo.server.api.ODataRequest;
@@ -19,7 +20,11 @@ public interface OverallService {
 	EntityCollection findAll(EdmEntitySet edmEntitySet)
 			throws ODataApplicationException;
 
-	Entity createEntityData(ODataRequest request,
+	Entity createEntityData(ODataRequest request, EdmEntitySet edmEntitySet,
+			Entity requestEntity, OData odata, ServiceMetadata edm)
+			throws ODataApplicationException;
+
+	void updateEntityData(ODataRequest request, List<UriParameter> keyParams,
 			EdmEntitySet edmEntitySet, Entity requestEntity, OData odata,
 			ServiceMetadata edm) throws ODataApplicationException;
 

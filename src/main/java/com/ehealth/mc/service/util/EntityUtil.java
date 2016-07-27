@@ -14,6 +14,7 @@ import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.edm.EdmBindingTarget;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
+import org.apache.olingo.commons.api.edm.EdmKeyPropertyRef;
 import org.apache.olingo.commons.api.edm.EdmNavigationProperty;
 import org.apache.olingo.commons.api.edm.EdmPrimitiveType;
 import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeException;
@@ -167,8 +168,9 @@ public class EntityUtil {
 				.getProperty();
 
 		if (edmNavigationProperty.isCollection()) {
-			return findEntity(edmNavigationProperty.getType(), EntityUtil
-					.getRelatedEntityCollection(entity, navigationResource),
+			return findEntity(edmNavigationProperty.getType(),
+					EntityUtil.getRelatedEntityCollection(entity,
+							navigationResource),
 					navigationResource.getKeyPredicates());
 		} else {
 			final Link link = entity.getNavigationLink(edmNavigationProperty
@@ -176,8 +178,6 @@ public class EntityUtil {
 			return link == null ? null : link.getInlineEntity();
 		}
 	}
-	
-
 
 	public static EdmEntitySet getEdmEntitySet(UriInfoResource uriInfo)
 			throws ODataApplicationException {
@@ -327,6 +327,18 @@ public class EntityUtil {
 		if (partnerNavigationProperty != null) {
 			setLink(partnerNavigationProperty, destEntity, srcEntity);
 		}
+	}
+
+	public static boolean isKey(EdmEntityType edmEntityType, String propertyName) {
+		List<EdmKeyPropertyRef> keyPropertyRefs = edmEntityType
+				.getKeyPropertyRefs();
+		for (EdmKeyPropertyRef propRef : keyPropertyRefs) {
+			String keyPropertyName = propRef.getName();
+			if (keyPropertyName.equals(propertyName)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

@@ -4,12 +4,14 @@ import java.util.List;
 
 import org.apache.olingo.commons.api.data.Entity;
 
+import com.ehealth.mc.bo.Doctor;
+
 public interface DoctorService {
 
-	List<Entity> findAll();
+	List<Doctor> findAll();
 
-	Entity findById(Integer id);
+	Doctor findById(Integer id);
 
-	Entity save(Entity e);
+	Doctor save(Entity e, Doctor originalObj);
 
 }

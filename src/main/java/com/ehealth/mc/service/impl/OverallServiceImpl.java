@@ -6,9 +6,11 @@ import java.util.Locale;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
 import org.apache.olingo.commons.api.data.Link;
+import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
 import org.apache.olingo.commons.api.edm.EdmNavigationProperty;
+import org.apache.olingo.commons.api.http.HttpMethod;
 import org.apache.olingo.commons.api.http.HttpStatusCode;
 import org.apache.olingo.server.api.OData;
 import org.apache.olingo.server.api.ODataApplicationException;
@@ -21,10 +23,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ehealth.mc.bo.Doctor;
+import com.ehealth.mc.bo.OrderHeader;
+import com.ehealth.mc.bo.Patient;
 import com.ehealth.mc.service.DoctorService;
 import com.ehealth.mc.service.OrderService;
 import com.ehealth.mc.service.OverallService;
 import com.ehealth.mc.service.PatientService;
+import com.ehealth.mc.service.util.EntityConvertUtil;
 import com.ehealth.mc.service.util.EntityUtil;
 import com.ehealth.mc.service.util.McEdmUtil;
 
@@ -33,7 +39,7 @@ import com.ehealth.mc.service.util.McEdmUtil;
 public class OverallServiceImpl implements OverallService {
 
 	@Autowired
-	private DoctorService dcotorService;
+	private DoctorService doctorService;
 
 	@Autowired
 	private PatientService patientService;
@@ -46,13 +52,15 @@ public class OverallServiceImpl implements OverallService {
 		EntityCollection entityCollection = new EntityCollection();
 		if (McEdmUtil.ES_DOCTORS_NAME.equals(edmEntitySet.getName())) {
 			List<Entity> entityList = entityCollection.getEntities();
-			List<Entity> queryResult = dcotorService.findAll();
-			entityList.addAll(queryResult);
+			List<Doctor> queryResult = doctorService.findAll();
+			entityList.addAll(EntityConvertUtil
+					.getDoctorEntityList(queryResult));
 			return entityCollection;
 		} else if (McEdmUtil.ES_ORDERS_NAME.equals(edmEntitySet.getName())) {
 			List<Entity> entityList = entityCollection.getEntities();
-			List<Entity> queryResult = orderService.findAll();
-			entityList.addAll(queryResult);
+			List<OrderHeader> queryResult = orderService.findAll();
+			entityList
+					.addAll(EntityConvertUtil.getOrderEntityList(queryResult));
 			return entityCollection;
 		}
 		return null;
@@ -177,13 +185,42 @@ public class OverallServiceImpl implements OverallService {
 	private Entity createEntity(final Entity newEntity) {
 		if (newEntity.getType().equals(
 				McEdmUtil.ET_DOCTOR_FQN.getFullQualifiedNameAsString())) {
-			return dcotorService.save(newEntity);
+			return EntityConvertUtil.getEntity(doctorService.save(newEntity, null));
 		} else if (newEntity.getType().equals(
 				McEdmUtil.ET_PATIENT_FQN.getFullQualifiedNameAsString())) {
-			return patientService.save(newEntity);
+			return EntityConvertUtil.getEntity(patientService.save(newEntity, null));
 		} else if (newEntity.getType().equals(
 				McEdmUtil.ET_ORDER_FQN.getFullQualifiedNameAsString())) {
-			return orderService.save(newEntity);
+			return EntityConvertUtil.getEntity(orderService.save(newEntity));
+		}
+		return null;
+	}
+
+	private Entity updateEntity(final Entity updateEntity) {
+		if (updateEntity.getType().equals(
+				McEdmUtil.ET_DOCTOR_FQN.getFullQualifiedNameAsString())) {
+
+			Doctor originalObj = null;
+			Integer originalID = EntityConvertUtil.getID(updateEntity);
+			if (originalID != null) {
+				originalObj = doctorService.findById(originalID);
+			}
+
+			return EntityConvertUtil.getEntity(doctorService.save(updateEntity,
+					originalObj));
+		} else if (updateEntity.getType().equals(
+				McEdmUtil.ET_PATIENT_FQN.getFullQualifiedNameAsString())) {
+
+			Patient originalObj = null;
+			Integer originalID = EntityConvertUtil.getID(updateEntity);
+			if (originalID != null) {
+				originalObj = patientService.findById(originalID);
+			}
+			return EntityConvertUtil.getEntity(patientService.save(
+					updateEntity, originalObj));
+		} else if (updateEntity.getType().equals(
+				McEdmUtil.ET_ORDER_FQN.getFullQualifiedNameAsString())) {
+			return EntityConvertUtil.getEntity(orderService.save(updateEntity));
 		}
 		return null;
 	}
@@ -223,19 +260,89 @@ public class OverallServiceImpl implements OverallService {
 		if (edmEntitySet.getName().equals(McEdmUtil.ES_DOCTORS_NAME)) {
 			Integer idValue = EntityUtil.getID(keyParams);
 			if (idValue != null) {
-				return dcotorService.findById(idValue.intValue());
+				return EntityConvertUtil.getEntity(doctorService
+						.findById(idValue.intValue()));
 			}
 		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_PATIENTS_NAME)) {
 			Integer idValue = EntityUtil.getID(keyParams);
 			if (idValue != null) {
-				return patientService.findById(idValue.intValue());
+				return EntityConvertUtil.getEntity(patientService
+						.findById(idValue.intValue()));
 			}
 		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_ORDERS_NAME)) {
 			Integer idValue = EntityUtil.getID(keyParams);
 			if (idValue != null) {
-				return orderService.findById(idValue.intValue());
+				return EntityConvertUtil.getEntity(orderService
+						.findById(idValue.intValue()));
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public void updateEntityData(ODataRequest request,
+			List<UriParameter> keyParams, EdmEntitySet edmEntitySet,
+			Entity updateEntity, OData odata, ServiceMetadata edm)
+			throws ODataApplicationException {
+		HttpMethod httpMethod = request.getMethod();
+		if (edmEntitySet.getName().equals(McEdmUtil.ES_DOCTORS_NAME)) {
+			updateEntity(edmEntitySet, keyParams, updateEntity, httpMethod);
+		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_PATIENTS_NAME)) {
+			updateEntity(edmEntitySet, keyParams, updateEntity, httpMethod);
+		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_ORDERS_NAME)) {
+			updateEntity(edmEntitySet, keyParams, updateEntity, httpMethod);
+		}
+
+	}
+
+	private void updateEntity(EdmEntitySet edmEntitySet,
+			List<UriParameter> keyParams, Entity updateEntity,
+			HttpMethod httpMethod) throws ODataApplicationException {
+
+		EdmEntityType edmEntityType = edmEntitySet.getEntityType();
+
+		Entity entity = readEntityData(edmEntitySet, keyParams);
+		if (entity == null) {
+			throw new ODataApplicationException("Entity not found",
+					HttpStatusCode.NOT_FOUND.getStatusCode(), Locale.ENGLISH);
+		}
+
+		// loop over all properties and replace the values with the values of
+		// the given payload
+		// Note: ignoring ComplexType, as we don't have it in our odata model
+		List<Property> existingProperties = entity.getProperties();
+		entity.setType(updateEntity.getType());
+		for (Property existingProp : existingProperties) {
+			String propName = existingProp.getName();
+
+			// ignore the key properties, they aren't updateable
+			if (EntityUtil.isKey(edmEntityType, propName)) {
+				continue;
+			}
+
+			Property updateProperty = updateEntity.getProperty(propName);
+			// the request payload might not consider ALL properties, so it can
+			// be null
+			if (updateProperty == null) {
+				// if a property has NOT been added to the request payload
+				// depending on the HttpMethod, our behavior is different
+				if (httpMethod.equals(HttpMethod.PATCH)) {
+					// as of the OData spec, in case of PATCH, the existing
+					// property is not touched
+					continue; // do nothing
+				} else if (httpMethod.equals(HttpMethod.PUT)) {
+					// as of the OData spec, in case of PUT, the existing
+					// property is set to null (or to default value)
+					existingProp.setValue(existingProp.getValueType(), null);
+					continue;
+				}
+			}
+
+			// change the value of the properties
+			existingProp.setValue(existingProp.getValueType(),
+					updateProperty.getValue());
+		}
+
+		updateEntity(entity);
 	}
 }

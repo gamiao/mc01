@@ -10,4 +10,6 @@ public interface OrderService {
 
 	Entity findById(Integer id);
 
+	Entity save(Entity e);
+
 }

@@ -22,7 +22,7 @@ public class EntityConvertUtil {
 		if (e != null) {
 			Doctor d = new Doctor();
 			if (isValidId(getPropertyStringValue(e, "ID"))) {
-				d.setId(Integer.valueOf((getPropertyStringValue(e, "ID"))));
+				d.setId(getInteger((getPropertyStringValue(e, "ID"))));
 			}
 			d.setAddress(getPropertyStringValue(e, "Address"));
 			d.setAvatar(getPropertyStringValue(e, "Avatar"));
@@ -41,7 +41,7 @@ public class EntityConvertUtil {
 		if (e != null) {
 			Patient d = new Patient();
 			if (isValidId(getPropertyStringValue(e, "ID"))) {
-				d.setId(Integer.valueOf((getPropertyStringValue(e, "ID"))));
+				d.setId(getInteger((getPropertyStringValue(e, "ID"))));
 			}
 			d.setAddress(getPropertyStringValue(e, "Address"));
 			d.setAvatar(getPropertyStringValue(e, "Avatar"));
@@ -64,6 +64,20 @@ public class EntityConvertUtil {
 			Property p = e.getProperty(propName);
 			if (p.getValue() != null) {
 				return p.getValue().toString();
+			}
+		}
+
+		return null;
+	}
+
+	private static Integer getPropertyIntegerValue(Entity e, String propName) {
+		if (e != null && e.getProperty(propName) != null) {
+			Property p = e.getProperty(propName);
+			if (p.getValue() != null) {
+				Integer integerValue = getInteger(p.getValue().toString());
+				if (integerValue != null) {
+					return integerValue.intValue();
+				}
 			}
 		}
 
@@ -226,6 +240,95 @@ public class EntityConvertUtil {
 			return cv;
 		}
 		return null;
+	}
+
+	public static OrderDetail getOrderDetail(ComplexValue v) {
+		if (v != null) {
+			OrderDetail d = new OrderDetail();
+			if (v != null && v.getValue() != null && v.getValue().size() > 0) {
+				for (Property p : v.getValue()) {
+					if ("ID".equals(p.getName())) {
+						d.setId(getInteger(p.getValue().toString()));
+					} else if ("Type".equals(p.getName())) {
+						d.setType((p.getValue().toString()));
+					} else if ("Title".equals(p.getName())) {
+						d.setTitle((p.getValue().toString()));
+					} else if ("Description".equals(p.getName())) {
+						d.setDescription((p.getValue().toString()));
+					} else if ("Pics".equals(p.getName())) {
+						d.setPictures((p.getValue().toString()));
+					}
+				}
+			}
+			return d;
+		}
+		return null;
+	}
+
+	public static OrderHeader getOrderHeader(Entity e) {
+		if (e != null) {
+			OrderHeader d = new OrderHeader();
+			if (isValidId(getPropertyStringValue(e, "ID"))) {
+				d.setId(getInteger((getPropertyStringValue(e, "ID"))));
+			}
+			d.setStatus(getPropertyStringValue(e, "Status"));
+			d.setIsArchived(getPropertyStringValue(e, "IsArchived"));
+			d.setIsEnabled(getPropertyStringValue(e, "IsEnabled"));
+			d.setIsDeleted(getPropertyStringValue(e, "IsDeleted"));
+			return d;
+		}
+		return null;
+	}
+
+	public static ComplexValue getOrderDetailComplexValue(Entity e) {
+		Property p = e.getProperty("Detail");
+		if (p != null && p.getType().endsWith(McEdmUtil.CT_ORDER_DETAIL_NAME)) {
+			return (ComplexValue) p.getValue();
+		}
+		return null;
+	}
+
+	public static Integer getPatientIDFromOrderEntity(Entity e) {
+		Property p = e.getProperty("Patient");
+		if (p != null && p.getType().endsWith(McEdmUtil.CT_PATIENT_NAME)) {
+			ComplexValue cv = (ComplexValue) p.getValue();
+			return getID(cv);
+		}
+		return null;
+	}
+
+	public static Integer getDoctorIDFromOrderEntity(Entity e) {
+		Property p = e.getProperty("Doctor");
+		if (p != null && p.getType().endsWith(McEdmUtil.CT_DOCTOR_NAME)) {
+			ComplexValue cv = (ComplexValue) p.getValue();
+			return getID(cv);
+		}
+		return null;
+	}
+
+	private static Integer getID(ComplexValue v) {
+		if (v != null && v.getValue() != null && v.getValue().size() > 0) {
+			for (Property p : v.getValue()) {
+				if ("ID".equals(p.getName())) {
+					return getInteger(p.getValue().toString());
+				}
+			}
+		}
+		return null;
+	}
+
+	private static Integer getInteger(String str) {
+		if (str != null) {
+			try {
+				Integer idValue = Integer.valueOf(str);
+				return idValue;
+			} catch (Exception exp) {
+				return null;
+			}
+
+		}
+		return null;
+
 	}
 
 }

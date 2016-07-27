@@ -55,12 +55,15 @@ public class McEdmUtil {
 	public static final String ES_ORDER_CONVS_NAME = "OrderConvs";
 
 	// Complex Type Names
-	public static final FullQualifiedName CT_DOCTOR_NAME = new FullQualifiedName(
-			NAMESPACE, "CTDoctor");
-	public static final FullQualifiedName CT_PATIENT_NAME = new FullQualifiedName(
-			NAMESPACE, "CTPatient");
-	public static final FullQualifiedName CT_ORDER_DETAIL_NAME = new FullQualifiedName(
-			NAMESPACE, "CTOrderDetail");
+	public static final String CT_DOCTOR_NAME = "CTDoctor";
+	public static final String CT_PATIENT_NAME = "CTPatient";
+	public static final String CT_ORDER_DETAIL_NAME = "CTOrderDetail";
+	public static final FullQualifiedName CT_DOCTOR_FQN = new FullQualifiedName(
+			NAMESPACE, CT_DOCTOR_NAME);
+	public static final FullQualifiedName CT_PATIENT_FQN = new FullQualifiedName(
+			NAMESPACE, CT_PATIENT_NAME);
+	public static final FullQualifiedName CT_ORDER_DETAIL_FQN = new FullQualifiedName(
+			NAMESPACE, CT_ORDER_DETAIL_NAME);
 
 	// Entity configurations
 	public static final Map<String, String> EntityToSetMap = new HashMap<String, String>();
@@ -75,9 +78,9 @@ public class McEdmUtil {
 		AllEntityTypeFQN.add(getEntityType(ET_ORDER_FQN));
 		AllEntityTypeFQN.add(getEntityType(ET_ORDER_CONV_FQN));
 
-		AllComplexTypeFQN.add(getComplexType(CT_DOCTOR_NAME));
-		AllComplexTypeFQN.add(getComplexType(CT_PATIENT_NAME));
-		AllComplexTypeFQN.add(getComplexType(CT_ORDER_DETAIL_NAME));
+		AllComplexTypeFQN.add(getComplexType(CT_DOCTOR_FQN));
+		AllComplexTypeFQN.add(getComplexType(CT_PATIENT_FQN));
+		AllComplexTypeFQN.add(getComplexType(CT_ORDER_DETAIL_FQN));
 
 		AllEntitySetFQN.add(getEntitySet(CONTAINER, ES_DOCTORS_NAME));
 		AllEntitySetFQN.add(getEntitySet(CONTAINER, ES_PATIENTS_NAME));
@@ -263,11 +266,11 @@ public class McEdmUtil {
 					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 
 			CsdlProperty patient = new CsdlProperty().setName("Patient")
-					.setType(CT_PATIENT_NAME);
+					.setType(CT_PATIENT_FQN);
 			CsdlProperty doctor = new CsdlProperty().setName("Doctor").setType(
-					CT_DOCTOR_NAME);
+					CT_DOCTOR_FQN);
 			CsdlProperty detail = new CsdlProperty().setName("Detail").setType(
-					CT_ORDER_DETAIL_NAME);
+					CT_ORDER_DETAIL_FQN);
 
 			List<CsdlNavigationProperty> navPropList = new ArrayList<CsdlNavigationProperty>();
 			CsdlNavigationProperty convs = new CsdlNavigationProperty()
@@ -356,20 +359,20 @@ public class McEdmUtil {
 
 	public static final CsdlComplexType getComplexType(
 			final FullQualifiedName complexTypeName) {
-		if (CT_DOCTOR_NAME.equals(complexTypeName)) {
+		if (CT_DOCTOR_FQN.equals(complexTypeName)) {
 			return new CsdlComplexType()
-					.setName(CT_DOCTOR_NAME.getName())
+					.setName(CT_DOCTOR_FQN.getName())
 					.setProperties(getEntityType(ET_DOCTOR_FQN).getProperties())
 					.setOpenType(true);
-		} else if (CT_PATIENT_NAME.equals(complexTypeName)) {
+		} else if (CT_PATIENT_FQN.equals(complexTypeName)) {
 			return new CsdlComplexType()
-					.setName(CT_PATIENT_NAME.getName())
+					.setName(CT_PATIENT_FQN.getName())
 					.setProperties(
 							getEntityType(ET_PATIENT_FQN).getProperties())
 					.setOpenType(true);
-		} else if (CT_ORDER_DETAIL_NAME.equals(complexTypeName)) {
+		} else if (CT_ORDER_DETAIL_FQN.equals(complexTypeName)) {
 			return new CsdlComplexType()
-					.setName(CT_ORDER_DETAIL_NAME.getName())
+					.setName(CT_ORDER_DETAIL_FQN.getName())
 					.setProperties(
 							getEntityType(ET_ORDER_DETAIL_FQN).getProperties())
 					.setOpenType(true);

@@ -29,8 +29,8 @@ public class OrderHeader implements Serializable {
 	private static final long serialVersionUID = 8176352130924072536L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE, generator = "order_header_gen")  
-	@SequenceGenerator(name = "order_header_gen", sequenceName = "order_header_gen", allocationSize = 1) 
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "order_header_gen")
+	@SequenceGenerator(name = "order_header_gen", sequenceName = "order_header_gen", allocationSize = 1)
 	@Column(name = "id")
 	private Integer id;
 
@@ -56,13 +56,13 @@ public class OrderHeader implements Serializable {
 	private String status;
 
 	@Column(name = "is_archived")
-	private int isArchived;
+	private String isArchived;
 
 	@Column(name = "is_enabled")
-	private int isEnabled;
+	private String isEnabled;
 
 	@Column(name = "is_deleted")
-	private int isDeleted;
+	private String isDeleted;
 
 	public Integer getId() {
 		return id;
@@ -104,30 +104,6 @@ public class OrderHeader implements Serializable {
 		this.status = status;
 	}
 
-	public int getIsArchived() {
-		return isArchived;
-	}
-
-	public void setIsArchived(int isArchived) {
-		this.isArchived = isArchived;
-	}
-
-	public int getIsEnabled() {
-		return isEnabled;
-	}
-
-	public void setIsEnabled(int isEnabled) {
-		this.isEnabled = isEnabled;
-	}
-
-	public int getIsDeleted() {
-		return isDeleted;
-	}
-
-	public void setIsDeleted(int isDeleted) {
-		this.isDeleted = isDeleted;
-	}
-
 	public List<OrderConversation> getOrderConversations() {
 		return orderConversations;
 	}
@@ -138,6 +114,30 @@ public class OrderHeader implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getIsArchived() {
+		return isArchived;
+	}
+
+	public void setIsArchived(String isArchived) {
+		this.isArchived = isArchived;
+	}
+
+	public String getIsEnabled() {
+		return isEnabled;
+	}
+
+	public void setIsEnabled(String isEnabled) {
+		this.isEnabled = isEnabled;
+	}
+
+	public String getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(String isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 
 }

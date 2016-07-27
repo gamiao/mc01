@@ -73,6 +73,9 @@ public class OverallServiceImpl implements OverallService {
 		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_PATIENTS_NAME)) {
 			return createEntity(edmEntitySet, edmEntityType, requestEntity,
 					rawServiceUri, odata, edm);
+		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_ORDERS_NAME)) {
+			return createEntity(edmEntitySet, edmEntityType, requestEntity,
+					rawServiceUri, odata, edm);
 		}
 
 		return null;
@@ -88,6 +91,9 @@ public class OverallServiceImpl implements OverallService {
 			return createEntity(edmEntitySet, edmEntityType, entityToCreate,
 					rawServiceUri, odata, edm);
 		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_PATIENTS_NAME)) {
+			return createEntity(edmEntitySet, edmEntityType, entityToCreate,
+					rawServiceUri, odata, edm);
+		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_ORDERS_NAME)) {
 			return createEntity(edmEntitySet, edmEntityType, entityToCreate,
 					rawServiceUri, odata, edm);
 		}
@@ -175,6 +181,9 @@ public class OverallServiceImpl implements OverallService {
 		} else if (newEntity.getType().equals(
 				McEdmUtil.ET_PATIENT_FQN.getFullQualifiedNameAsString())) {
 			return patientService.save(newEntity);
+		} else if (newEntity.getType().equals(
+				McEdmUtil.ET_ORDER_FQN.getFullQualifiedNameAsString())) {
+			return orderService.save(newEntity);
 		}
 		return null;
 	}

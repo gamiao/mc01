@@ -13,13 +13,13 @@ import org.apache.olingo.server.api.uri.UriParameter;
 
 public interface OverallService {
 
-	public Entity readEntityData(EdmEntitySet edmEntitySet,
+	Entity readEntityData(EdmEntitySet edmEntitySet,
 			List<UriParameter> keyParams) throws ODataApplicationException;
 
-	public EntityCollection findAll(EdmEntitySet edmEntitySet)
+	EntityCollection findAll(EdmEntitySet edmEntitySet)
 			throws ODataApplicationException;
 
-	public Entity createEntityData(ODataRequest request,
+	Entity createEntityData(ODataRequest request,
 			EdmEntitySet edmEntitySet, Entity requestEntity, OData odata,
 			ServiceMetadata edm) throws ODataApplicationException;
 

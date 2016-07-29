@@ -6,8 +6,8 @@ import com.ehealth.mc.bo.Patient;
 
 public interface PatientService {
 
-	Patient findById(Integer id);
+	Patient findById(Long id);
 
-	Patient save(Entity e, Patient originalObj);
+	Patient save(Entity e);
 
 }

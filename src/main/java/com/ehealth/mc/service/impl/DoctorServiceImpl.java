@@ -15,7 +15,7 @@ import com.ehealth.mc.service.DoctorService;
 import com.ehealth.mc.service.util.EntityConvertUtil;
 
 @Service("doctorService")
-@Transactional
+@Transactional(readOnly = true)
 public class DoctorServiceImpl implements DoctorService {
 
 	@Autowired
@@ -39,7 +39,7 @@ public class DoctorServiceImpl implements DoctorService {
 	}
 
 	@Override
-	public Doctor findById(Integer id) {
+	public Doctor findById(Long id) {
 		List<Doctor> resultList = doctorDAO.findById(id);
 		if (resultList != null && resultList.size() == 1) {
 			return resultList.get(0);
@@ -48,8 +48,9 @@ public class DoctorServiceImpl implements DoctorService {
 	}
 
 	@Override
-	public Doctor save(Entity e, Doctor originalObj) {
-		Doctor objToSave = EntityConvertUtil.getDoctor(e, originalObj);
+	@Transactional
+	public Doctor save(Entity e) {
+		Doctor objToSave = EntityConvertUtil.getDoctor(e);
 		if (objToSave != null) {
 			Doctor result = doctorDAO.save(objToSave);
 			if (result != null) {

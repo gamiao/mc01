@@ -14,17 +14,15 @@ import com.ehealth.mc.bo.Doctor;
 import com.ehealth.mc.bo.OrderDetail;
 import com.ehealth.mc.bo.OrderHeader;
 import com.ehealth.mc.bo.Patient;
-import com.ehealth.mc.dao.DoctorDAO;
 import com.ehealth.mc.dao.OrderDetailDAO;
 import com.ehealth.mc.dao.OrderHeaderDAO;
-import com.ehealth.mc.dao.PatientDAO;
 import com.ehealth.mc.service.DoctorService;
 import com.ehealth.mc.service.OrderService;
 import com.ehealth.mc.service.PatientService;
 import com.ehealth.mc.service.util.EntityConvertUtil;
 
 @Service("orderService")
-@Transactional
+@Transactional(readOnly = true)
 public class OrderServiceImpl implements OrderService {
 
 	@Autowired
@@ -58,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public OrderHeader findById(Integer id) {
+	public OrderHeader findById(Long id) {
 		List<OrderHeader> resultList = orderHeaderDAO.findById(id);
 		if (resultList != null && resultList.size() == 1) {
 			return resultList.get(0);
@@ -67,19 +65,20 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
+	@Transactional
 	public OrderHeader save(Entity e) {
 		Patient patient = null;
 		Doctor doctor = null;
 		OrderDetail orderDetail = null;
 
-		Integer patientID = EntityConvertUtil.getPatientIDFromOrderEntity(e);
+		Long patientID = EntityConvertUtil.getPatientIDFromOrderEntity(e);
 		if (patientID == null) {
 			return null;// Patient does not exist
 		} else {
 			patient = patientService.findById(patientID);
 		}
 
-		Integer doctorID = EntityConvertUtil.getDoctorIDFromOrderEntity(e);
+		Long doctorID = EntityConvertUtil.getDoctorIDFromOrderEntity(e);
 
 		if (doctorID != null) {
 			doctor = doctorService.findById(doctorID);

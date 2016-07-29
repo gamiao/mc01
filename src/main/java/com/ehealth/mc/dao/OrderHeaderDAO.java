@@ -10,6 +10,6 @@ import com.ehealth.mc.bo.OrderHeader;
 @Repository
 public interface OrderHeaderDAO extends CrudRepository<OrderHeader, Integer> {
 
-	List<OrderHeader> findById(Integer id);
+	List<OrderHeader> findById(Long id);
 
 }

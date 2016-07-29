@@ -10,6 +10,6 @@ import com.ehealth.mc.bo.OrderDetail;
 @Repository
 public interface OrderDetailDAO extends CrudRepository<OrderDetail, Integer> {
 
-	List<OrderDetail> findById(Integer id);
+	List<OrderDetail> findById(Long id);
 
 }

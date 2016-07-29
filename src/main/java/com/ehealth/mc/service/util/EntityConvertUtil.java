@@ -20,41 +20,33 @@ import com.ehealth.mc.bo.Patient;
 
 public class EntityConvertUtil {
 
-	public static Doctor getDoctor(Entity e, Doctor oldObj) {
+	public static Doctor getDoctor(Entity e) {
 		if (e != null) {
-			Doctor newObj = null;
-			if (oldObj != null) {
-				newObj = oldObj;
-			} else {
-				newObj = new Doctor();
-			}
-			newObj.setAddress(getPropertyStringValue(e, "Address"));
-			newObj.setAvatar(getPropertyStringValue(e, "Avatar"));
-			newObj.setBirthday(getPropertyStringValue(e, "Birthday"));
-			newObj.setChineseName(getPropertyStringValue(e, "Name"));
+			Doctor obj = null;
+			obj.setId(getID(e));
+			obj.setAddress(getPropertyStringValue(e, "Address"));
+			obj.setAvatar(getPropertyStringValue(e, "Avatar"));
+			obj.setBirthday(getPropertyStringValue(e, "Birthday"));
+			obj.setChineseName(getPropertyStringValue(e, "Name"));
 			// d.setGender(getPropertyStringValue("Gender"));
-			newObj.setMedicalLevel(getPropertyStringValue(e, "MedicalLevel"));
-			newObj.setMobile(getPropertyStringValue(e, "Mobile"));
-			return newObj;
+			obj.setMedicalLevel(getPropertyStringValue(e, "MedicalLevel"));
+			obj.setMobile(getPropertyStringValue(e, "Mobile"));
+			return obj;
 		}
 		return null;
 	}
 
-	public static Patient getPatient(Entity e, Patient oldObj) {
+	public static Patient getPatient(Entity e) {
 		if (e != null) {
-			Patient newObj = null;
-			if (oldObj != null) {
-				newObj = oldObj;
-			} else {
-				newObj = new Patient();
-			}
-			newObj.setAddress(getPropertyStringValue(e, "Address"));
-			newObj.setAvatar(getPropertyStringValue(e, "Avatar"));
-			newObj.setBirthday(getPropertyStringValue(e, "Birthday"));
-			newObj.setChineseName(getPropertyStringValue(e, "Name"));
+			Patient obj = new Patient();
+			obj.setId(getID(e));
+			obj.setAddress(getPropertyStringValue(e, "Address"));
+			obj.setAvatar(getPropertyStringValue(e, "Avatar"));
+			obj.setBirthday(getPropertyStringValue(e, "Birthday"));
+			obj.setChineseName(getPropertyStringValue(e, "Name"));
 			// d.setGender(getPropertyStringValue("Gender"));
-			newObj.setMobile(getPropertyStringValue(e, "Mobile"));
-			return newObj;
+			obj.setMobile(getPropertyStringValue(e, "Mobile"));
+			return obj;
 		}
 		return null;
 	}
@@ -74,13 +66,13 @@ public class EntityConvertUtil {
 		return null;
 	}
 
-	private static Integer getPropertyIntegerValue(Entity e, String propName) {
+	private static Long getPropertyLongValue(Entity e, String propName) {
 		if (e != null && e.getProperty(propName) != null) {
 			Property p = e.getProperty(propName);
 			if (p.getValue() != null) {
-				Integer integerValue = getInteger(p.getValue().toString());
-				if (integerValue != null) {
-					return integerValue.intValue();
+				Long longValue = getLong(p.getValue().toString());
+				if (longValue != null) {
+					return longValue.longValue();
 				}
 			}
 		}
@@ -280,7 +272,7 @@ public class EntityConvertUtil {
 			if (v != null && v.getValue() != null && v.getValue().size() > 0) {
 				for (Property p : v.getValue()) {
 					if ("ID".equals(p.getName())) {
-						d.setId(getInteger(p.getValue().toString()));
+						d.setId(getLong(p.getValue().toString()));
 					} else if ("Type".equals(p.getName())) {
 						d.setType((p.getValue().toString()));
 					} else if ("Title".equals(p.getName())) {
@@ -301,7 +293,7 @@ public class EntityConvertUtil {
 		if (e != null) {
 			OrderHeader d = new OrderHeader();
 			if (isValidId(getPropertyStringValue(e, "ID"))) {
-				d.setId(getInteger((getPropertyStringValue(e, "ID"))));
+				d.setId(getLong((getPropertyStringValue(e, "ID"))));
 			}
 			d.setStatus(getPropertyStringValue(e, "Status"));
 			d.setIsArchived(getPropertyStringValue(e, "IsArchived"));
@@ -320,7 +312,7 @@ public class EntityConvertUtil {
 		return null;
 	}
 
-	public static Integer getPatientIDFromOrderEntity(Entity e) {
+	public static Long getPatientIDFromOrderEntity(Entity e) {
 		Property p = e.getProperty("Patient");
 		if (p != null && p.getType().endsWith(McEdmUtil.CT_PATIENT_NAME)) {
 			ComplexValue cv = (ComplexValue) p.getValue();
@@ -329,7 +321,7 @@ public class EntityConvertUtil {
 		return null;
 	}
 
-	public static Integer getDoctorIDFromOrderEntity(Entity e) {
+	public static Long getDoctorIDFromOrderEntity(Entity e) {
 		Property p = e.getProperty("Doctor");
 		if (p != null && p.getType().endsWith(McEdmUtil.CT_DOCTOR_NAME)) {
 			ComplexValue cv = (ComplexValue) p.getValue();
@@ -338,25 +330,25 @@ public class EntityConvertUtil {
 		return null;
 	}
 
-	private static Integer getID(ComplexValue v) {
+	private static Long getID(ComplexValue v) {
 		if (v != null && v.getValue() != null && v.getValue().size() > 0) {
 			for (Property p : v.getValue()) {
 				if ("ID".equals(p.getName())) {
-					return getInteger(p.getValue().toString());
+					return getLong(p.getValue().toString());
 				}
 			}
 		}
 		return null;
 	}
 
-	public static Integer getID(Entity e) {
-		return getInteger((getPropertyStringValue(e, "ID")));
+	public static Long getID(Entity e) {
+		return getLong((getPropertyStringValue(e, "ID")));
 	}
 
-	public static Integer getInteger(String str) {
+	public static Long getLong(String str) {
 		if (str != null) {
 			try {
-				Integer idValue = Integer.valueOf(str);
+				Long idValue = Long.valueOf(str);
 				return idValue;
 			} catch (Exception exp) {
 				return null;

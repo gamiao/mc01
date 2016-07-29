@@ -10,7 +10,7 @@ public interface OrderService {
 
 	List<OrderHeader> findAll();
 
-	OrderHeader findById(Integer id);
+	OrderHeader findById(Long id);
 
 	OrderHeader save(Entity e);
 

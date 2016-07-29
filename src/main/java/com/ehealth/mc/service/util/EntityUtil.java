@@ -97,10 +97,10 @@ public class EntityUtil {
 		return null;
 	}
 
-	public static Integer getID(List<UriParameter> keyParams) {
+	public static Long getID(List<UriParameter> keyParams) {
 		if (keyParams != null && keyParams.size() > 0) {
 			String idText = getKeyText(keyParams, "ID");
-			Integer idIntValue = Integer.valueOf(idText);
+			Long idIntValue = Long.valueOf(idText);
 			return idIntValue;
 		}
 		return null;

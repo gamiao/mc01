@@ -20,11 +20,12 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.springframework.data.domain.Persistable;
 
 @Entity
 @Table(name = "order_header")
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-public class OrderHeader implements Serializable {
+public class OrderHeader implements Serializable, Persistable<Long> {
 
 	private static final long serialVersionUID = 8176352130924072536L;
 
@@ -32,7 +33,7 @@ public class OrderHeader implements Serializable {
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "order_header_gen")
 	@SequenceGenerator(name = "order_header_gen", sequenceName = "order_header_gen", allocationSize = 1)
 	@Column(name = "id")
-	private Integer id;
+	private Long id;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "d_id")
@@ -64,11 +65,11 @@ public class OrderHeader implements Serializable {
 	@Column(name = "is_deleted")
 	private String isDeleted;
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -138,6 +139,11 @@ public class OrderHeader implements Serializable {
 
 	public void setIsDeleted(String isDeleted) {
 		this.isDeleted = isDeleted;
+	}
+
+	@Override
+	public boolean isNew() {
+		return null == id;
 	}
 
 }

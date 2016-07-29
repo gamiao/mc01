@@ -2,6 +2,9 @@ package com.ehealth.mc.service.impl;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.apache.olingo.commons.api.data.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,14 +16,17 @@ import com.ehealth.mc.service.PatientService;
 import com.ehealth.mc.service.util.EntityConvertUtil;
 
 @Service("patientService")
-@Transactional
+@Transactional(readOnly = true)
 public class PatientServiceImpl implements PatientService {
+
+	@PersistenceContext
+	private EntityManager em;
 
 	@Autowired
 	PatientDAO patientDAO;
 
 	@Override
-	public Patient findById(Integer id) {
+	public Patient findById(Long id) {
 		List<Patient> resultList = patientDAO.findById(id);
 		if (resultList != null && resultList.size() == 1) {
 			return resultList.get(0);
@@ -29,13 +35,12 @@ public class PatientServiceImpl implements PatientService {
 	}
 
 	@Override
-	public Patient save(Entity e, Patient originalObj) {
-		Patient objToSave = EntityConvertUtil.getPatient(e, originalObj);
+	@Transactional
+	public Patient save(Entity e) {
+		Patient objToSave = EntityConvertUtil.getPatient(e);
 		if (objToSave != null) {
-			Patient result = patientDAO.save(objToSave);
-			if (result != null) {
-				return result;
-			}
+			patientDAO.save(objToSave);
+			return objToSave;
 		}
 		return null;
 	}

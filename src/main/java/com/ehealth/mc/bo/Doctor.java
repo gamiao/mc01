@@ -12,11 +12,12 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.domain.Persistable;
 
 @Entity
 @Table(name = "doctor")
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-public class Doctor implements Serializable {
+public class Doctor implements Serializable, Persistable<Long> {
 
 	private static final long serialVersionUID = -7997871599991354097L;
 
@@ -24,7 +25,7 @@ public class Doctor implements Serializable {
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "doctor_gen")
 	@SequenceGenerator(name = "doctor_gen", sequenceName = "doctor_gen", allocationSize = 1)
 	@Column(name = "id")
-	private Integer id;
+	private Long id;
 
 	@Column(name = "login")
 	private String login;
@@ -36,7 +37,7 @@ public class Doctor implements Serializable {
 	private String chineseName;
 
 	@Column(name = "gender")
-	private int gender;
+	private String gender;
 
 	@Column(name = "avatar")
 	private String avatar;
@@ -53,11 +54,11 @@ public class Doctor implements Serializable {
 	@Column(name = "medical_level")
 	private String medicalLevel;
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -77,11 +78,11 @@ public class Doctor implements Serializable {
 		this.chineseName = chineseName;
 	}
 
-	public int getGender() {
+	public String getGender() {
 		return gender;
 	}
 
-	public void setGender(int gender) {
+	public void setGender(String gender) {
 		this.gender = gender;
 	}
 
@@ -131,5 +132,10 @@ public class Doctor implements Serializable {
 
 	public void setLogin(String login) {
 		this.login = login;
+	}
+
+	@Override
+	public boolean isNew() {
+		return null == id;
 	}
 }

@@ -10,6 +10,6 @@ import com.ehealth.mc.bo.Patient;
 @Repository
 public interface PatientDAO extends CrudRepository<Patient, Integer> {
 
-	List<Patient> findById(Integer id);
+	List<Patient> findById(Long id);
 
 }

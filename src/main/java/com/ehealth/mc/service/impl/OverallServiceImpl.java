@@ -21,11 +21,9 @@ import org.apache.olingo.server.api.uri.UriParameter;
 import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.ehealth.mc.bo.Doctor;
 import com.ehealth.mc.bo.OrderHeader;
-import com.ehealth.mc.bo.Patient;
 import com.ehealth.mc.service.DoctorService;
 import com.ehealth.mc.service.OrderService;
 import com.ehealth.mc.service.OverallService;
@@ -35,7 +33,6 @@ import com.ehealth.mc.service.util.EntityUtil;
 import com.ehealth.mc.service.util.McEdmUtil;
 
 @Service("overallService")
-@Transactional
 public class OverallServiceImpl implements OverallService {
 
 	@Autowired
@@ -185,10 +182,10 @@ public class OverallServiceImpl implements OverallService {
 	private Entity createEntity(final Entity newEntity) {
 		if (newEntity.getType().equals(
 				McEdmUtil.ET_DOCTOR_FQN.getFullQualifiedNameAsString())) {
-			return EntityConvertUtil.getEntity(doctorService.save(newEntity, null));
+			return EntityConvertUtil.getEntity(doctorService.save(newEntity));
 		} else if (newEntity.getType().equals(
 				McEdmUtil.ET_PATIENT_FQN.getFullQualifiedNameAsString())) {
-			return EntityConvertUtil.getEntity(patientService.save(newEntity, null));
+			return EntityConvertUtil.getEntity(patientService.save(newEntity));
 		} else if (newEntity.getType().equals(
 				McEdmUtil.ET_ORDER_FQN.getFullQualifiedNameAsString())) {
 			return EntityConvertUtil.getEntity(orderService.save(newEntity));
@@ -199,25 +196,12 @@ public class OverallServiceImpl implements OverallService {
 	private Entity updateEntity(final Entity updateEntity) {
 		if (updateEntity.getType().equals(
 				McEdmUtil.ET_DOCTOR_FQN.getFullQualifiedNameAsString())) {
-
-			Doctor originalObj = null;
-			Integer originalID = EntityConvertUtil.getID(updateEntity);
-			if (originalID != null) {
-				originalObj = doctorService.findById(originalID);
-			}
-
-			return EntityConvertUtil.getEntity(doctorService.save(updateEntity,
-					originalObj));
+			return EntityConvertUtil
+					.getEntity(doctorService.save(updateEntity));
 		} else if (updateEntity.getType().equals(
 				McEdmUtil.ET_PATIENT_FQN.getFullQualifiedNameAsString())) {
-
-			Patient originalObj = null;
-			Integer originalID = EntityConvertUtil.getID(updateEntity);
-			if (originalID != null) {
-				originalObj = patientService.findById(originalID);
-			}
-			return EntityConvertUtil.getEntity(patientService.save(
-					updateEntity, originalObj));
+			return EntityConvertUtil.getEntity(patientService
+					.save(updateEntity));
 		} else if (updateEntity.getType().equals(
 				McEdmUtil.ET_ORDER_FQN.getFullQualifiedNameAsString())) {
 			return EntityConvertUtil.getEntity(orderService.save(updateEntity));
@@ -258,22 +242,22 @@ public class OverallServiceImpl implements OverallService {
 	public Entity readEntityData(EdmEntitySet edmEntitySet,
 			List<UriParameter> keyParams) throws ODataApplicationException {
 		if (edmEntitySet.getName().equals(McEdmUtil.ES_DOCTORS_NAME)) {
-			Integer idValue = EntityUtil.getID(keyParams);
+			Long idValue = EntityUtil.getID(keyParams);
 			if (idValue != null) {
 				return EntityConvertUtil.getEntity(doctorService
-						.findById(idValue.intValue()));
+						.findById(idValue.longValue()));
 			}
 		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_PATIENTS_NAME)) {
-			Integer idValue = EntityUtil.getID(keyParams);
+			Long idValue = EntityUtil.getID(keyParams);
 			if (idValue != null) {
 				return EntityConvertUtil.getEntity(patientService
-						.findById(idValue.intValue()));
+						.findById(idValue.longValue()));
 			}
 		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_ORDERS_NAME)) {
-			Integer idValue = EntityUtil.getID(keyParams);
+			Long idValue = EntityUtil.getID(keyParams);
 			if (idValue != null) {
 				return EntityConvertUtil.getEntity(orderService
-						.findById(idValue.intValue()));
+						.findById(idValue.longValue()));
 			}
 		}
 		return null;

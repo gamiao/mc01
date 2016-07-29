@@ -12,11 +12,12 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.domain.Persistable;
 
 @Entity
 @Table(name = "order_detail")
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-public class OrderDetail implements Serializable {
+public class OrderDetail implements Serializable, Persistable<Long> {
 
 	private static final long serialVersionUID = 7047335901689944237L;
 
@@ -24,7 +25,7 @@ public class OrderDetail implements Serializable {
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "order_detail_gen")
 	@SequenceGenerator(name = "order_detail_gen", sequenceName = "order_detail_gen", allocationSize = 1)
 	@Column(name = "id")
-	private Integer id;
+	private Long id;
 
 	@Column(name = "type")
 	private String type;
@@ -38,11 +39,11 @@ public class OrderDetail implements Serializable {
 	@Column(name = "pictures")
 	private String pictures;
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -76,6 +77,11 @@ public class OrderDetail implements Serializable {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	@Override
+	public boolean isNew() {
+		return null == id;
 	}
 
 }

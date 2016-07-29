@@ -10,8 +10,8 @@ public interface DoctorService {
 
 	List<Doctor> findAll();
 
-	Doctor findById(Integer id);
+	Doctor findById(Long id);
 
-	Doctor save(Entity e, Doctor originalObj);
+	Doctor save(Entity e);
 
 }

@@ -9,6 +9,7 @@ import org.apache.olingo.server.api.OData;
 import org.apache.olingo.server.api.ODataApplicationException;
 import org.apache.olingo.server.api.ODataRequest;
 import org.apache.olingo.server.api.ServiceMetadata;
+import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.api.uri.UriParameter;
 
 public interface OverallService {
@@ -16,7 +17,7 @@ public interface OverallService {
 	Entity readEntityData(EdmEntitySet edmEntitySet,
 			List<UriParameter> keyParams) throws ODataApplicationException;
 
-	EntityCollection findAll(EdmEntitySet edmEntitySet)
+	EntityCollection findAll(EdmEntitySet edmEntitySet, UriInfo uriInfo)
 			throws ODataApplicationException;
 
 	Entity createEntityData(ODataRequest request, EdmEntitySet edmEntitySet,

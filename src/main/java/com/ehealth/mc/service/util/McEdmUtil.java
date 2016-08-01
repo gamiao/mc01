@@ -141,6 +141,8 @@ public class McEdmUtil {
 					EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
 			CsdlProperty name = new CsdlProperty().setName("Name").setType(
 					EdmPrimitiveTypeKind.String.getFullQualifiedName());
+			CsdlProperty createTime = new CsdlProperty().setName("CreateTime")
+					.setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
 			CsdlProperty gender = new CsdlProperty().setName("Gender").setType(
 					EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty avatar = new CsdlProperty().setName("Avatar").setType(
@@ -164,8 +166,8 @@ public class McEdmUtil {
 			// configure EntityType
 			CsdlEntityType entityType = new CsdlEntityType();
 			entityType.setName(ES_DOCTORS_NAME);
-			entityType.setProperties(Arrays.asList(id, name, gender, avatar,
-					address, mobile, birthday, medicalLevel));
+			entityType.setProperties(Arrays.asList(id, name, createTime,
+					gender, avatar, address, mobile, birthday, medicalLevel));
 			entityType.setKey(Collections.singletonList(propertyRef));
 
 			return entityType;
@@ -174,6 +176,8 @@ public class McEdmUtil {
 					EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
 			CsdlProperty name = new CsdlProperty().setName("Name").setType(
 					EdmPrimitiveTypeKind.String.getFullQualifiedName());
+			CsdlProperty createTime = new CsdlProperty().setName("CreateTime")
+					.setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
 			CsdlProperty gender = new CsdlProperty().setName("Gender").setType(
 					EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty avatar = new CsdlProperty().setName("Avatar").setType(
@@ -194,8 +198,8 @@ public class McEdmUtil {
 			// configure EntityType
 			CsdlEntityType entityType = new CsdlEntityType();
 			entityType.setName(ES_PATIENTS_NAME);
-			entityType.setProperties(Arrays.asList(id, name, gender, avatar,
-					address, mobile, birthday));
+			entityType.setProperties(Arrays.asList(id, name, createTime,
+					gender, avatar, address, mobile, birthday));
 			entityType.setKey(Collections.singletonList(propertyRef));
 
 			return entityType;
@@ -204,6 +208,8 @@ public class McEdmUtil {
 					EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
 			CsdlProperty type = new CsdlProperty().setName("Type").setType(
 					EdmPrimitiveTypeKind.String.getFullQualifiedName());
+			CsdlProperty createTime = new CsdlProperty().setName("CreateTime")
+					.setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
 			CsdlProperty title = new CsdlProperty().setName("Title").setType(
 					EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty description = new CsdlProperty()
@@ -219,7 +225,7 @@ public class McEdmUtil {
 			// configure EntityType
 			CsdlEntityType entityType = new CsdlEntityType();
 			entityType.setName(ES_ORDER_DETAILS_NAME);
-			entityType.setProperties(Arrays.asList(id, type, title,
+			entityType.setProperties(Arrays.asList(id, type, createTime, title,
 					description, pictures));
 			entityType.setKey(Collections.singletonList(propertyRef));
 
@@ -229,6 +235,8 @@ public class McEdmUtil {
 					EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
 			CsdlProperty type = new CsdlProperty().setName("Type").setType(
 					EdmPrimitiveTypeKind.String.getFullQualifiedName());
+			CsdlProperty createTime = new CsdlProperty().setName("CreateTime")
+					.setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
 			CsdlProperty title = new CsdlProperty().setName("Title").setType(
 					EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty description = new CsdlProperty()
@@ -244,7 +252,7 @@ public class McEdmUtil {
 			// configure EntityType
 			CsdlEntityType entityType = new CsdlEntityType();
 			entityType.setName(ES_ORDER_CONVS_NAME);
-			entityType.setProperties(Arrays.asList(id, type, title,
+			entityType.setProperties(Arrays.asList(id, type, createTime, title,
 					description, pictures));
 			entityType.setKey(Collections.singletonList(propertyRef));
 
@@ -255,6 +263,8 @@ public class McEdmUtil {
 					EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
 			CsdlProperty status = new CsdlProperty().setName("Status").setType(
 					EdmPrimitiveTypeKind.String.getFullQualifiedName());
+			CsdlProperty createTime = new CsdlProperty().setName("CreateTime")
+					.setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
 			CsdlProperty isArchived = new CsdlProperty()
 					.setName("IsArchived")
 					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
@@ -285,8 +295,8 @@ public class McEdmUtil {
 			// configure EntityType
 			CsdlEntityType entityType = new CsdlEntityType();
 			entityType.setName(ES_ORDERS_NAME);
-			entityType.setProperties(Arrays.asList(id, status, isArchived,
-					isEnabled, isDeleted, patient, doctor, detail));
+			entityType.setProperties(Arrays.asList(id, status, createTime,
+					isArchived, isEnabled, isDeleted, patient, doctor, detail));
 			entityType.setKey(Collections.singletonList(propertyRef));
 			entityType.setNavigationProperties(navPropList);
 

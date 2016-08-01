@@ -2,6 +2,7 @@ package com.ehealth.mc.service.util;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.olingo.commons.api.Constants;
@@ -22,13 +23,17 @@ public class EntityConvertUtil {
 
 	public static Doctor getDoctor(Entity e) {
 		if (e != null) {
-			Doctor obj = null;
-			obj.setId(getID(e));
+			Doctor obj = new Doctor();
+			Long id = getID(e);
+			obj.setId(id);
+			if (id == null) {
+				obj.setCreateTime(new Date());
+			}
 			obj.setAddress(getPropertyStringValue(e, "Address"));
 			obj.setAvatar(getPropertyStringValue(e, "Avatar"));
 			obj.setBirthday(getPropertyStringValue(e, "Birthday"));
 			obj.setChineseName(getPropertyStringValue(e, "Name"));
-			// d.setGender(getPropertyStringValue("Gender"));
+			obj.setGender(getPropertyStringValue(e, "Gender"));
 			obj.setMedicalLevel(getPropertyStringValue(e, "MedicalLevel"));
 			obj.setMobile(getPropertyStringValue(e, "Mobile"));
 			return obj;
@@ -39,20 +44,20 @@ public class EntityConvertUtil {
 	public static Patient getPatient(Entity e) {
 		if (e != null) {
 			Patient obj = new Patient();
-			obj.setId(getID(e));
+			Long id = getID(e);
+			obj.setId(id);
+			if (id == null) {
+				obj.setCreateTime(new Date());
+			}
 			obj.setAddress(getPropertyStringValue(e, "Address"));
 			obj.setAvatar(getPropertyStringValue(e, "Avatar"));
 			obj.setBirthday(getPropertyStringValue(e, "Birthday"));
 			obj.setChineseName(getPropertyStringValue(e, "Name"));
-			// d.setGender(getPropertyStringValue("Gender"));
+			obj.setGender(getPropertyStringValue(e, "Gender"));
 			obj.setMobile(getPropertyStringValue(e, "Mobile"));
 			return obj;
 		}
 		return null;
-	}
-
-	private static boolean isValidId(String string) {
-		return false;
 	}
 
 	private static String getPropertyStringValue(Entity e, String propName) {
@@ -96,6 +101,8 @@ public class EntityConvertUtil {
 					.getMobile()));
 			e.addProperty(new Property(null, "Birthday", ValueType.PRIMITIVE, d
 					.getBirthday()));
+			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE,
+					d.getCreateTime()));
 			e.addProperty(new Property(null, "MedicalLevel",
 					ValueType.PRIMITIVE, d.getMedicalLevel()));
 			e.setId(EntityUtil.createId(McEdmUtil.ES_DOCTORS_NAME, d.getId()));
@@ -121,6 +128,8 @@ public class EntityConvertUtil {
 					.getMobile()));
 			e.addProperty(new Property(null, "Birthday", ValueType.PRIMITIVE, d
 					.getBirthday()));
+			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE,
+					d.getCreateTime()));
 			e.setId(EntityUtil.createId(McEdmUtil.ES_PATIENTS_NAME, d.getId()));
 			return e;
 		}
@@ -140,6 +149,8 @@ public class EntityConvertUtil {
 					ValueType.PRIMITIVE, d.getDescription()));
 			e.addProperty(new Property(null, "Pics", ValueType.PRIMITIVE, d
 					.getPictures()));
+			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE,
+					d.getCreateTime()));
 			e.setId(EntityUtil.createId(McEdmUtil.ES_ORDER_DETAILS_NAME,
 					d.getId()));
 			return e;
@@ -151,7 +162,7 @@ public class EntityConvertUtil {
 		if (objList != null && objList.size() > 0) {
 			List<Entity> entityList = new ArrayList<Entity>();
 			for (OrderHeader obj : objList) {
-				Entity entity = getEntity(obj);
+				Entity entity = getOrderEntityWithoutOrderConvs(obj);
 				if (entity != null) {
 					entityList.add(entity);
 				}
@@ -189,8 +200,58 @@ public class EntityConvertUtil {
 					ValueType.PRIMITIVE, d.getDescription()));
 			e.addProperty(new Property(null, "Pics", ValueType.PRIMITIVE, d
 					.getPictures()));
+			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE,
+					d.getCreateTime()));
 			e.setId(EntityUtil.createId(McEdmUtil.ES_ORDER_CONVS_NAME,
 					d.getId()));
+			return e;
+		}
+		return null;
+	}
+
+	public static Entity getOrderConvEntityByOrderDetail(OrderDetail d) {
+		if (d != null) {
+			Entity e = new Entity();
+			e.addProperty(new Property(null, "ID", ValueType.PRIMITIVE, d
+					.getId()));
+			e.addProperty(new Property(null, "Type", ValueType.PRIMITIVE, d
+					.getType()));
+			e.addProperty(new Property(null, "Title", ValueType.PRIMITIVE, d
+					.getTitle()));
+			e.addProperty(new Property(null, "Description",
+					ValueType.PRIMITIVE, d.getDescription()));
+			e.addProperty(new Property(null, "Pics", ValueType.PRIMITIVE, d
+					.getPictures()));
+			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE,
+					d.getCreateTime()));
+			e.setId(EntityUtil.createId(McEdmUtil.ES_ORDER_CONVS_NAME, 0));
+			return e;
+		}
+		return null;
+	}
+
+	public static Entity getOrderEntityWithoutOrderConvs(OrderHeader d) {
+		if (d != null) {
+			Entity e = new Entity();
+			e.addProperty(new Property(null, "ID", ValueType.PRIMITIVE, d
+					.getId()));
+			e.addProperty(new Property(null, "Status", ValueType.PRIMITIVE, d
+					.getStatus()));
+			e.addProperty(new Property(null, "IsArchived", ValueType.PRIMITIVE,
+					d.getIsArchived()));
+			e.addProperty(new Property(null, "IsEnabled", ValueType.PRIMITIVE,
+					d.getIsEnabled()));
+			e.addProperty(new Property(null, "IsDeleted", ValueType.PRIMITIVE,
+					d.getIsDeleted()));
+			e.addProperty(new Property(null, "Patient", ValueType.COMPLEX,
+					getComplexValue(getEntity(d.getPatient()))));
+			e.addProperty(new Property(null, "Doctor", ValueType.COMPLEX,
+					getComplexValue(getEntity(d.getDoctor()))));
+			e.addProperty(new Property(null, "Detail", ValueType.COMPLEX,
+					getComplexValue(getEntity(d.getOrderDetail()))));
+			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE,
+					d.getCreateTime()));
+			e.setId(EntityUtil.createId(McEdmUtil.ES_ORDERS_NAME, d.getId()));
 			return e;
 		}
 		return null;
@@ -215,8 +276,17 @@ public class EntityConvertUtil {
 					getComplexValue(getEntity(d.getDoctor()))));
 			e.addProperty(new Property(null, "Detail", ValueType.COMPLEX,
 					getComplexValue(getEntity(d.getOrderDetail()))));
+			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE,
+					d.getCreateTime()));
 
 			EntityCollection convs = new EntityCollection();
+			if (d.getOrderDetail() != null) {
+				Entity firstConv = getOrderConvEntityByOrderDetail(d
+						.getOrderDetail());
+				if (firstConv != null) {
+					convs.getEntities().add(firstConv);
+				}
+			}
 			if (d.getOrderConversations() != null) {
 				for (OrderConversation i : d.getOrderConversations()) {
 					if (i != null) {
@@ -229,7 +299,6 @@ public class EntityConvertUtil {
 			}
 			try {
 				convs.setId(new URI("OrderConvs"));
-
 			} catch (Exception ex) {
 
 			}
@@ -273,6 +342,10 @@ public class EntityConvertUtil {
 				for (Property p : v.getValue()) {
 					if ("ID".equals(p.getName())) {
 						d.setId(getLong(p.getValue().toString()));
+						if (d.getId() == null) {
+							d.setCreateTime(new Date());
+						}
+
 					} else if ("Type".equals(p.getName())) {
 						d.setType((p.getValue().toString()));
 					} else if ("Title".equals(p.getName())) {
@@ -292,8 +365,10 @@ public class EntityConvertUtil {
 	public static OrderHeader getOrderHeader(Entity e) {
 		if (e != null) {
 			OrderHeader d = new OrderHeader();
-			if (isValidId(getPropertyStringValue(e, "ID"))) {
-				d.setId(getLong((getPropertyStringValue(e, "ID"))));
+			Long id = getID(e);
+			d.setId(id);
+			if (id == null) {
+				d.setCreateTime(new Date());
 			}
 			d.setStatus(getPropertyStringValue(e, "Status"));
 			d.setIsArchived(getPropertyStringValue(e, "IsArchived"));

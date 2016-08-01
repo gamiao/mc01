@@ -1,6 +1,7 @@
 package com.ehealth.mc.bo;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,6 +33,9 @@ public class OrderDetail implements Serializable, Persistable<Long> {
 
 	@Column(name = "title")
 	private String title;
+	
+	@Column(name = "create_time")
+	private Date createTime;
 
 	@Column(name = "description")
 	private String description;
@@ -77,6 +81,14 @@ public class OrderDetail implements Serializable, Persistable<Long> {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 	@Override

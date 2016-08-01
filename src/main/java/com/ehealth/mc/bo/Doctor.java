@@ -1,6 +1,7 @@
 package com.ehealth.mc.bo;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -53,6 +54,9 @@ public class Doctor implements Serializable, Persistable<Long> {
 
 	@Column(name = "medical_level")
 	private String medicalLevel;
+	
+	@Column(name = "create_time")
+	private Date createTime;
 
 	public Long getId() {
 		return id;
@@ -132,6 +136,14 @@ public class Doctor implements Serializable, Persistable<Long> {
 
 	public void setLogin(String login) {
 		this.login = login;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 	@Override

@@ -1,7 +1,7 @@
-<ion-view title="订单详情-{{currentOrder.ID}}" id="historyDetail" class=" ">
+<ion-view title="历史订单（{{currentOrder.ID}}）" id="historyDetail" class=" ">
     <ion-content padding="true" class="has-header">
         <ion-list id="100345-list8" class=" ">
-            <ion-item class="item-avatar item-icon-right" id="100345-list-item6" ui-sref="mc-sidemenu.1003452">
+            <ion-item class="item-avatar item-icon-right" id="100345-list-item6" ui-sref="mc-sidemenu.historyConvsPage" ng-click="getConvs(currentOrder)" >
                 <img src="img/{{currentOrder.Doctor.Avatar}}">
                 <h2>应诊：{{currentOrder.Doctor.Name}}</h2>
                 <p>状态：{{currentOrder.Status}}</p>
@@ -34,6 +34,5 @@
         <div class="">
             <img src="img/4inGvTdPSsqxxWWWc9px_jiaohuai2.jpg" width="100%" height="auto" style="display: block; margin-left: auto; margin-right: auto;">
         </div>
-        <a ui-sref="mc-sidemenu.page7" id="100345-button8" class=" button button-balanced  button-block ">新建/编辑订单</a>
     </ion-content>
 </ion-view>

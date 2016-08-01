@@ -43,7 +43,8 @@ public class OrderServiceImpl implements OrderService {
 		List<OrderHeader> eList = new ArrayList<OrderHeader>();
 		if (orderHeaderDAO != null) {
 
-			Iterable<OrderHeader> result = orderHeaderDAO.findAll();
+			Iterable<OrderHeader> result = orderHeaderDAO
+					.findAll();
 			if (result != null) {
 				Iterator<OrderHeader> i = result.iterator();
 				while (i.hasNext()) {

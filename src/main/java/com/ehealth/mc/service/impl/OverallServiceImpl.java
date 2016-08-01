@@ -17,8 +17,10 @@ import org.apache.olingo.server.api.ODataApplicationException;
 import org.apache.olingo.server.api.ODataRequest;
 import org.apache.olingo.server.api.ServiceMetadata;
 import org.apache.olingo.server.api.deserializer.DeserializerException;
+import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.api.uri.UriParameter;
 import org.apache.olingo.server.api.uri.UriResourceEntitySet;
+import org.apache.olingo.server.api.uri.queryoption.FilterOption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,8 +47,11 @@ public class OverallServiceImpl implements OverallService {
 	private OrderService orderService;
 
 	@Override
-	public EntityCollection findAll(EdmEntitySet edmEntitySet) {
+	public EntityCollection findAll(EdmEntitySet edmEntitySet, UriInfo uriInfo) {
 		EntityCollection entityCollection = new EntityCollection();
+		
+		
+		
 		if (McEdmUtil.ES_DOCTORS_NAME.equals(edmEntitySet.getName())) {
 			List<Entity> entityList = entityCollection.getEntities();
 			List<Doctor> queryResult = doctorService.findAll();
@@ -54,6 +59,13 @@ public class OverallServiceImpl implements OverallService {
 					.getDoctorEntityList(queryResult));
 			return entityCollection;
 		} else if (McEdmUtil.ES_ORDERS_NAME.equals(edmEntitySet.getName())) {
+
+			FilterOption filterOption = null;
+			
+			if(uriInfo != null){
+				 filterOption = uriInfo.getFilterOption();
+			}
+			
 			List<Entity> entityList = entityCollection.getEntities();
 			List<OrderHeader> queryResult = orderService.findAll();
 			entityList

@@ -116,7 +116,7 @@ public class McEntityCollectionProcessor implements EntityCollectionProcessor {
 			EdmEntitySet edmEntitySet = uriResourceEntitySet.getEntitySet();
 
 			List<UriParameter> para = uriResourceEntitySet.getKeyPredicates();
-			responseEntitySet = getData(edmEntitySet);
+			responseEntitySet = getData(edmEntitySet, uriInfo);
 
 			edmEntityType = edmEntitySet.getEntityType();
 			ContextURL contextUrl = ContextURL.with().entitySet(edmEntitySet)
@@ -157,6 +157,8 @@ public class McEntityCollectionProcessor implements EntityCollectionProcessor {
 						.getProperty();
 				responseEntitySet = EntityUtil.getRelatedEntityCollection(
 						firstEntity, uriResourceNavigation);
+				edmEntitySet = EntityUtil.getNavigationTargetEntitySet(
+						startEdmEntitySet, edmNavigationProperty);
 				edmEntityType = edmEntitySet.getEntityType();
 				ContextURL contextUrl = ContextURL.with()
 						.entitySet(edmEntitySet).build();
@@ -179,9 +181,9 @@ public class McEntityCollectionProcessor implements EntityCollectionProcessor {
 				responseFormat.toContentTypeString());
 	}
 
-	private EntityCollection getData(EdmEntitySet edmEntitySet)
+	private EntityCollection getData(EdmEntitySet edmEntitySet, UriInfo uriInfo)
 			throws ODataApplicationException, SerializerException {
-		return overallService.findAll(edmEntitySet);
+		return overallService.findAll(edmEntitySet, uriInfo);
 	}
 
 	public void setOverallService(OverallService overallService) {

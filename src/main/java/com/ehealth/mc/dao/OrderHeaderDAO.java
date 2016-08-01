@@ -12,4 +12,7 @@ public interface OrderHeaderDAO extends CrudRepository<OrderHeader, Integer> {
 
 	List<OrderHeader> findById(Long id);
 
+	List<OrderHeader> findByStatusAndIsArchivedAndIsEnabledAndIsDeleted(
+			String status, String isArchived, String isEnabled, String isDeleted);
+
 }

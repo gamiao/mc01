@@ -10,103 +10,113 @@ angular.module('app.routes', [])
     
   
 
-      .state('side-menu21.page1', {
-    url: '/page1',
+      .state('mc-sidemenu.indexPage', {
+    url: '/indexPage',
     views: {
-      'side-menu21': {
-        templateUrl: 'templates/page1.html',
-        controller: 'page1Ctrl'
+      'mc-sidemenu': {
+        templateUrl: 'templates/indexPage.html',
+        controller: 'indexPageCtrl'
       }
     }
   })
 
-  .state('side-menu21.page2', {
+  .state('mc-sidemenu.page2', {
     url: '/page2',
     views: {
-      'side-menu21': {
+      'mc-sidemenu': {
         templateUrl: 'templates/page2.html',
         controller: 'page2Ctrl'
       }
     }
   })
 
-  .state('side-menu21.page3', {
-    url: '/page3',
+  .state('mc-sidemenu.historyOrderPage', {
+    url: '/historyOrderPage',
     views: {
-      'side-menu21': {
-        templateUrl: 'templates/page3.html',
-        controller: 'page3Ctrl'
+      'mc-sidemenu': {
+        templateUrl: 'templates/historyOrderPage.html',
+        controller: 'historyOrderPageCtrl'
       }
     }
   })
 
-  .state('side-menu21', {
-    url: '/side-menu21',
-    templateUrl: 'templates/side-menu21.html',
+  .state('mc-sidemenu', {
+    url: '/mc-sidemenu',
+    templateUrl: 'templates/mc-sidemenu.html',
     abstract:true
   })
 
-  .state('side-menu21.page4', {
+  .state('mc-sidemenu.page4', {
     url: '/page4',
     views: {
-      'side-menu21': {
+      'mc-sidemenu': {
         templateUrl: 'templates/page4.html',
         controller: 'page4Ctrl'
       }
     }
   })
 
-  .state('side-menu21.100345', {
-    url: '/page6',
+  .state('mc-sidemenu.historyDetailPage', {
+    url: '/historyDetailPage',
     views: {
-      'side-menu21': {
-        templateUrl: 'templates/100345.html',
-        controller: '100345Ctrl'
+      'mc-sidemenu': {
+        templateUrl: 'templates/historyDetailPage.html',
+        controller: 'historyDetailPageCtrl'
       }
     }
   })
 
-  .state('side-menu21.page7', {
+  .state('mc-sidemenu.page7', {
     url: '/page7',
     views: {
-      'side-menu21': {
+      'mc-sidemenu': {
         templateUrl: 'templates/page7.html',
         controller: 'page7Ctrl'
       }
     }
   })
 
-  .state('side-menu21.page8', {
+  .state('mc-sidemenu.page8', {
     url: '/page8',
     views: {
-      'side-menu21': {
+      'mc-sidemenu': {
         templateUrl: 'templates/page8.html',
         controller: 'page8Ctrl'
       }
     }
   })
 
-  .state('side-menu21.1003452', {
-    url: '/page10',
+  .state('mc-sidemenu.1003452', {
+    url: '/indexPage0',
     views: {
-      'side-menu21': {
+      'mc-sidemenu': {
         templateUrl: 'templates/1003452.html',
         controller: '1003452Ctrl'
       }
     }
   })
 
-  .state('side-menu21.1003453', {
+  .state('mc-sidemenu.historyConvsPage', {
+    url: '/historyConvsPage',
+    views: {
+      'mc-sidemenu': {
+        templateUrl: 'templates/historyConvsPage.html',
+        controller: 'historyConvsPageCtrl'
+      }
+    }
+  })
+
+  .state('mc-sidemenu.1003453', {
     url: '/page9',
     views: {
-      'side-menu21': {
+      'mc-sidemenu': {
         templateUrl: 'templates/1003453.html',
         controller: '1003453Ctrl'
       }
     }
   })
 
-$urlRouterProvider.otherwise('/side-menu21/page1')
+$urlRouterProvider.otherwise('/mc-sidemenu/indexPage')
 
   
 

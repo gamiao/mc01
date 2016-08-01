@@ -1,21 +1,47 @@
 angular.module('app.controllers', [])
 
-.controller("MyController",function($scope,$odataresource){
+.service('urlService', [function(){
+	this.baseURL = "/mc01/McService.svc/";
+}])
+
+.service('orderService', [function(){
+	this.currentOrder;
+}])
+   
+.controller('historyOrderPageCtrl', function($scope,$odataresource, $stateParams, urlService ,orderService) {	
     $scope.results = 
-        $odataresource("http://localhost:58080/mc01/McService.svc/Orders")
+        $odataresource(urlService.baseURL  + "Orders")
         .odata()
         .query();
+
+  $scope.getDetail=function(ObjectData){
+	orderService.currentOrder=ObjectData;
+  }
+})
+   
+.controller('historyDetailPageCtrl', function($scope,$odataresource, $stateParams, urlService ,orderService) {		
+  $scope.currentOrder=orderService.currentOrder;
+  $scope.getConvs=function(ObjectData){
+	orderService.currentOrder=ObjectData;
+  }
+})
+   
+.controller('historyConvsPageCtrl', function($scope,$odataresource, $stateParams, urlService ,orderService) {	
+	if(orderService.currentOrder !== null && orderService.currentOrder.ID !== null){
+    $scope.orderConvs = 
+        $odataresource(urlService.baseURL  + "Orders("+ orderService.currentOrder.ID+")/OrderConvs")
+        .odata()
+        .query();
+	}
+	$scope.currentOrder=orderService.currentOrder;
+
 })
 
-.controller('page1Ctrl', function($scope) {
+.controller('indexPageCtrl', function($scope) {
 
 })
    
 .controller('page2Ctrl', function($scope) {
-
-})
-   
-.controller('page3Ctrl', function($scope) {
 
 })
       
@@ -27,8 +53,7 @@ angular.module('app.controllers', [])
 
 })
    
-.controller('page7Ctrl', function($scope) {
-
+.controller('page7Ctrl', function($scope,$odataresource, $stateParams, orderService) {
 })
    
 .controller('page8Ctrl', function($scope) {

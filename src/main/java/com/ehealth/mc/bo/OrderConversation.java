@@ -1,6 +1,7 @@
 package com.ehealth.mc.bo;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -42,6 +43,9 @@ public class OrderConversation implements Serializable, Persistable<Long> {
 
 	@Column(name = "pictures")
 	private String pictures;
+	
+	@Column(name = "create_time")
+	private Date createTime;
 
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "oh_id", referencedColumnName = "id")
@@ -93,6 +97,14 @@ public class OrderConversation implements Serializable, Persistable<Long> {
 
 	public void setOrderHeader(OrderHeader orderHeader) {
 		this.orderHeader = orderHeader;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 	@Override

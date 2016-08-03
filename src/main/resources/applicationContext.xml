@@ -40,7 +40,7 @@
 				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
 				<prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
 				<prop key="hibernate.cache.region.factory_class">${hibernate.cache.region.factory_class}</prop>
-				<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop> 
+				<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
 				<!-- prop key="hibernate.cache.provider_configuration_file_resource_path">ehcache.xml</prop -->
 			</props>
 		</property>
@@ -68,6 +68,14 @@
 	<!-- JSR303 Validator定义 -->
 	<bean id="validator"
 		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- max upload size in bytes -->
+		<property name="maxUploadSize" value="6000000" /> <!-- 5MB -->
+		<!-- max size of file in memory (in bytes) -->
+		<property name="maxInMemorySize" value="6000000" /> <!-- 5MB -->
+	</bean>
 
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
 		<property name="driverClass" value="${dataSource.className}" />

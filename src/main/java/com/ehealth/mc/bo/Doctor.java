@@ -43,6 +43,9 @@ public class Doctor implements Serializable, Persistable<Long> {
 	@Column(name = "avatar")
 	private String avatar;
 
+	@Column(name = "mail")
+	private String mail;
+
 	@Column(name = "address")
 	private String address;
 
@@ -144,6 +147,14 @@ public class Doctor implements Serializable, Persistable<Long> {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public String getMail() {
+		return mail;
+	}
+
+	public void setMail(String mail) {
+		this.mail = mail;
 	}
 
 	@Override

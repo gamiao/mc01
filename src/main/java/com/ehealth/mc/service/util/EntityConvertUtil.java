@@ -30,6 +30,7 @@ public class EntityConvertUtil {
 				obj.setCreateTime(new Date());
 			}
 			obj.setAddress(getPropertyStringValue(e, "Address"));
+			obj.setMail(getPropertyStringValue(e, "Mail"));
 			obj.setAvatar(getPropertyStringValue(e, "Avatar"));
 			obj.setBirthday(getPropertyStringValue(e, "Birthday"));
 			obj.setChineseName(getPropertyStringValue(e, "Name"));
@@ -50,6 +51,7 @@ public class EntityConvertUtil {
 				obj.setCreateTime(new Date());
 			}
 			obj.setAddress(getPropertyStringValue(e, "Address"));
+			obj.setMail(getPropertyStringValue(e, "Mail"));
 			obj.setAvatar(getPropertyStringValue(e, "Avatar"));
 			obj.setBirthday(getPropertyStringValue(e, "Birthday"));
 			obj.setChineseName(getPropertyStringValue(e, "Name"));
@@ -89,6 +91,8 @@ public class EntityConvertUtil {
 			Entity e = new Entity();
 			e.addProperty(new Property(null, "ID", ValueType.PRIMITIVE, d
 					.getId()));
+			e.addProperty(new Property(null, "Login", ValueType.PRIMITIVE, d
+					.getLogin()));
 			e.addProperty(new Property(null, "Name", ValueType.PRIMITIVE, d
 					.getChineseName()));
 			e.addProperty(new Property(null, "Gender", ValueType.PRIMITIVE, d
@@ -99,6 +103,8 @@ public class EntityConvertUtil {
 					.getAddress()));
 			e.addProperty(new Property(null, "Mobile", ValueType.PRIMITIVE, d
 					.getMobile()));
+			e.addProperty(new Property(null, "Mail", ValueType.PRIMITIVE, d
+					.getMail()));
 			e.addProperty(new Property(null, "Birthday", ValueType.PRIMITIVE, d
 					.getBirthday()));
 			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE,
@@ -116,6 +122,8 @@ public class EntityConvertUtil {
 			Entity e = new Entity();
 			e.addProperty(new Property(null, "ID", ValueType.PRIMITIVE, d
 					.getId()));
+			e.addProperty(new Property(null, "Login", ValueType.PRIMITIVE, d
+					.getLogin()));
 			e.addProperty(new Property(null, "Name", ValueType.PRIMITIVE, d
 					.getChineseName()));
 			e.addProperty(new Property(null, "Gender", ValueType.PRIMITIVE, d
@@ -126,6 +134,8 @@ public class EntityConvertUtil {
 					.getAddress()));
 			e.addProperty(new Property(null, "Mobile", ValueType.PRIMITIVE, d
 					.getMobile()));
+			e.addProperty(new Property(null, "Mail", ValueType.PRIMITIVE, d
+					.getMail()));
 			e.addProperty(new Property(null, "Birthday", ValueType.PRIMITIVE, d
 					.getBirthday()));
 			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE,

@@ -46,12 +46,12 @@ angular.module('app.routes', [])
     abstract:true
   })
 
-  .state('mc-sidemenu.page4', {
-    url: '/page4',
+  .state('mc-sidemenu.patientInfoPage', {
+    url: '/patientInfoPage',
     views: {
       'mc-sidemenu': {
-        templateUrl: 'templates/page4.html',
-        controller: 'page4Ctrl'
+        templateUrl: 'templates/patientInfoPage.html',
+        controller: 'patientInfoPageCtrl'
       }
     }
   })
@@ -76,12 +76,12 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('mc-sidemenu.page8', {
-    url: '/page8',
+  .state('mc-sidemenu.patientUpdatePage', {
+    url: '/patientUpdatePage',
     views: {
       'mc-sidemenu': {
-        templateUrl: 'templates/page8.html',
-        controller: 'page8Ctrl'
+        templateUrl: 'templates/patientUpdatePage.html',
+        controller: 'patientUpdatePageCtrl'
       }
     }
   })

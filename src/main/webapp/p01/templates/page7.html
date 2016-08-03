@@ -1,9 +1,16 @@
-<ion-view title="新建/编辑订单" id="page7" class=" ">
-    <ion-content padding="true" class="has-header" ng-controller="orderResult as order">
+<ion-view title="新建订单" id="page7" class=" ">
+    <ion-content padding="true" class="has-header" >
         <form id="page7-form4" class="list " >
             <label class="item item-input " id="page7-input9">
                 <span class="input-label">患者姓名</span>
                 <input type="text" placeholder="老王">
+            </label>
+			<label class="item item-select " id="patientUpdatePage-select1">
+                <span class="input-label">性别：</span>
+                <select>
+                    <option>女</option>
+                    <option>男</option>
+                </select>
             </label>
             <ion-toggle toggle-class="toggle-positive" ng-checked="true" id="page7-toggle4" class=" ">性别（男）</ion-toggle>
             <label class="item item-input " id="page7-input11">
@@ -14,8 +21,8 @@
                 <span class="input-label">手机号码</span>
                 <input type="tel" placeholder="18812345678">
             </label>
-            <label class="item item-input " id="page7-textarea1">
-                <span class="input-label">病情描述</span><textarea placeholder="这两天很肿胀，晚上睡不好觉，请问有什么止痛药可以服用推荐？"> 这两天很肿胀，晚上睡不好觉，请问有什么止痛药可以服用推荐？</textarea>
+            <label class="item item-input " id="page7-textarea1" height="100%">
+                <span class="input-label">病情描述</span></br><textarea placeholder="这两天很肿胀，晚上睡不好觉，请问有什么止痛药可以服用推荐？"> 这两天很肿胀，晚上睡不好觉，请问有什么止痛药可以服用推荐？</textarea>
             </label>
         </form>
         <a ui-sref="side-menu21.100345" id="page7-button10" class=" button button-positive  button-block ">新建/编辑</a>

@@ -29,7 +29,6 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
-	<!-- Our OData service can be invoked at http://localhost:8080/McService/McService.svc -->
 	<servlet-mapping>
 		<servlet-name>McServlet</servlet-name>
 		<url-pattern>/McService.svc/*</url-pattern>
@@ -52,6 +51,20 @@
 	<servlet-mapping>
 		<servlet-name>H2Console</servlet-name>
 		<url-pattern>/H2Console/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>springServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/classes/applicationContext.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springServlet</servlet-name>
+		<url-pattern>/spring/*</url-pattern>
 	</servlet-mapping>
 
 

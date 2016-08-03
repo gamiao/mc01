@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ehealth.mc.bo.Doctor;
+import com.ehealth.mc.bo.Patient;
 import com.ehealth.mc.dao.DoctorDAO;
 import com.ehealth.mc.service.DoctorService;
 import com.ehealth.mc.service.util.EntityConvertUtil;
@@ -56,6 +57,16 @@ public class DoctorServiceImpl implements DoctorService {
 			if (result != null) {
 				return result;
 			}
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public Doctor updateAvatar(String avatar, Long id) {
+		int updatedCount = doctorDAO.setAvatar(avatar, id);
+		if (updatedCount > 0) {
+			return findById(id);
 		}
 		return null;
 	}

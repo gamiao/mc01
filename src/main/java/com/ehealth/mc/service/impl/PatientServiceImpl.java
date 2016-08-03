@@ -45,4 +45,14 @@ public class PatientServiceImpl implements PatientService {
 		return null;
 	}
 
+	@Override
+	@Transactional
+	public Patient updateAvatar(String avatar, Long id) {
+		int updatedCount = patientDAO.setAvatar(avatar, id);
+		if (updatedCount > 0) {
+			return findById(id);
+		}
+		return null;
+	}
+
 }

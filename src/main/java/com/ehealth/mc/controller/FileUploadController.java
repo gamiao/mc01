@@ -1,13 +1,9 @@
 package com.ehealth.mc.controller;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.stream.Collectors;
 
 import javax.servlet.ServletContext;
 
@@ -16,97 +12,78 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.ehealth.mc.service.OverallService;
+import com.ehealth.mc.service.util.FormatUtil;
 
 @Controller
 public class FileUploadController {
 
-	private static final Logger log = LoggerFactory.getLogger(FileUploadController.class);
-	
-	@Autowired 
+	private static final Logger log = LoggerFactory
+			.getLogger(FileUploadController.class);
+
+	@Autowired
 	private ServletContext servletContext;
+
+	@Autowired
+	private OverallService overallService;
 
 	public static final String UPLOAD_ROOT = "uploadedImg";
 
 	private final ResourceLoader resourceLoader;
 
 	@Autowired
-	public FileUploadController(ResourceLoader resourceLoader) {		
-		if(!Paths.get(UPLOAD_ROOT).toFile().exists()){
-			Paths.get(UPLOAD_ROOT).toFile().mkdirs();
-		}
+	public FileUploadController(ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/uploadedImg/")
-	public String provideUploadInfo(Model model) throws IOException {
-
-		model.addAttribute("files", Files.walk(Paths.get(UPLOAD_ROOT))
-				.filter(path -> !path.equals(Paths.get(UPLOAD_ROOT)))
-				.map(path -> Paths.get(UPLOAD_ROOT).relativize(path))
-				.map(path -> linkTo(methodOn(FileUploadController.class).getFile(path.toString())).withRel(path.toString()))
-				.collect(Collectors.toList()));
-
-		return "uploadForm";
-	}
-
-	@RequestMapping(method = RequestMethod.GET, value = "/uploadedImg/{filename:.+}")
-	@ResponseBody
-	public ResponseEntity<?> getFile(@PathVariable String filename) {
-
-		try {
-			return ResponseEntity.ok(resourceLoader.getResource("file:" + Paths.get(UPLOAD_ROOT, filename).toString()));
-		} catch (Exception e) {
-			return ResponseEntity.notFound().build();
+	private File getUploadRootDir() {
+		String base = servletContext.getRealPath("/");
+		File dir = new File(base + File.separator + UPLOAD_ROOT);
+		if (!dir.exists()) {
+			dir.mkdirs();
 		}
+		return dir;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/uploadImg")
-	public String handleFileUpload(@RequestParam("file") MultipartFile file) {
-
+	@RequestMapping(method = RequestMethod.POST, value = "/uploadImg/{entityType}/{entityID}/{method}")
+	public String handleFileUpload(@PathVariable String entityType,
+			@PathVariable String entityID, @PathVariable String method,
+			@RequestParam("file") MultipartFile file) {
 		try {
-			
-            String fileName = FilenameUtils.getName(file.getOriginalFilename());
+			File uploadDir = getUploadRootDir();
 
-            String extension = FilenameUtils.getExtension(fileName);
+			String fileName = FilenameUtils.getName(file.getOriginalFilename());
+			String fileExtension = FilenameUtils.getExtension(fileName);
+			String fileNameNoExtension = FilenameUtils
+					.removeExtension(fileName);
 
-            String base = servletContext.getRealPath("/");
+			File targetFile = new File(uploadDir.getAbsolutePath()
+					+ File.separator + fileName);
 
-            File dir = new File(base + File.separator + UPLOAD_ROOT);                
+			if (targetFile.exists()) {
+				fileName = fileNameNoExtension + FormatUtil.getFileSuffix()
+						+ FilenameUtils.EXTENSION_SEPARATOR_STR + fileExtension;
+				targetFile = new File(uploadDir.getAbsolutePath()
+						+ File.separator + fileName);
+			}
 
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
+			long fileSize = Files.copy(file.getInputStream(),
+					Paths.get(targetFile.getAbsolutePath()));
 
-//            Date date = new Date();
-//            String year = DateTimeUtility.getInstance().getYear(date);
-//            String month = DateTimeUtility.getInstance().getMonth(date);
-//            String uniqueFileName = DateTimeUtility.getInstance().getDateTime(date);
-//
-//            File dateDir = new File(base + File.separator + UPLOAD_ROOT + File.separator + year + File.separator + month);
-//
-//            if (!dateDir.exists()) {
-//                dateDir.mkdirs();
-//            }
-//
-//            File uploadedFile = new File(dateDir.getAbsolutePath() + File.separator + uniqueFileName + WordCollections.UNDERBAR +  fileName);
-//			
-			
-			
-			
-			Files.copy(file.getInputStream(),
-					Paths.get(dir.getAbsolutePath(), file.getOriginalFilename()));
+			if (fileSize > 0) {
+				overallService.updateEntityAfterFileUploaded(entityType,
+						entityID, method, fileName);
+			}
+
 		} catch (IOException | RuntimeException e) {
 		}
-
 		return null;
 	}
 

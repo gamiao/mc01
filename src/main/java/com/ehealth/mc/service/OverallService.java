@@ -11,6 +11,7 @@ import org.apache.olingo.server.api.ODataRequest;
 import org.apache.olingo.server.api.ServiceMetadata;
 import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.api.uri.UriParameter;
+import org.springframework.web.bind.annotation.PathVariable;
 
 public interface OverallService {
 
@@ -27,5 +28,8 @@ public interface OverallService {
 	void updateEntityData(ODataRequest request, List<UriParameter> keyParams,
 			EdmEntitySet edmEntitySet, Entity requestEntity, OData odata,
 			ServiceMetadata edm) throws ODataApplicationException;
+
+	String updateEntityAfterFileUploaded(String entityType, String entityID,
+			String method, String fileName);
 
 }

@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import com.ehealth.mc.bo.Doctor;
 import com.ehealth.mc.bo.OrderHeader;
+import com.ehealth.mc.bo.Patient;
 import com.ehealth.mc.service.DoctorService;
 import com.ehealth.mc.service.OrderService;
 import com.ehealth.mc.service.OverallService;
@@ -49,9 +50,7 @@ public class OverallServiceImpl implements OverallService {
 	@Override
 	public EntityCollection findAll(EdmEntitySet edmEntitySet, UriInfo uriInfo) {
 		EntityCollection entityCollection = new EntityCollection();
-		
-		
-		
+
 		if (McEdmUtil.ES_DOCTORS_NAME.equals(edmEntitySet.getName())) {
 			List<Entity> entityList = entityCollection.getEntities();
 			List<Doctor> queryResult = doctorService.findAll();
@@ -61,11 +60,11 @@ public class OverallServiceImpl implements OverallService {
 		} else if (McEdmUtil.ES_ORDERS_NAME.equals(edmEntitySet.getName())) {
 
 			FilterOption filterOption = null;
-			
-			if(uriInfo != null){
-				 filterOption = uriInfo.getFilterOption();
+
+			if (uriInfo != null) {
+				filterOption = uriInfo.getFilterOption();
 			}
-			
+
 			List<Entity> entityList = entityCollection.getEntities();
 			List<OrderHeader> queryResult = orderService.findAll();
 			entityList
@@ -340,5 +339,29 @@ public class OverallServiceImpl implements OverallService {
 		}
 
 		updateEntity(entity);
+	}
+
+	@Override
+	public String updateEntityAfterFileUploaded(String entityType,
+			String entityID, String method, String fileName) {
+		Long entityLongID = EntityConvertUtil.getLong(entityID);
+		if (entityType != null && entityLongID != null) {
+
+			if (entityType.equals("Patient")) {
+				Patient targetPatient = patientService.updateAvatar(fileName,
+						entityLongID);
+
+			} else if (entityType.equals("Doctor")) {
+				Doctor targetPatient = doctorService.updateAvatar(fileName,
+						entityLongID);
+
+			} else if (entityType.equals("OrderConv")) {
+
+			}
+
+		}
+
+		return null;
+
 	}
 }

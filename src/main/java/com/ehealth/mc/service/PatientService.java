@@ -10,4 +10,6 @@ public interface PatientService {
 
 	Patient save(Entity e);
 
+	Patient updateAvatar(String avatar, Long id);
+
 }

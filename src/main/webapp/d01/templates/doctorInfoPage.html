@@ -1,0 +1,35 @@
+<ion-view title="个人资料" id="doctorInfoPage" class=" ">
+    <ion-content padding="true" class="has-header">
+	    <div class="item item-body " id="doctorUpdatePage-list-item-container1">
+            <div>
+                <img src="../uploadedImg/{{doctor.Avatar}}" style="display: block; 
+		width: 50%;
+		height: 50%; margin-left: auto; margin-right: auto; 
+		border-radius: 50%;">
+            </div>
+			<div id="doctorInfoPage-markdown1" style="color:#000000;" class=" ">
+				<p>
+					<strong>用户名：</strong>{{doctor.Login}}</p>
+
+				<p>
+					<strong>医生姓名：</strong>{{doctor.Name}}</p>
+
+				<p>
+					<strong>性别：</strong>{{doctor.Gender}}</p>
+
+				<p>
+					<strong>住址：</strong>{{doctor.Address}}</p>
+
+				<p>
+					<strong>邮箱：</strong>{{doctor.Mail}}</p>
+
+				<p>
+					<strong>出生日期：</strong>{{doctor.Birthday}}</p>
+
+				<p>
+					<strong>手机号码：</strong>{{doctor.Mobile}}</p>
+			</div>
+        </div>
+        <a ui-sref="d-sm.doctorUpdatePage" id="doctorInfoPage-button7" class=" button button-positive  button-block ">更新</a>
+    </ion-content>
+</ion-view>

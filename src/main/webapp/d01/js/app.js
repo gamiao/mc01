@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services', 'app.directives'])
+angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services', 'app.directives','ODataResources'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -21,3 +21,17 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services',
     }
   });
 })
+
+/*
+var myModule = angular.module("MyModule",['ODataResources']);
+myModule.controller("MyController",function($scope,$odataresource){
+    $scope.results = 
+        $odataresource("http://services.odata.org/V4/Northwind/Northwind.svc/Products")
+        .odata()
+        .filter('UnitPrice','>',10)
+        .filter('Discontinued',true)
+        .orderBy('UnitsInStock','asc')
+        .expand('Category')
+        .query();
+});
+*/

@@ -10,129 +10,123 @@ angular.module('app.routes', [])
     
   
 
-      .state('side-menu21.page1', {
-    url: '/page1',
+      .state('d-sm.indexPage', {
+    url: '/indexPage',
     views: {
-      'side-menu21': {
-        templateUrl: 'templates/page1.html',
-        controller: 'page1Ctrl'
+      'd-sm': {
+        templateUrl: 'templates/indexPage.html',
+        controller: 'indexPageCtrl'
       }
     }
   })
 
-  .state('side-menu21.page2', {
-    url: '/page2',
+  .state('d-sm.openOrderPage', {
+    url: '/openOrderPage',
     views: {
-      'side-menu21': {
-        templateUrl: 'templates/page2.html',
-        controller: 'page2Ctrl'
+      'd-sm': {
+        templateUrl: 'templates/openOrderPage.html',
+        controller: 'openOrderPageCtrl'
       }
     }
   })
 
-  .state('side-menu21.page13', {
-    url: '/page13',
+  .state('d-sm.historyOrderPage', {
+    url: '/historyOrderPage',
     views: {
-      'side-menu21': {
-        templateUrl: 'templates/page13.html',
-        controller: 'page13Ctrl'
+      'd-sm': {
+        templateUrl: 'templates/historyOrderPage.html',
+        controller: 'historyOrderPageCtrl'
       }
     }
   })
 
-  .state('side-menu21.page3', {
-    url: '/page3',
-    views: {
-      'side-menu21': {
-        templateUrl: 'templates/page3.html',
-        controller: 'page3Ctrl'
-      }
-    }
-  })
-
-  .state('side-menu21', {
-    url: '/side-menu21',
-    templateUrl: 'templates/side-menu21.html',
+  .state('d-sm', {
+    url: '/d-sm',
+    templateUrl: 'templates/d-sm.html',
     abstract:true
   })
 
-  .state('side-menu21.page4', {
-    url: '/page4',
+  .state('d-sm.doctorInfoPage', {
+    url: '/doctorInfoPage',
     views: {
-      'side-menu21': {
-        templateUrl: 'templates/page4.html',
-        controller: 'page4Ctrl'
+      'd-sm': {
+        templateUrl: 'templates/doctorInfoPage.html',
+        controller: 'doctorInfoPageCtrl'
       }
     }
   })
 
-  .state('side-menu21.100345', {
-    url: '/page6',
+  .state('d-sm.orderDetailPage', {
+    url: '/orderDetailPage',
     views: {
-      'side-menu21': {
-        templateUrl: 'templates/100345.html',
-        controller: '100345Ctrl'
+      'd-sm': {
+        templateUrl: 'templates/orderDetailPage.html',
+        controller: 'orderDetailPageCtrl'
       }
     }
   })
 
-  .state('side-menu21.daijie', {
-    url: '/daijie',
+  .state('d-sm.createOrderPage', {
+    url: '/createOrderPage',
     views: {
-      'side-menu21': {
-        templateUrl: 'templates/daijie.html',
-        controller: '100345Ctrl'
+      'd-sm': {
+        templateUrl: 'templates/createOrderPage.html',
+        controller: 'createOrderPageCtrl'
       }
     }
   })
 
-  .state('side-menu21.daijie_zhiding', {
-    url: '/daijie_zhiding',
+  .state('d-sm.doctorUpdatePage', {
+    url: '/doctorUpdatePage',
     views: {
-      'side-menu21': {
-        templateUrl: 'templates/daijie_zhiding.html',
-        controller: '100345Ctrl'
+      'd-sm': {
+        templateUrl: 'templates/doctorUpdatePage.html',
+        controller: 'doctorUpdatePageCtrl'
       }
     }
   })
 
-  .state('page7', {
-    url: '/page7',
-    templateUrl: 'templates/page7.html',
-    controller: 'page7Ctrl'
-  })
-
-  .state('side-menu21.page8', {
-    url: '/page8',
+  .state('d-sm.imageUploadPage', {
+    url: '/imageUploadPage',
     views: {
-      'side-menu21': {
-        templateUrl: 'templates/page8.html',
-        controller: 'page8Ctrl'
+      'd-sm': {
+        templateUrl: 'templates/imageUploadPage.html',
+        controller: 'imageUploadPageCtrl'
       }
     }
   })
 
-  .state('side-menu21.1003452', {
-    url: '/page10',
+  .state('d-sm.1003452', {
+    url: '/indexPage0',
     views: {
-      'side-menu21': {
+      'd-sm': {
         templateUrl: 'templates/1003452.html',
         controller: '1003452Ctrl'
       }
     }
   })
 
-  .state('side-menu21.1003453', {
+  .state('d-sm.orderConvsPage', {
+    url: '/orderConvsPage',
+    views: {
+      'd-sm': {
+        templateUrl: 'templates/orderConvsPage.html',
+        controller: 'orderConvsPageCtrl'
+      }
+    }
+  })
+
+  .state('d-sm.1003453', {
     url: '/page9',
     views: {
-      'side-menu21': {
+      'd-sm': {
         templateUrl: 'templates/1003453.html',
         controller: '1003453Ctrl'
       }
     }
   })
 
-$urlRouterProvider.otherwise('/side-menu21/page1')
+$urlRouterProvider.otherwise('/d-sm/indexPage')
 
   
 

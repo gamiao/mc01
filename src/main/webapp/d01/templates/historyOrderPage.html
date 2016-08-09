@@ -1,0 +1,13 @@
+<ion-view title="历史订单" id="historyOrderPage" class=" ">
+    <ion-content padding="true" class="has-header">
+        <ion-list id="openOrderPage-list2" class=" " ng-repeat="order in results">
+            <ion-item class="item-thumbnail-left" ui-sref="d-sm.orderDetailPage" ng-click="getDetail(order)" >
+                <img src="../uploadedImg/{{order.CTPatient.Avatar}}">
+                <p>单号：{{order.ID}}</p>
+				<h2>患者：{{order.CTPatient.Name}} （<strong>{{order.Status}}</strong>）</h2>
+                <p>创建时间：{{order.CreateTime}}</p>
+                <p>{{order.CTDetail.Description}}</p>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

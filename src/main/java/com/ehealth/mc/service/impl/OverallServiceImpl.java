@@ -73,18 +73,29 @@ public class OverallServiceImpl implements OverallService {
 				String filterStr = filterOption.getText();
 				Long patientID = FormatUtil.getOrderFilterPatientID(filterStr);
 				Long doctorID = FormatUtil.getOrderFilterDoctorID(filterStr);
-				String statusStr = FormatUtil.getOrderFilterStatus(filterStr);
+				String isArchivedStr = FormatUtil
+						.getOrderFilterIsArchived(filterStr);
 				if (patientID != null) {
-					if (statusStr != null) {
-						queryResult = orderService.findByPatientIDAndStatus(
-								patientID, statusStr);
+					if (isArchivedStr != null) {
+						if ("Y".endsWith(isArchivedStr)) {
+							queryResult = orderService
+									.findByPatientIDArchived(patientID);
+						} else {
+							queryResult = orderService
+									.findByPatientIDNotArchived(patientID);
+						}
 					} else {
 						queryResult = orderService.findByPatientID(patientID);
 					}
 				} else if (doctorID != null) {
-					if (statusStr != null) {
-						queryResult = orderService.findByDoctorIDAndStatus(
-								doctorID, statusStr);
+					if (isArchivedStr != null) {
+						if ("Y".endsWith(isArchivedStr)) {
+							queryResult = orderService
+									.findByDoctorIDArchived(doctorID);
+						} else {
+							queryResult = orderService
+									.findByDoctorIDNotArchived(doctorID);
+						}
 					} else {
 						queryResult = orderService.findByDoctorID(doctorID);
 					}

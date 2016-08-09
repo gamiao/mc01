@@ -20,12 +20,12 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('mc-sidemenu.page2', {
-    url: '/page2',
+  .state('mc-sidemenu.openOrderPage', {
+    url: '/openOrderPage',
     views: {
       'mc-sidemenu': {
-        templateUrl: 'templates/page2.html',
-        controller: 'page2Ctrl'
+        templateUrl: 'templates/openOrderPage.html',
+        controller: 'openOrderPageCtrl'
       }
     }
   })
@@ -56,12 +56,12 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('mc-sidemenu.historyDetailPage', {
-    url: '/historyDetailPage',
+  .state('mc-sidemenu.orderDetailPage', {
+    url: '/orderDetailPage',
     views: {
       'mc-sidemenu': {
-        templateUrl: 'templates/historyDetailPage.html',
-        controller: 'historyDetailPageCtrl'
+        templateUrl: 'templates/orderDetailPage.html',
+        controller: 'orderDetailPageCtrl'
       }
     }
   })
@@ -106,12 +106,12 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('mc-sidemenu.historyConvsPage', {
-    url: '/historyConvsPage',
+  .state('mc-sidemenu.orderConvsPage', {
+    url: '/orderConvsPage',
     views: {
       'mc-sidemenu': {
-        templateUrl: 'templates/historyConvsPage.html',
-        controller: 'historyConvsPageCtrl'
+        templateUrl: 'templates/orderConvsPage.html',
+        controller: 'orderConvsPageCtrl'
       }
     }
   })

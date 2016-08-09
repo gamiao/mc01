@@ -13,7 +13,7 @@ angular.module('app.controllers', [])
 .service('orderService', [function(){
 	this.currentOrder;
 	
-	this.isNewOrder;
+	this.isExistingOrder;
 	this.isDoctorFixed;
 	
 	
@@ -24,13 +24,12 @@ angular.module('app.controllers', [])
 	$scope.createOrder = function() {
 		$scope.hideSheet = $ionicActionSheet.show({
 		  buttons: [
-			{ text: '不指定医生' },
-			{ text: '指定医生', disabled: true			}
+			{ text: '指定医生' }
 		  ],
 		  titleText: '新建订单',
 		  cancelText: '取消',
 		  buttonClicked: function(index) {
-			  orderService.isNewOrder = true;
+			  orderService.isExistingOrder = false;
 			  orderService.isDoctorFixed = (1===index);
 			  $state.go('mc-sidemenu.createOrderPage');
 		  }
@@ -38,8 +37,6 @@ angular.module('app.controllers', [])
 	}
 	
   $scope.showImage=function(){
-	  
-	  
 	  $scope.imageSrc  = 'http://localhost:28080/mc/img/k9n0gpcbRiFIUhLF7S8Q_zuhuai2.jpg';
       $scope.openModal();
   }
@@ -51,7 +48,7 @@ angular.module('app.controllers', [])
         $odataresource(urlService.baseURL  + "Orders")
         .odata()
 		.filter("CTPatient/ID",patientService.currentPatientID)
-		.filter("Status", "complete")
+		.filter("IsArchived", "Y")
         .query();
 
   $scope.getDetail=function(ObjectData){
@@ -59,14 +56,22 @@ angular.module('app.controllers', [])
   }
 })
    
-.controller('historyDetailPageCtrl', function($scope,$odataresource, $stateParams, urlService,orderService) {		
+.controller('orderDetailPageCtrl', function($scope,$odataresource, $stateParams, urlService,orderService) {		
   $scope.currentOrder=orderService.currentOrder;
+  page = {};
+  page.title = '已下单';
+  page.actionIcon = 'ion-android-chat';
+  if(orderService.currentOrder && orderService.currentOrder.IsArchived === 'Y'){
+	page.title = '历史订单';
+	page.actionIcon = 'ion-locked';
+  }
+  $scope.page = page;
   $scope.getConvs=function(ObjectData){
 	orderService.currentOrder=ObjectData;
   }
 })
    
-.controller('historyConvsPageCtrl', function($scope,$odataresource, $stateParams, urlService,orderService) {
+.controller('orderConvsPageCtrl', function($scope,$odataresource, $stateParams, urlService,orderService) {
 	if(orderService.currentOrder !== null && orderService.currentOrder.ID !== null){
     $scope.orderConvs = 
         $odataresource(urlService.baseURL  + "Orders("+ orderService.currentOrder.ID+")/OrderConvs")
@@ -146,47 +151,61 @@ angular.module('app.controllers', [])
 })
    
    
-.controller('page2Ctrl', function($scope) {
+.controller('openOrderPageCtrl', function($scope,$odataresource,urlService,orderService,patientService) {
+    $scope.results = 
+        $odataresource(urlService.baseURL  + "Orders")
+        .odata()
+		.filter("CTPatient/ID",patientService.currentPatientID)
+		.filter("IsArchived", "N")
+        .query();
 
+  $scope.getDetail=function(ObjectData){
+	orderService.currentOrder=ObjectData;
+  }
 })
    
 .controller('100345Ctrl', function($scope) {
 
 })
    
-.controller('createOrderPageCtrl', function($scope, $odataresource, $stateParams, urlService, orderService, patientService) {
-	if(orderService.isNewOrder){
-		$scope.pageTitle = "新建订单";
-		$scope.buttonLabel = "创建";
-		currentOrder = {};
-		currentOrder.Patient = {};
-		currentOrder.Patient.ID = patientService.currentPatientID;
-		currentOrder.Doctor = null;
-	}else{
+.controller('createOrderPageCtrl', function($scope, $state, $odataresource, $stateParams, urlService, orderService, patientService) {
+	if(orderService.isExistingOrder){
 		$scope.pageTitle = "编辑订单";
 		$scope.buttonLabel = "提交";
-		currentOrder = orderService.currentOrder;
+		tempOrder = orderService.currentOrder;
+	}else{
+		$scope.pageTitle = "新建订单";
+		$scope.buttonLabel = "创建";
+		tempOrder = {};
+		tempOrder.CTPatient = {};
+		tempOrder.CTDoctor = {};
+		tempOrder.CTDoctor.ID = 5;
+		tempOrder.CTDetail = {};
 	}
-	$scope.currentOrder = currentOrder;
+	$scope.currentOrder = tempOrder;
 	
-	$scope.createOrder =function(){
-	Order = $odataresource(urlService.baseURL  + 'Orders', 'id');
+	$scope.createOrder =function(tempOrder){
+	    Order = $odataresource(urlService.baseURL  + 'Orders', 'id');
+		
 		var myOrder = new Order();
 		myOrder.CTPatient = {};
-		
-		myOrder.CTDetail = {};
-		myOrder.CTDetail.Description = "测试数据";
-		myOrder.CTDoctor = {};
-		myOrder.CTDoctor.ID = 5;
 		myOrder.CTPatient.ID = patientService.currentPatientID;
+		myOrder.CTDetail = {};
+		myOrder.CTDetail.Description = tempOrder.CTDetail.Description;
+		myOrder.CTDoctor = {};
+		myOrder.CTDoctor.ID = tempOrder.CTDoctor.ID;
+		myOrder.Status = 'complete';
 		
-		myOrder.$save();
+		myOrder.$save(
+		    function(myOrder){
+			orderService.currentOrder = myOrder;
+			$state.go('mc-sidemenu.orderDetailPage');
+			},function(myOrder){
+			
+			}
+		
+		);
 	}
-	
-	
-	
-	
-	
 })
 .controller('1003452Ctrl', function($scope) {
 

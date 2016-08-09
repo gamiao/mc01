@@ -17,18 +17,30 @@ public interface OrderHeaderDAO extends CrudRepository<OrderHeader, Integer> {
 	List<OrderHeader> findByStatusAndIsArchivedAndIsEnabledAndIsDeleted(
 			String status, String isArchived, String isEnabled, String isDeleted);
 
-	@Query("select oh from OrderHeader oh join oh.patient p where (p.id = :patientID)")
-	List<OrderHeader> findByPatientID(@Param("patientID") Long patientID);
+	@Query("select oh from OrderHeader oh join oh.patient p where (p.id = :id)")
+	List<OrderHeader> findByPatientID(@Param("id") Long id);
 
-	@Query("select oh from OrderHeader oh join oh.doctor d where (d.id = :doctorID)")
-	List<OrderHeader> findByDoctorID(@Param("doctorID") Long doctorID);
+	@Query("select oh from OrderHeader oh join oh.doctor d where (d.id = :id)")
+	List<OrderHeader> findByDoctorID(@Param("id") Long id);
 
-	@Query("select oh from OrderHeader oh join oh.patient p where (p.id = :patientID and oh.status = :status)")
-	List<OrderHeader> findByPatientIDAndStatus(
-			@Param("patientID") Long patientID, @Param("status") String status);
+	@Query("select oh from OrderHeader oh join oh.patient p where oh.isArchived = 'Y' and (p.id = :id)")
+	List<OrderHeader> findByPatientIDArchived(@Param("id") Long id);
 
-	@Query("select oh from OrderHeader oh join oh.doctor d where (d.id = :doctorID and oh.status = :status)")
-	List<OrderHeader> findByDoctorIDAndStatus(@Param("doctorID") Long doctorID,
+	@Query("select oh from OrderHeader oh join oh.doctor d where oh.isArchived = 'Y' and (d.id = :id)")
+	List<OrderHeader> findByDoctorIDArchived(@Param("id") Long id);
+
+	@Query("select oh from OrderHeader oh join oh.patient p where oh.isArchived != 'Y' and (p.id = :id)")
+	List<OrderHeader> findByPatientIDNotArchived(@Param("id") Long id);
+
+	@Query("select oh from OrderHeader oh join oh.doctor d where oh.isArchived != 'Y' and (d.id = :id)")
+	List<OrderHeader> findByDoctorIDNotArchived(@Param("id") Long id);
+
+	@Query("select oh from OrderHeader oh join oh.patient p where (p.id = :id and oh.status = :status)")
+	List<OrderHeader> findByPatientIDAndStatus(@Param("id") Long id,
+			@Param("status") String status);
+
+	@Query("select oh from OrderHeader oh join oh.doctor d where (d.id = :id and oh.status = :status)")
+	List<OrderHeader> findByDoctorIDAndStatus(@Param("id") Long id,
 			@Param("status") String status);
 
 }

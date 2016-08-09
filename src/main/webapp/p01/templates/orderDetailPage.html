@@ -1,11 +1,11 @@
-<ion-view title="历史订单（{{currentOrder.ID}}）" id="historyDetail" class=" ">
+<ion-view title="{{page.title}}（{{currentOrder.ID}}）" id="orderDetail" class=" ">
     <ion-content padding="true" class="has-header">
         <ion-list id="100345-list8" class=" ">
-            <ion-item class="item-avatar item-icon-right" id="100345-list-item6" ui-sref="mc-sidemenu.historyConvsPage" ng-click="getConvs(currentOrder)" >
+            <ion-item class="item-avatar item-icon-right" id="100345-list-item6" ui-sref="mc-sidemenu.orderConvsPage" ng-click="getConvs(currentOrder)" >
                 <img src="../uploadedImg/{{currentOrder.CTDoctor.Avatar}}">
                 <h2>应诊：{{currentOrder.CTDoctor.Name}}</h2>
-                <p>状态：{{currentOrder.Status}}</p>
-                <i class="icon ion-locked"></i>
+                <p>状态：<strong>{{currentOrder.Status}}</strong></p>
+                <i class="icon {{page.actionIcon}}"></i>
             </ion-item>
         </ion-list>
         <div id="100345-markdown2" style="color:#000000;" class=" ">
@@ -22,7 +22,9 @@
                 <strong>手机号码：</strong>{{currentOrder.CTPatient.Mobile}}</p>
 
             <p>
-                <strong>病情描述：</strong>{{currentOrder.CTDetail.Description}}</p>
+                <strong>病情描述:</strong></p>
+			
+				<textarea style="width:100% " rows="6" readonly="true">{{currentOrder.CTDetail.Description}}</textarea>
 
             <p>
                 <strong>询诊图片:</strong>

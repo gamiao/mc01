@@ -361,10 +361,6 @@ public class EntityConvertUtil {
 				for (Property p : v.getValue()) {
 					if ("ID".equals(p.getName())) {
 						d.setId(getLong(p.getValue().toString()));
-						if (d.getId() == null) {
-							d.setCreateTime(new Date());
-						}
-
 					} else if ("Type".equals(p.getName())) {
 						d.setType((p.getValue().toString()));
 					} else if ("Title".equals(p.getName())) {
@@ -374,6 +370,9 @@ public class EntityConvertUtil {
 					} else if ("Pics".equals(p.getName())) {
 						d.setPictures((p.getValue().toString()));
 					}
+				}
+				if (d.getId() == null) {
+					d.setCreateTime(new Date());
 				}
 			}
 			return d;
@@ -388,11 +387,16 @@ public class EntityConvertUtil {
 			d.setId(id);
 			if (id == null) {
 				d.setCreateTime(new Date());
+				d.setStatus("New");
+				d.setIsArchived("N");
+				d.setIsEnabled("Y");
+				d.setIsDeleted("N");
+			} else {
+				d.setStatus(getPropertyStringValue(e, "Status"));
+				d.setIsArchived(getPropertyStringValue(e, "IsArchived"));
+				d.setIsEnabled(getPropertyStringValue(e, "IsEnabled"));
+				d.setIsDeleted(getPropertyStringValue(e, "IsDeleted"));
 			}
-			d.setStatus(getPropertyStringValue(e, "Status"));
-			d.setIsArchived(getPropertyStringValue(e, "IsArchived"));
-			d.setIsEnabled(getPropertyStringValue(e, "IsEnabled"));
-			d.setIsDeleted(getPropertyStringValue(e, "IsDeleted"));
 			return d;
 		}
 		return null;

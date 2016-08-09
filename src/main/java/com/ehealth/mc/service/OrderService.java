@@ -14,12 +14,20 @@ public interface OrderService {
 
 	OrderHeader save(Entity e);
 
-	List<OrderHeader> findByPatientID(Long patientID);
+	List<OrderHeader> findByPatientID(Long id);
 
-	List<OrderHeader> findByDoctorID(Long doctorID);
+	List<OrderHeader> findByDoctorID(Long id);
 
-	List<OrderHeader> findByPatientIDAndStatus(Long patientID, String status);
+	List<OrderHeader> findByPatientIDArchived(Long id);
 
-	List<OrderHeader> findByDoctorIDAndStatus(Long doctorID, String status);
+	List<OrderHeader> findByDoctorIDArchived(Long id);
+
+	List<OrderHeader> findByPatientIDNotArchived(Long id);
+
+	List<OrderHeader> findByDoctorIDNotArchived(Long id);
+
+	List<OrderHeader> findByPatientIDAndStatus(Long id, String status);
+
+	List<OrderHeader> findByDoctorIDAndStatus(Long id, String status);
 
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.apache.olingo.commons.api.data.ComplexValue;
 import org.apache.olingo.commons.api.data.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +28,10 @@ import com.ehealth.mc.service.util.EntityConvertUtil;
 public class OrderServiceImpl implements OrderService {
 
 	@Autowired
-	OrderHeaderDAO orderHeaderDAO;
+	private OrderHeaderDAO orderHeaderDAO;
 
 	@Autowired
-	OrderDetailDAO orderDetailDAO;
+	private OrderDetailDAO orderDetailDAO;
 
 	@Autowired
 	private DoctorService doctorService;
@@ -44,44 +46,6 @@ public class OrderServiceImpl implements OrderService {
 		if (orderHeaderDAO != null) {
 
 			Iterable<OrderHeader> result = orderHeaderDAO.findAll();
-			if (result != null) {
-				Iterator<OrderHeader> i = result.iterator();
-				while (i.hasNext()) {
-					eList.add(i.next());
-				}
-				return eList;
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public List<OrderHeader> findByPatientID(Long patientID) {
-
-		List<OrderHeader> eList = new ArrayList<OrderHeader>();
-		if (orderHeaderDAO != null) {
-
-			Iterable<OrderHeader> result = orderHeaderDAO
-					.findByPatientID(patientID);
-			if (result != null) {
-				Iterator<OrderHeader> i = result.iterator();
-				while (i.hasNext()) {
-					eList.add(i.next());
-				}
-				return eList;
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public List<OrderHeader> findByDoctorID(Long doctorID) {
-
-		List<OrderHeader> eList = new ArrayList<OrderHeader>();
-		if (orderHeaderDAO != null) {
-
-			Iterable<OrderHeader> result = orderHeaderDAO
-					.findByDoctorID(doctorID);
 			if (result != null) {
 				Iterator<OrderHeader> i = result.iterator();
 				while (i.hasNext()) {
@@ -166,43 +130,43 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public List<OrderHeader> findByPatientIDAndStatus(Long patientID,
-			String status) {
-
-		List<OrderHeader> eList = new ArrayList<OrderHeader>();
-		if (orderHeaderDAO != null) {
-
-			Iterable<OrderHeader> result = orderHeaderDAO
-					.findByPatientIDAndStatus(patientID, status);
-			if (result != null) {
-				Iterator<OrderHeader> i = result.iterator();
-				while (i.hasNext()) {
-					eList.add(i.next());
-				}
-				return eList;
-			}
-		}
-		return null;
+	public List<OrderHeader> findByPatientIDAndStatus(Long id, String status) {
+		return orderHeaderDAO.findByPatientIDAndStatus(id, status);
 	}
 
 	@Override
-	public List<OrderHeader> findByDoctorIDAndStatus(Long doctorID,
-			String status) {
+	public List<OrderHeader> findByDoctorIDAndStatus(Long id, String status) {
+		return orderHeaderDAO.findByDoctorIDAndStatus(id, status);
+	}
 
-		List<OrderHeader> eList = new ArrayList<OrderHeader>();
-		if (orderHeaderDAO != null) {
+	@Override
+	public List<OrderHeader> findByPatientID(Long id) {
+		return orderHeaderDAO.findByPatientID(id);
+	}
 
-			Iterable<OrderHeader> result = orderHeaderDAO
-					.findByDoctorIDAndStatus(doctorID, status);
-			if (result != null) {
-				Iterator<OrderHeader> i = result.iterator();
-				while (i.hasNext()) {
-					eList.add(i.next());
-				}
-				return eList;
-			}
-		}
-		return null;
+	@Override
+	public List<OrderHeader> findByDoctorID(Long id) {
+		return orderHeaderDAO.findByDoctorID(id);
+	}
+
+	@Override
+	public List<OrderHeader> findByPatientIDArchived(Long id) {
+		return orderHeaderDAO.findByPatientIDArchived(id);
+	}
+
+	@Override
+	public List<OrderHeader> findByDoctorIDArchived(Long id) {
+		return orderHeaderDAO.findByDoctorIDArchived(id);
+	}
+
+	@Override
+	public List<OrderHeader> findByPatientIDNotArchived(Long id) {
+		return orderHeaderDAO.findByPatientIDNotArchived(id);
+	}
+
+	@Override
+	public List<OrderHeader> findByDoctorIDNotArchived(Long id) {
+		return orderHeaderDAO.findByDoctorIDNotArchived(id);
 	}
 
 }

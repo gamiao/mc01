@@ -1,19 +1,15 @@
 <ion-view title="{{pageTitle}}" id="createOrderPage" class=" ">
     <ion-content padding="true" class="has-header" >
-        <form id="createOrderPage-form4" class="list " >
-            <label class="item item-input " id="createOrderPage-input9">
-                <span class="input-label">患者姓名</span>
-                <input type="text" readonly="true" placeholder="老王">
-            </label>
-			<label class="item item-input  " id="patientUpdatePage-select1">
+        <form id="createOrderPage-form" class="list " >
+            <label class="item item-input  " id="patientUpdatePage-select1">
                 <span class="input-label">医师选择</span>
-                <input type="text" readonly="true" placeholder="不指定医生">
+                <input type="text" readonly="true" placeholder="张医师">
             </label>
 			<ion-item>
 				<ion-label floating >病情描述</ion-label>
-				<textarea style="width:100% " rows="6" placeholder="请填写病情.....">{{currentOrder.Detail.Description}}</textarea>
+				<textarea style="width:100% " rows="6" placeholder="请填写病情....." ng-model="currentOrder.CTDetail.Description">{{currentOrder.CTDetail.Description}}</textarea>
 			</ion-item>
         </form>
-        <a id="createOrderPage-button10" class=" button button-positive  button-block " ng-click="createOrder()" >{{buttonLabel}}</a>
+        <a id="createOrderPage-button" class=" button button-positive  button-block " ng-click="createOrder(currentOrder)" >{{buttonLabel}}</a>
     </ion-content>
 </ion-view>

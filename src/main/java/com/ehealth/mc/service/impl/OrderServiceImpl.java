@@ -43,8 +43,45 @@ public class OrderServiceImpl implements OrderService {
 		List<OrderHeader> eList = new ArrayList<OrderHeader>();
 		if (orderHeaderDAO != null) {
 
+			Iterable<OrderHeader> result = orderHeaderDAO.findAll();
+			if (result != null) {
+				Iterator<OrderHeader> i = result.iterator();
+				while (i.hasNext()) {
+					eList.add(i.next());
+				}
+				return eList;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public List<OrderHeader> findByPatientID(Long patientID) {
+
+		List<OrderHeader> eList = new ArrayList<OrderHeader>();
+		if (orderHeaderDAO != null) {
+
 			Iterable<OrderHeader> result = orderHeaderDAO
-					.findAll();
+					.findByPatientID(patientID);
+			if (result != null) {
+				Iterator<OrderHeader> i = result.iterator();
+				while (i.hasNext()) {
+					eList.add(i.next());
+				}
+				return eList;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public List<OrderHeader> findByDoctorID(Long doctorID) {
+
+		List<OrderHeader> eList = new ArrayList<OrderHeader>();
+		if (orderHeaderDAO != null) {
+
+			Iterable<OrderHeader> result = orderHeaderDAO
+					.findByDoctorID(doctorID);
 			if (result != null) {
 				Iterator<OrderHeader> i = result.iterator();
 				while (i.hasNext()) {

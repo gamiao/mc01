@@ -9,5 +9,12 @@
 				<img width="100%" height="auto" src="img/4inGvTdPSsqxxWWWc9px_jiaohuai2.jpg"></p>
             </ion-item>
         </ion-list>
+		
     </ion-content>
+	
+	
+	<form id="upload" method="POST" action="http://localhost:58080/mc01/spring/uploadImg" enctype="multipart/form-data">
+        File to upload: <input type="file" name="file""><br />
+        <input type="submit" value="Upload"> Press here to upload the file!
+    </form>
 </ion-view>

@@ -46,6 +46,7 @@ import org.apache.olingo.server.api.uri.UriResource;
 import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 import org.apache.olingo.server.api.uri.UriResourceFunction;
 import org.apache.olingo.server.api.uri.UriResourceNavigation;
+import org.apache.olingo.server.api.uri.queryoption.FilterOption;
 
 import com.ehealth.mc.service.OverallService;
 import com.ehealth.mc.service.util.EntityUtil;

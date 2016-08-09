@@ -50,8 +50,13 @@ public class DoctorServiceImpl implements DoctorService {
 
 	@Override
 	@Transactional
-	public Doctor save(Entity e) {
-		Doctor objToSave = EntityConvertUtil.getDoctor(e);
+	public Doctor upsertBasicInfo(Entity e) {
+		Long id = EntityConvertUtil.getID(e);
+		Doctor original = null;
+		if (id != null) {
+			original = findById(id);
+		}
+		Doctor objToSave = EntityConvertUtil.getDoctor(e, original);
 		if (objToSave != null) {
 			Doctor result = doctorDAO.save(objToSave);
 			if (result != null) {

@@ -2,12 +2,12 @@
     <ion-content padding="true" class="has-header">
 	    <div class="item item-body " id="patientUpdatePage-list-item-container1">
             <div>
-                <img src="img/{{patient.Avatar}}" style="display: block; 
+                <img src="../uploadedImg/{{patient.Avatar}}" style="display: block; 
 		width: 50%;
 		height: 50%; margin-left: auto; margin-right: auto; 
 		border-radius: 50%;">
             </div>
-			<button id="patientUpdatePage-button13" class=" button button-balanced button-small icon ion-ios-cloud-upload ">上传新头像</button>
+			<button ui-sref="mc-sidemenu.imageUploadPage" id="patientUpdatePage-button13" class=" button button-balanced button-small icon ion-ios-cloud-upload ">上传新头像</button>
         </div>
         <form id="patientUpdatePage-form2" class="list ">
             <label class="item item-input " id="patientUpdatePage-input2">
@@ -18,7 +18,13 @@
                 <span class="input-label">患者姓名</span>
                 <input type="text" value="{{patient.Name}}">
             </label>
-            <ion-toggle toggle-class="toggle-" ng-checked="true" id="patientUpdatePage-toggle2" class=" ">性别（男）</ion-toggle>
+			<label class="item item-select " id="patientUpdatePage-select1">
+                <span class="input-label">性别：</span>
+                <select>
+                    <option>女</option>
+                    <option>男</option>
+                </select>
+            </label>
             <label class="item item-input " id="patientUpdatePage-input8">
                 <span class="input-label">住址</span>
                 <input type="text" value="{{patient.Address}}">
@@ -37,5 +43,10 @@
             </label>
         </form>
         <a ui-sref="mc-sidemenu.patientInfoPage" id="patientUpdatePage-button9" class=" button button-positive  button-block " ng-click="updatePatient()">更新</a>
+		
+			<form id="upload" method="POST" action="http://localhost:58080/mc01/spring//uploadImg/Doctor/3/upsert" enctype="multipart/form-data">
+        File to upload: <input type="file" name="file""><br />
+        <input type="submit" value="Upload"> Press here to upload the file!
+    </form>
     </ion-content>
 </ion-view>

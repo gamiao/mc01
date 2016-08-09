@@ -36,8 +36,13 @@ public class PatientServiceImpl implements PatientService {
 
 	@Override
 	@Transactional
-	public Patient save(Entity e) {
-		Patient objToSave = EntityConvertUtil.getPatient(e);
+	public Patient upsertBasicInfo(Entity e) {
+		Long id = EntityConvertUtil.getID(e);
+		Patient original = null;
+		if (id != null) {
+			original = findById(id);
+		}
+		Patient objToSave = EntityConvertUtil.getPatient(e, original);
 		if (objToSave != null) {
 			patientDAO.save(objToSave);
 			return objToSave;

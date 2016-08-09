@@ -3,6 +3,7 @@ package com.ehealth.mc.service.util;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.olingo.commons.api.Constants;
@@ -21,18 +22,16 @@ import com.ehealth.mc.bo.Patient;
 
 public class EntityConvertUtil {
 
-	public static Doctor getDoctor(Entity e) {
+	public static Doctor getDoctor(Entity e, Doctor original) {
 		if (e != null) {
 			Doctor obj = new Doctor();
-			Long id = getID(e);
-			obj.setId(id);
-			if (id == null) {
-				obj.setCreateTime(new Date());
+			obj.setCreateTime(new Date());
+			if (original != null) {
+				obj = original;
 			}
 			obj.setAddress(getPropertyStringValue(e, "Address"));
 			obj.setMail(getPropertyStringValue(e, "Mail"));
-			obj.setAvatar(getPropertyStringValue(e, "Avatar"));
-			obj.setBirthday(getPropertyStringValue(e, "Birthday"));
+			obj.setBirthday(getPropertyDateValue(e, "Birthday"));
 			obj.setChineseName(getPropertyStringValue(e, "Name"));
 			obj.setGender(getPropertyStringValue(e, "Gender"));
 			obj.setMedicalLevel(getPropertyStringValue(e, "MedicalLevel"));
@@ -42,18 +41,16 @@ public class EntityConvertUtil {
 		return null;
 	}
 
-	public static Patient getPatient(Entity e) {
+	public static Patient getPatient(Entity e, Patient original) {
 		if (e != null) {
 			Patient obj = new Patient();
-			Long id = getID(e);
-			obj.setId(id);
-			if (id == null) {
-				obj.setCreateTime(new Date());
+			obj.setCreateTime(new Date());
+			if (original != null) {
+				obj = original;
 			}
 			obj.setAddress(getPropertyStringValue(e, "Address"));
 			obj.setMail(getPropertyStringValue(e, "Mail"));
-			obj.setAvatar(getPropertyStringValue(e, "Avatar"));
-			obj.setBirthday(getPropertyStringValue(e, "Birthday"));
+			obj.setBirthday(getPropertyDateValue(e, "Birthday"));
 			obj.setChineseName(getPropertyStringValue(e, "Name"));
 			obj.setGender(getPropertyStringValue(e, "Gender"));
 			obj.setMobile(getPropertyStringValue(e, "Mobile"));
@@ -70,6 +67,18 @@ public class EntityConvertUtil {
 			}
 		}
 
+		return null;
+	}
+
+	private static Date getPropertyDateValue(Entity e, String propName) {
+		if (e != null && e.getProperty(propName) != null) {
+			Property p = e.getProperty(propName);
+			if (p.getValue() != null
+					&& p.getValue() instanceof java.util.GregorianCalendar) {
+				GregorianCalendar timeValue = (GregorianCalendar) p.getValue();
+				return timeValue.getTime();
+			}
+		}
 		return null;
 	}
 
@@ -253,11 +262,11 @@ public class EntityConvertUtil {
 					d.getIsEnabled()));
 			e.addProperty(new Property(null, "IsDeleted", ValueType.PRIMITIVE,
 					d.getIsDeleted()));
-			e.addProperty(new Property(null, "Patient", ValueType.COMPLEX,
+			e.addProperty(new Property(null, "CTPatient", ValueType.COMPLEX,
 					getComplexValue(getEntity(d.getPatient()))));
-			e.addProperty(new Property(null, "Doctor", ValueType.COMPLEX,
+			e.addProperty(new Property(null, "CTDoctor", ValueType.COMPLEX,
 					getComplexValue(getEntity(d.getDoctor()))));
-			e.addProperty(new Property(null, "Detail", ValueType.COMPLEX,
+			e.addProperty(new Property(null, "CTDetail", ValueType.COMPLEX,
 					getComplexValue(getEntity(d.getOrderDetail()))));
 			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE,
 					d.getCreateTime()));
@@ -280,11 +289,11 @@ public class EntityConvertUtil {
 					d.getIsEnabled()));
 			e.addProperty(new Property(null, "IsDeleted", ValueType.PRIMITIVE,
 					d.getIsDeleted()));
-			e.addProperty(new Property(null, "Patient", ValueType.COMPLEX,
+			e.addProperty(new Property(null, "CTPatient", ValueType.COMPLEX,
 					getComplexValue(getEntity(d.getPatient()))));
-			e.addProperty(new Property(null, "Doctor", ValueType.COMPLEX,
+			e.addProperty(new Property(null, "CTDoctor", ValueType.COMPLEX,
 					getComplexValue(getEntity(d.getDoctor()))));
-			e.addProperty(new Property(null, "Detail", ValueType.COMPLEX,
+			e.addProperty(new Property(null, "CTDetail", ValueType.COMPLEX,
 					getComplexValue(getEntity(d.getOrderDetail()))));
 			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE,
 					d.getCreateTime()));
@@ -390,7 +399,7 @@ public class EntityConvertUtil {
 	}
 
 	public static ComplexValue getOrderDetailComplexValue(Entity e) {
-		Property p = e.getProperty("Detail");
+		Property p = e.getProperty("CTDetail");
 		if (p != null && p.getType().endsWith(McEdmUtil.CT_ORDER_DETAIL_NAME)) {
 			return (ComplexValue) p.getValue();
 		}
@@ -398,7 +407,7 @@ public class EntityConvertUtil {
 	}
 
 	public static Long getPatientIDFromOrderEntity(Entity e) {
-		Property p = e.getProperty("Patient");
+		Property p = e.getProperty("CTPatient");
 		if (p != null && p.getType().endsWith(McEdmUtil.CT_PATIENT_NAME)) {
 			ComplexValue cv = (ComplexValue) p.getValue();
 			return getID(cv);
@@ -407,7 +416,7 @@ public class EntityConvertUtil {
 	}
 
 	public static Long getDoctorIDFromOrderEntity(Entity e) {
-		Property p = e.getProperty("Doctor");
+		Property p = e.getProperty("CTDoctor");
 		if (p != null && p.getType().endsWith(McEdmUtil.CT_DOCTOR_NAME)) {
 			ComplexValue cv = (ComplexValue) p.getValue();
 			return getID(cv);

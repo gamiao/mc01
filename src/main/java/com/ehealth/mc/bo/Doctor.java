@@ -53,7 +53,7 @@ public class Doctor implements Serializable, Persistable<Long> {
 	private String mobile;
 
 	@Column(name = "birthday")
-	private String birthday;
+	private Date birthday;
 
 	@Column(name = "medical_level")
 	private String medicalLevel;
@@ -117,11 +117,11 @@ public class Doctor implements Serializable, Persistable<Long> {
 		this.mobile = mobile;
 	}
 
-	public String getBirthday() {
+	public Date getBirthday() {
 		return birthday;
 	}
 
-	public void setBirthday(String birthday) {
+	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
 	}
 

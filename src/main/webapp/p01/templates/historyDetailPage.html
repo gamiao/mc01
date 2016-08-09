@@ -2,27 +2,27 @@
     <ion-content padding="true" class="has-header">
         <ion-list id="100345-list8" class=" ">
             <ion-item class="item-avatar item-icon-right" id="100345-list-item6" ui-sref="mc-sidemenu.historyConvsPage" ng-click="getConvs(currentOrder)" >
-                <img src="img/{{currentOrder.Doctor.Avatar}}">
-                <h2>应诊：{{currentOrder.Doctor.Name}}</h2>
+                <img src="../uploadedImg/{{currentOrder.CTDoctor.Avatar}}">
+                <h2>应诊：{{currentOrder.CTDoctor.Name}}</h2>
                 <p>状态：{{currentOrder.Status}}</p>
                 <i class="icon ion-locked"></i>
             </ion-item>
         </ion-list>
         <div id="100345-markdown2" style="color:#000000;" class=" ">
             <p>
-                <strong>患者姓名：</strong>{{currentOrder.Patient.Name}}</p>
+                <strong>患者姓名：</strong>{{currentOrder.CTPatient.Name}}</p>
 
             <p>
-                <strong>性别：</strong>{{currentOrder.Patient.Gender}}</p>
+                <strong>性别：</strong>{{currentOrder.CTPatient.Gender}}</p>
 
             <p>
-                <strong>出生日期：</strong>{{currentOrder.Patient.Birthday}}</p>
+                <strong>出生日期：</strong>{{currentOrder.CTPatient.Birthday}}</p>
 
             <p>
-                <strong>手机号码：</strong>{{currentOrder.Patient.Mobile}}</p>
+                <strong>手机号码：</strong>{{currentOrder.CTPatient.Mobile}}</p>
 
             <p>
-                <strong>病情描述：</strong>{{currentOrder.Detail.Description}}</p>
+                <strong>病情描述：</strong>{{currentOrder.CTDetail.Description}}</p>
 
             <p>
                 <strong>询诊图片:</strong>

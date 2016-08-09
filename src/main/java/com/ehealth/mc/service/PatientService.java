@@ -8,7 +8,7 @@ public interface PatientService {
 
 	Patient findById(Long id);
 
-	Patient save(Entity e);
+	Patient upsertBasicInfo(Entity e);
 
 	Patient updateAvatar(String avatar, Long id);
 

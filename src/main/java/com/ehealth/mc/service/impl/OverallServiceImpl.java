@@ -2,6 +2,8 @@ package com.ehealth.mc.service.impl;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
@@ -66,10 +68,60 @@ public class OverallServiceImpl implements OverallService {
 			}
 
 			List<Entity> entityList = entityCollection.getEntities();
-			List<OrderHeader> queryResult = orderService.findAll();
+			List<OrderHeader> queryResult = null;
+
+			if (getOrderFilterPatientID(filterOption) != null) {
+				queryResult = orderService
+						.findByPatientID(getOrderFilterPatientID(filterOption));
+			} else if (getOrderFilterDoctorID(filterOption) != null) {
+				queryResult = orderService
+						.findByDoctorID(getOrderFilterDoctorID(filterOption));
+			} else {
+				queryResult = orderService.findAll();
+			}
 			entityList
 					.addAll(EntityConvertUtil.getOrderEntityList(queryResult));
 			return entityCollection;
+		}
+		return null;
+	}
+
+	private Long getOrderFilterPatientID(FilterOption filterOption) {
+		if (filterOption != null && filterOption.getText() != null) {
+			String filterText = filterOption.getText();
+			Pattern fullPattern = Pattern.compile("CTPatient/ID eq \\d+");
+			Matcher fullMatcher = fullPattern.matcher(filterText);
+			if (fullMatcher.find()) {
+				Pattern numberPattern = Pattern.compile("\\d+");
+				Matcher numberMatcher = numberPattern.matcher(filterText);
+				if (numberMatcher.find()) {
+					int beginIndex = numberMatcher.start();
+					int endIndex = numberMatcher.end();
+					String numberStr = filterText.substring(beginIndex,
+							endIndex);
+					return EntityConvertUtil.getLong(numberStr);
+				}
+			}
+		}
+		return null;
+	}
+
+	private Long getOrderFilterDoctorID(FilterOption filterOption) {
+		if (filterOption != null && filterOption.getText() != null) {
+			String filterText = filterOption.getText();
+			Pattern fullPattern = Pattern.compile("CTDoctor/ID eq \\d+");
+			Matcher fullMatcher = fullPattern.matcher(filterText);
+			if (fullMatcher.find()) {
+				Pattern numberPattern = Pattern.compile("\\d+");
+				Matcher numberMatcher = numberPattern.matcher(filterText);
+				if (numberMatcher.find()) {
+					int beginIndex = numberMatcher.start();
+					int endIndex = numberMatcher.end();
+					String numberStr = filterText.substring(beginIndex,
+							endIndex);
+					return EntityConvertUtil.getLong(numberStr);
+				}
+			}
 		}
 		return null;
 	}
@@ -193,10 +245,12 @@ public class OverallServiceImpl implements OverallService {
 	private Entity createEntity(final Entity newEntity) {
 		if (newEntity.getType().equals(
 				McEdmUtil.ET_DOCTOR_FQN.getFullQualifiedNameAsString())) {
-			return EntityConvertUtil.getEntity(doctorService.save(newEntity));
+			return EntityConvertUtil.getEntity(doctorService
+					.upsertBasicInfo(newEntity));
 		} else if (newEntity.getType().equals(
 				McEdmUtil.ET_PATIENT_FQN.getFullQualifiedNameAsString())) {
-			return EntityConvertUtil.getEntity(patientService.save(newEntity));
+			return EntityConvertUtil.getEntity(patientService
+					.upsertBasicInfo(newEntity));
 		} else if (newEntity.getType().equals(
 				McEdmUtil.ET_ORDER_FQN.getFullQualifiedNameAsString())) {
 			return EntityConvertUtil.getEntity(orderService.save(newEntity));
@@ -207,12 +261,12 @@ public class OverallServiceImpl implements OverallService {
 	private Entity updateEntity(final Entity updateEntity) {
 		if (updateEntity.getType().equals(
 				McEdmUtil.ET_DOCTOR_FQN.getFullQualifiedNameAsString())) {
-			return EntityConvertUtil
-					.getEntity(doctorService.save(updateEntity));
+			return EntityConvertUtil.getEntity(doctorService
+					.upsertBasicInfo(updateEntity));
 		} else if (updateEntity.getType().equals(
 				McEdmUtil.ET_PATIENT_FQN.getFullQualifiedNameAsString())) {
 			return EntityConvertUtil.getEntity(patientService
-					.save(updateEntity));
+					.upsertBasicInfo(updateEntity));
 		} else if (updateEntity.getType().equals(
 				McEdmUtil.ET_ORDER_FQN.getFullQualifiedNameAsString())) {
 			return EntityConvertUtil.getEntity(orderService.save(updateEntity));
@@ -350,10 +404,16 @@ public class OverallServiceImpl implements OverallService {
 			if (entityType.equals("Patient")) {
 				Patient targetPatient = patientService.updateAvatar(fileName,
 						entityLongID);
+				if (targetPatient != null) {
+					return targetPatient.getAvatar();
+				}
 
 			} else if (entityType.equals("Doctor")) {
-				Doctor targetPatient = doctorService.updateAvatar(fileName,
+				Doctor targetDoctor = doctorService.updateAvatar(fileName,
 						entityLongID);
+				if (targetDoctor != null) {
+					return targetDoctor.getAvatar();
+				}
 
 			} else if (entityType.equals("OrderConv")) {
 

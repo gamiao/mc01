@@ -14,4 +14,8 @@ public interface OrderService {
 
 	OrderHeader save(Entity e);
 
+	List<OrderHeader> findByPatientID(Long patientID);
+
+	List<OrderHeader> findByDoctorID(Long doctorID);
+
 }

@@ -156,9 +156,8 @@ public class McEdmUtil {
 					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty mobile = new CsdlProperty().setName("Mobile").setType(
 					EdmPrimitiveTypeKind.String.getFullQualifiedName());
-			CsdlProperty birthday = new CsdlProperty()
-					.setName("Birthday")
-					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+			CsdlProperty birthday = new CsdlProperty().setName("Birthday")
+					.setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
 			CsdlProperty medicalLevel = new CsdlProperty().setName(
 					"MedicalLevel").setType(
 					EdmPrimitiveTypeKind.String.getFullQualifiedName());
@@ -196,9 +195,8 @@ public class McEdmUtil {
 					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty mobile = new CsdlProperty().setName("Mobile").setType(
 					EdmPrimitiveTypeKind.String.getFullQualifiedName());
-			CsdlProperty birthday = new CsdlProperty()
-					.setName("Birthday")
-					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+			CsdlProperty birthday = new CsdlProperty().setName("Birthday")
+					.setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
 
 			// create CsdlPropertyRef for Key element
 			CsdlPropertyRef propertyRef = new CsdlPropertyRef();
@@ -284,12 +282,12 @@ public class McEdmUtil {
 					.setName("IsDeleted")
 					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 
-			CsdlProperty patient = new CsdlProperty().setName("Patient")
+			CsdlProperty patient = new CsdlProperty().setName("CTPatient")
 					.setType(CT_PATIENT_FQN);
-			CsdlProperty doctor = new CsdlProperty().setName("Doctor").setType(
-					CT_DOCTOR_FQN);
-			CsdlProperty detail = new CsdlProperty().setName("Detail").setType(
-					CT_ORDER_DETAIL_FQN);
+			CsdlProperty doctor = new CsdlProperty().setName("CTDoctor")
+					.setType(CT_DOCTOR_FQN);
+			CsdlProperty detail = new CsdlProperty().setName("CTDetail")
+					.setType(CT_ORDER_DETAIL_FQN);
 
 			List<CsdlNavigationProperty> navPropList = new ArrayList<CsdlNavigationProperty>();
 			CsdlNavigationProperty convs = new CsdlNavigationProperty()

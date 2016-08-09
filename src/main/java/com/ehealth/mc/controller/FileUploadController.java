@@ -59,20 +59,17 @@ public class FileUploadController {
 		try {
 			File uploadDir = getUploadRootDir();
 
-			String fileName = FilenameUtils.getName(file.getOriginalFilename());
-			String fileExtension = FilenameUtils.getExtension(fileName);
+			String originalFileName = FilenameUtils.getName(file
+					.getOriginalFilename());
+			String fileExtension = FilenameUtils.getExtension(originalFileName);
 			String fileNameNoExtension = FilenameUtils
-					.removeExtension(fileName);
+					.removeExtension(originalFileName);
+
+			String fileName = fileNameNoExtension + FormatUtil.getFileSuffix()
+					+ FilenameUtils.EXTENSION_SEPARATOR_STR + fileExtension;
 
 			File targetFile = new File(uploadDir.getAbsolutePath()
 					+ File.separator + fileName);
-
-			if (targetFile.exists()) {
-				fileName = fileNameNoExtension + FormatUtil.getFileSuffix()
-						+ FilenameUtils.EXTENSION_SEPARATOR_STR + fileExtension;
-				targetFile = new File(uploadDir.getAbsolutePath()
-						+ File.separator + fileName);
-			}
 
 			long fileSize = Files.copy(file.getInputStream(),
 					Paths.get(targetFile.getAbsolutePath()));

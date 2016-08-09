@@ -18,4 +18,8 @@ public interface OrderService {
 
 	List<OrderHeader> findByDoctorID(Long doctorID);
 
+	List<OrderHeader> findByPatientIDAndStatus(Long patientID, String status);
+
+	List<OrderHeader> findByDoctorIDAndStatus(Long doctorID, String status);
+
 }

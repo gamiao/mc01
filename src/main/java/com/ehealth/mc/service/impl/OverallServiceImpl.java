@@ -2,8 +2,6 @@ package com.ehealth.mc.service.impl;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
@@ -35,6 +33,7 @@ import com.ehealth.mc.service.OverallService;
 import com.ehealth.mc.service.PatientService;
 import com.ehealth.mc.service.util.EntityConvertUtil;
 import com.ehealth.mc.service.util.EntityUtil;
+import com.ehealth.mc.service.util.FormatUtil;
 import com.ehealth.mc.service.util.McEdmUtil;
 
 @Service("overallService")
@@ -70,58 +69,35 @@ public class OverallServiceImpl implements OverallService {
 			List<Entity> entityList = entityCollection.getEntities();
 			List<OrderHeader> queryResult = null;
 
-			if (getOrderFilterPatientID(filterOption) != null) {
-				queryResult = orderService
-						.findByPatientID(getOrderFilterPatientID(filterOption));
-			} else if (getOrderFilterDoctorID(filterOption) != null) {
-				queryResult = orderService
-						.findByDoctorID(getOrderFilterDoctorID(filterOption));
+			if (filterOption != null && filterOption.getText() != null) {
+				String filterStr = filterOption.getText();
+				Long patientID = FormatUtil.getOrderFilterPatientID(filterStr);
+				Long doctorID = FormatUtil.getOrderFilterDoctorID(filterStr);
+				String statusStr = FormatUtil.getOrderFilterStatus(filterStr);
+				if (patientID != null) {
+					if (statusStr != null) {
+						queryResult = orderService.findByPatientIDAndStatus(
+								patientID, statusStr);
+					} else {
+						queryResult = orderService.findByPatientID(patientID);
+					}
+				} else if (doctorID != null) {
+					if (statusStr != null) {
+						queryResult = orderService.findByDoctorIDAndStatus(
+								doctorID, statusStr);
+					} else {
+						queryResult = orderService.findByDoctorID(doctorID);
+					}
+				}
 			} else {
 				queryResult = orderService.findAll();
 			}
-			entityList
-					.addAll(EntityConvertUtil.getOrderEntityList(queryResult));
+
+			if (queryResult != null && queryResult.size() > 0) {
+				entityList.addAll(EntityConvertUtil
+						.getOrderEntityList(queryResult));
+			}
 			return entityCollection;
-		}
-		return null;
-	}
-
-	private Long getOrderFilterPatientID(FilterOption filterOption) {
-		if (filterOption != null && filterOption.getText() != null) {
-			String filterText = filterOption.getText();
-			Pattern fullPattern = Pattern.compile("CTPatient/ID eq \\d+");
-			Matcher fullMatcher = fullPattern.matcher(filterText);
-			if (fullMatcher.find()) {
-				Pattern numberPattern = Pattern.compile("\\d+");
-				Matcher numberMatcher = numberPattern.matcher(filterText);
-				if (numberMatcher.find()) {
-					int beginIndex = numberMatcher.start();
-					int endIndex = numberMatcher.end();
-					String numberStr = filterText.substring(beginIndex,
-							endIndex);
-					return EntityConvertUtil.getLong(numberStr);
-				}
-			}
-		}
-		return null;
-	}
-
-	private Long getOrderFilterDoctorID(FilterOption filterOption) {
-		if (filterOption != null && filterOption.getText() != null) {
-			String filterText = filterOption.getText();
-			Pattern fullPattern = Pattern.compile("CTDoctor/ID eq \\d+");
-			Matcher fullMatcher = fullPattern.matcher(filterText);
-			if (fullMatcher.find()) {
-				Pattern numberPattern = Pattern.compile("\\d+");
-				Matcher numberMatcher = numberPattern.matcher(filterText);
-				if (numberMatcher.find()) {
-					int beginIndex = numberMatcher.start();
-					int endIndex = numberMatcher.end();
-					String numberStr = filterText.substring(beginIndex,
-							endIndex);
-					return EntityConvertUtil.getLong(numberStr);
-				}
-			}
 		}
 		return null;
 	}

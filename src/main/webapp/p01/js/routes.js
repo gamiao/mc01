@@ -7,127 +7,113 @@ angular.module('app.routes', [])
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
   $stateProvider
-    
-  
 
-      .state('mc-sidemenu.indexPage', {
+  .state('p-sm.indexPage', {
     url: '/indexPage',
     views: {
-      'mc-sidemenu': {
+      'p-sm': {
         templateUrl: 'templates/indexPage.html',
         controller: 'indexPageCtrl'
       }
     }
   })
 
-  .state('mc-sidemenu.openOrderPage', {
+  .state('p-sm.openOrderPage', {
     url: '/openOrderPage',
     views: {
-      'mc-sidemenu': {
+      'p-sm': {
         templateUrl: 'templates/openOrderPage.html',
         controller: 'openOrderPageCtrl'
       }
     }
   })
 
-  .state('mc-sidemenu.historyOrderPage', {
+  .state('p-sm.historyOrderPage', {
     url: '/historyOrderPage',
     views: {
-      'mc-sidemenu': {
+      'p-sm': {
         templateUrl: 'templates/historyOrderPage.html',
         controller: 'historyOrderPageCtrl'
       }
     }
   })
 
-  .state('mc-sidemenu', {
-    url: '/mc-sidemenu',
-    templateUrl: 'templates/mc-sidemenu.html',
+  .state('p-sm', {
+    url: '/p-sm',
+    templateUrl: 'templates/p-sm.html',
     abstract:true
   })
 
-  .state('mc-sidemenu.patientInfoPage', {
+  .state('p-sm.patientInfoPage', {
     url: '/patientInfoPage',
     views: {
-      'mc-sidemenu': {
+      'p-sm': {
         templateUrl: 'templates/patientInfoPage.html',
         controller: 'patientInfoPageCtrl'
       }
     }
   })
 
-  .state('mc-sidemenu.orderDetailPage', {
+  .state('p-sm.orderDetailPage', {
     url: '/orderDetailPage',
     views: {
-      'mc-sidemenu': {
+      'p-sm': {
         templateUrl: 'templates/orderDetailPage.html',
         controller: 'orderDetailPageCtrl'
       }
     }
   })
 
-  .state('mc-sidemenu.createOrderPage', {
+  .state('p-sm.createOrderPage', {
     url: '/createOrderPage',
     views: {
-      'mc-sidemenu': {
+      'p-sm': {
         templateUrl: 'templates/createOrderPage.html',
         controller: 'createOrderPageCtrl'
       }
     }
   })
 
-  .state('mc-sidemenu.patientUpdatePage', {
+  .state('p-sm.patientUpdatePage', {
     url: '/patientUpdatePage',
     views: {
-      'mc-sidemenu': {
+      'p-sm': {
         templateUrl: 'templates/patientUpdatePage.html',
         controller: 'patientUpdatePageCtrl'
       }
     }
   })
 
-  .state('mc-sidemenu.imageUploadPage', {
+  .state('p-sm.imageUploadPage', {
     url: '/imageUploadPage',
     views: {
-      'mc-sidemenu': {
+      'p-sm': {
         templateUrl: 'templates/imageUploadPage.html',
         controller: 'imageUploadPageCtrl'
       }
     }
   })
 
-  .state('mc-sidemenu.1003452', {
-    url: '/indexPage0',
-    views: {
-      'mc-sidemenu': {
-        templateUrl: 'templates/1003452.html',
-        controller: '1003452Ctrl'
-      }
-    }
-  })
-
-  .state('mc-sidemenu.orderConvsPage', {
+  .state('p-sm.orderConvsPage', {
     url: '/orderConvsPage',
     views: {
-      'mc-sidemenu': {
+      'p-sm': {
         templateUrl: 'templates/orderConvsPage.html',
         controller: 'orderConvsPageCtrl'
       }
     }
   })
 
-  .state('mc-sidemenu.1003453', {
-    url: '/page9',
+  .state('p-sm.createOrderConvPage', {
+    url: '/createOrderConvPage',
     views: {
-      'mc-sidemenu': {
-        templateUrl: 'templates/1003453.html',
-        controller: '1003453Ctrl'
+      'p-sm': {
+        templateUrl: 'templates/createOrderConvPage.html',
+        controller: 'createOrderConvPageCtrl'
       }
     }
   })
 
-$urlRouterProvider.otherwise('/mc-sidemenu/indexPage')
-
-  
+$urlRouterProvider.otherwise('/p-sm/indexPage')
 
 });

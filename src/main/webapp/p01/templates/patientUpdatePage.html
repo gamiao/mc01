@@ -7,7 +7,7 @@
 		height: 50%; margin-left: auto; margin-right: auto; 
 		border-radius: 50%;">
             </div>
-			<button ui-sref="mc-sidemenu.imageUploadPage" id="patientUpdatePage-button13" class=" button button-balanced button-small icon ion-ios-cloud-upload ">上传新头像</button>
+			<button ui-sref="p-sm.imageUploadPage" id="patientUpdatePage-button13" class=" button button-balanced button-small icon ion-ios-cloud-upload ">上传新头像</button>
         </div>
         <form id="patientUpdatePage-infoForm" class="list ">
             <label class="item item-input " id="form-Login">
@@ -42,7 +42,7 @@
                 <input type="tel" value="{{patient.Mobile}}" ng-model="patient.Mobile">
             </label>
         </form>
-        <a ui-sref="mc-sidemenu.patientInfoPage" id="updateButton" class=" button button-positive  button-block " ng-click="updatePatient()">更新</a>
+        <a ui-sref="p-sm.patientInfoPage" id="updateButton" class=" button button-positive  button-block " ng-click="updatePatient()">更新</a>
 		
 			<form id="upload" method="POST" action="http://localhost:58080/mc01/spring//uploadImg/Doctor/3/upsert" enctype="multipart/form-data">
         File to upload: <input type="file" name="file""><br />

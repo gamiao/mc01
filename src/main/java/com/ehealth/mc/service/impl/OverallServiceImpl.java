@@ -124,13 +124,13 @@ public class OverallServiceImpl implements OverallService {
 
 		if (edmEntitySet.getName().equals(McEdmUtil.ES_DOCTORS_NAME)) {
 			return createEntity(edmEntitySet, edmEntityType, requestEntity,
-					rawServiceUri, odata, edm);
+					rawServiceUri, odata, edm, null);
 		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_PATIENTS_NAME)) {
 			return createEntity(edmEntitySet, edmEntityType, requestEntity,
-					rawServiceUri, odata, edm);
+					rawServiceUri, odata, edm, null);
 		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_ORDERS_NAME)) {
 			return createEntity(edmEntitySet, edmEntityType, requestEntity,
-					rawServiceUri, odata, edm);
+					rawServiceUri, odata, edm, null);
 		}
 
 		return null;
@@ -144,13 +144,13 @@ public class OverallServiceImpl implements OverallService {
 
 		if (edmEntitySet.getName().equals(McEdmUtil.ES_DOCTORS_NAME)) {
 			return createEntity(edmEntitySet, edmEntityType, entityToCreate,
-					rawServiceUri, odata, edm);
+					rawServiceUri, odata, edm, null);
 		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_PATIENTS_NAME)) {
 			return createEntity(edmEntitySet, edmEntityType, entityToCreate,
-					rawServiceUri, odata, edm);
+					rawServiceUri, odata, edm, null);
 		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_ORDERS_NAME)) {
 			return createEntity(edmEntitySet, edmEntityType, entityToCreate,
-					rawServiceUri, odata, edm);
+					rawServiceUri, odata, edm, null);
 		}
 
 		return null;
@@ -158,8 +158,8 @@ public class OverallServiceImpl implements OverallService {
 
 	public Entity createEntity(EdmEntitySet edmEntitySet,
 			EdmEntityType edmEntityType, Entity entity,
-			final String rawServiceUri, OData odata, ServiceMetadata edm)
-			throws ODataApplicationException {
+			final String rawServiceUri, OData odata, ServiceMetadata edm,
+			Entity parentEntity) throws ODataApplicationException {
 
 		Entity createdEntity = null;
 
@@ -171,8 +171,13 @@ public class OverallServiceImpl implements OverallService {
 		newEntity.getProperties().addAll(entity.getProperties());
 		// newEntity.setId(EntityUtil.createId(newEntity, "ID"));
 
-		createdEntity = createEntity(newEntity);
+		if (parentEntity == null) {
 
+			createdEntity = createEntity(newEntity);
+		} else {
+
+			createdEntity = createEntity(newEntity, parentEntity);
+		}
 		// 2.1.) Apply binding links
 		for (final Link link : entity.getNavigationBindings()) {
 			final EdmNavigationProperty edmNavigationProperty = edmEntityType
@@ -241,6 +246,19 @@ public class OverallServiceImpl implements OverallService {
 		} else if (newEntity.getType().equals(
 				McEdmUtil.ET_ORDER_FQN.getFullQualifiedNameAsString())) {
 			return EntityConvertUtil.getEntity(orderService.save(newEntity));
+		}
+		return null;
+	}
+
+	private Entity createEntity(final Entity newEntity,
+			final Entity parentEntity) {
+		if (parentEntity.getType().equals(
+				McEdmUtil.ET_ORDER_FQN.getFullQualifiedNameAsString())) {
+			if (newEntity.getType().equals(
+					McEdmUtil.ET_ORDER_CONV_FQN.getFullQualifiedNameAsString())) {
+				return EntityConvertUtil.getEntity(orderService
+						.createOrderConversaction(newEntity, parentEntity));
+			}
 		}
 		return null;
 	}
@@ -410,5 +428,20 @@ public class OverallServiceImpl implements OverallService {
 
 		return null;
 
+	}
+
+	@Override
+	public Entity createCascatedEntityData(Entity parentEntity,
+			ODataRequest request, EdmEntitySet edmEntitySet,
+			Entity requestEntity, OData odata, ServiceMetadata edm)
+			throws ODataApplicationException {
+
+		EdmEntityType edmEntityType = edmEntitySet.getEntityType();
+		String rawServiceUri = request.getRawBaseUri();
+		if (edmEntitySet.getName().equals(McEdmUtil.ES_ORDER_CONVS_NAME)) {
+			return createEntity(edmEntitySet, edmEntityType, requestEntity,
+					rawServiceUri, odata, edm, parentEntity);
+		}
+		return null;
 	}
 }

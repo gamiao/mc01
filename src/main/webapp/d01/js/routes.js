@@ -116,12 +116,12 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('d-sm.1003453', {
-    url: '/page9',
+  .state('d-sm.createOrderConvPage', {
+    url: '/createOrderConvPage',
     views: {
       'd-sm': {
-        templateUrl: 'templates/1003453.html',
-        controller: '1003453Ctrl'
+        templateUrl: 'templates/createOrderConvPage.html',
+        controller: 'createOrderConvPageCtrl'
       }
     }
   })

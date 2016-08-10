@@ -1,7 +1,7 @@
 <ion-view title="进行中订单" id="openOrderPage" class=" ">
     <ion-content padding="true" class="has-header">
         <ion-list id="historyOrderPage-list3" class=" " ng-repeat="order in results">
-            <ion-item class="item-thumbnail-left" ui-sref="mc-sidemenu.orderDetailPage" ng-click="getDetail(order)" >
+            <ion-item class="item-thumbnail-left" ui-sref="p-sm.orderDetailPage" ng-click="getDetail(order)" >
                 <img src="../uploadedImg/{{order.CTDoctor.Avatar}}">
                 <p>单号：{{order.ID}}</p>
 				<h2>咨询：{{order.CTDoctor.Name}} （<strong>{{order.Status}}</strong>）</h2>

@@ -6,17 +6,13 @@ angular.module('app.controllers', [])
 
 .service('patientService', [function($odataresource){
 	this.currentPatientID = 10;
-
 	this.currentPatient;
 }])
 
 .service('orderService', [function(){
 	this.currentOrder;
-	
 	this.isExistingOrder;
 	this.isDoctorFixed;
-	
-	
 }])
 .controller('indexPageCtrl', function($scope, $state, $ionicActionSheet, orderService) {
 	
@@ -31,7 +27,7 @@ angular.module('app.controllers', [])
 		  buttonClicked: function(index) {
 			  orderService.isExistingOrder = false;
 			  orderService.isDoctorFixed = (1===index);
-			  $state.go('mc-sidemenu.createOrderPage');
+			  $state.go('p-sm.createOrderPage');
 		  }
 		});
 	}
@@ -146,10 +142,7 @@ angular.module('app.controllers', [])
         var ft = new FileTransfer();
         ft.upload(myImg, encodeURI("https://example.com/posts/"), onUploadSuccess, onUploadFail, options);
     }
-  
-  
 })
-   
    
 .controller('openOrderPageCtrl', function($scope,$odataresource,urlService,orderService,patientService) {
     $scope.results = 
@@ -162,10 +155,6 @@ angular.module('app.controllers', [])
   $scope.getDetail=function(ObjectData){
 	orderService.currentOrder=ObjectData;
   }
-})
-   
-.controller('100345Ctrl', function($scope) {
-
 })
    
 .controller('createOrderPageCtrl', function($scope, $state, $odataresource, $stateParams, urlService, orderService, patientService) {
@@ -199,7 +188,7 @@ angular.module('app.controllers', [])
 		myOrder.$save(
 		    function(myOrder){
 			orderService.currentOrder = myOrder;
-			$state.go('mc-sidemenu.orderDetailPage');
+			$state.go('p-sm.orderDetailPage');
 			},function(myOrder){
 			
 			}
@@ -207,11 +196,26 @@ angular.module('app.controllers', [])
 		);
 	}
 })
-.controller('1003452Ctrl', function($scope) {
-
-})
    
-.controller('1003453Ctrl', function($scope) {
-
+.controller('createOrderConvPageCtrl', function($scope, $state, $odataresource, $stateParams, urlService, orderService) {
+	$scope.currentOrder=orderService.currentOrder;
+	tempOrderConv = {};
+	$scope.currentOrderConv = tempOrderConv;
+	
+	$scope.createOrderConv =function(tempOrderConv){
+	    OrderConv = $odataresource(urlService.baseURL  + 'Orders(' + orderService.currentOrder.ID + ')/OrderConvs', 'id');
+		
+		var myOrderConv = new OrderConv();
+		myOrderConv.Type = 'TEXT';
+		myOrderConv.Owner = 'P';
+		myOrderConv.Description = tempOrderConv.Description;
+		
+		myOrderConv.$save(
+		    function(myOrderConv){
+				$state.go('p-sm.orderConvsPage');
+			},function(myOrderConv){
+			}
+		);
+	}
 })
  

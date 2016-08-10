@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import org.apache.olingo.commons.api.data.ComplexValue;
 import org.apache.olingo.commons.api.data.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ehealth.mc.bo.Doctor;
+import com.ehealth.mc.bo.OrderConversation;
 import com.ehealth.mc.bo.OrderDetail;
 import com.ehealth.mc.bo.OrderHeader;
 import com.ehealth.mc.bo.Patient;
+import com.ehealth.mc.dao.OrderConversationDAO;
 import com.ehealth.mc.dao.OrderDetailDAO;
 import com.ehealth.mc.dao.OrderHeaderDAO;
 import com.ehealth.mc.service.DoctorService;
@@ -26,6 +26,9 @@ import com.ehealth.mc.service.util.EntityConvertUtil;
 @Service("orderService")
 @Transactional(readOnly = true)
 public class OrderServiceImpl implements OrderService {
+
+	@Autowired
+	private OrderConversationDAO orderConversationDAO;
 
 	@Autowired
 	private OrderHeaderDAO orderHeaderDAO;
@@ -167,6 +170,25 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public List<OrderHeader> findByDoctorIDNotArchived(Long id) {
 		return orderHeaderDAO.findByDoctorIDNotArchived(id);
+	}
+
+	@Override
+	@Transactional
+	public OrderConversation createOrderConversaction(Entity newEntity,
+			Entity parentEntity) {
+
+		Long orderHeaderID = EntityConvertUtil.getID(parentEntity);
+		OrderHeader orderHeader = findById(orderHeaderID);
+
+		if (orderHeader != null) {
+			OrderConversation oc = EntityConvertUtil
+					.getOrderConversation(newEntity);
+			oc.setOrderHeader(orderHeader);
+			orderConversationDAO.save(oc);
+
+			return oc;
+		}
+		return null;
 	}
 
 }

@@ -35,6 +35,9 @@ public class OrderConversation implements Serializable, Persistable<Long> {
 	@Column(name = "type")
 	private String type;
 
+	@Column(name = "owner")
+	private String owner;
+
 	@Column(name = "title")
 	private String title;
 
@@ -105,6 +108,14 @@ public class OrderConversation implements Serializable, Persistable<Long> {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 
 	@Override

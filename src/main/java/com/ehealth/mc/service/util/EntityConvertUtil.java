@@ -213,6 +213,8 @@ public class EntityConvertUtil {
 					.getId()));
 			e.addProperty(new Property(null, "Type", ValueType.PRIMITIVE, d
 					.getType()));
+			e.addProperty(new Property(null, "Owner", ValueType.PRIMITIVE, d
+					.getOwner()));
 			e.addProperty(new Property(null, "Title", ValueType.PRIMITIVE, d
 					.getTitle()));
 			e.addProperty(new Property(null, "Description",
@@ -228,13 +230,27 @@ public class EntityConvertUtil {
 		return null;
 	}
 
+	public static OrderConversation getOrderConversation(Entity e) {
+		if (e != null) {
+			OrderConversation obj = new OrderConversation();
+			obj.setCreateTime(new Date());
+			obj.setDescription(getPropertyStringValue(e, "Description"));
+			obj.setType(getPropertyStringValue(e, "Type"));
+			obj.setTitle(getPropertyStringValue(e, "Title"));
+			obj.setOwner(getPropertyStringValue(e, "Owner"));
+			return obj;
+		}
+		return null;
+	}
+
 	public static Entity getOrderConvEntityByOrderDetail(OrderDetail d) {
 		if (d != null) {
 			Entity e = new Entity();
 			e.addProperty(new Property(null, "ID", ValueType.PRIMITIVE, d
 					.getId()));
-			e.addProperty(new Property(null, "Type", ValueType.PRIMITIVE, d
-					.getType()));
+			e.addProperty(new Property(null, "Owner", ValueType.PRIMITIVE, "P"));
+			e.addProperty(new Property(null, "Type", ValueType.PRIMITIVE,
+					"TEXT"));
 			e.addProperty(new Property(null, "Title", ValueType.PRIMITIVE, d
 					.getTitle()));
 			e.addProperty(new Property(null, "Description",

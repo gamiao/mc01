@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.olingo.commons.api.data.Entity;
 
+import com.ehealth.mc.bo.OrderConversation;
 import com.ehealth.mc.bo.OrderHeader;
 
 public interface OrderService {
@@ -29,5 +30,8 @@ public interface OrderService {
 	List<OrderHeader> findByPatientIDAndStatus(Long id, String status);
 
 	List<OrderHeader> findByDoctorIDAndStatus(Long id, String status);
+
+	OrderConversation createOrderConversaction(Entity newEntity,
+			Entity parentEntity);
 
 }

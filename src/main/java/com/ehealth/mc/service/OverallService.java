@@ -11,7 +11,6 @@ import org.apache.olingo.server.api.ODataRequest;
 import org.apache.olingo.server.api.ServiceMetadata;
 import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.api.uri.UriParameter;
-import org.springframework.web.bind.annotation.PathVariable;
 
 public interface OverallService {
 
@@ -31,5 +30,9 @@ public interface OverallService {
 
 	String updateEntityAfterFileUploaded(String entityType, String entityID,
 			String method, String fileName);
+
+	Entity createCascatedEntityData(Entity firstEntity, ODataRequest request,
+			EdmEntitySet edmEntitySet, Entity requestEntity, OData odata,
+			ServiceMetadata serviceMetadata) throws ODataApplicationException;
 
 }

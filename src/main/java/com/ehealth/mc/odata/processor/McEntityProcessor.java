@@ -128,29 +128,82 @@ public class McEntityProcessor implements EntityProcessor, MediaEntityProcessor 
 		// 1. Retrieve the entity type from the URI
 		EdmEntitySet edmEntitySet = EntityUtil.getEdmEntitySet(uriInfo);
 		EdmEntityType edmEntityType = edmEntitySet.getEntityType();
-
-		// 2. create the data in backend
-		// 2.1. retrieve the payload from the POST request for the entity to
-		// create and deserialize it
 		InputStream requestInputStream = request.getBody();
 		ODataDeserializer deserializer = this.odata
 				.createDeserializer(requestFormat);
-		DeserializerResult result = deserializer.entity(requestInputStream,
-				edmEntityType);
-		Entity requestEntity = result.getEntity();
-		// 2.2 do the creation in backend, which returns the newly created
-		// entity
 
-		Entity createdEntity = createdEntity = this.overallService
-				.createEntityData(request, edmEntitySet, requestEntity, odata,
-						serviceMetadata);
+		List<UriResource> resourceParts = uriInfo.getUriResourceParts();
+		int segmentCount = resourceParts.size();
 
-		// 3. serialize the response (we have to return the created entity)
-		ContextURL contextUrl = ContextURL.with().entitySet(edmEntitySet)
-				.build();
-		EntitySerializerOptions options = EntitySerializerOptions.with()
-				.contextURL(contextUrl).build();
-		// expand and select currently not supported
+		Entity createdEntity = null;
+
+		EntitySerializerOptions options = null;
+
+		if (segmentCount == 1) {
+
+			// 2. create the data in backend
+			// 2.1. retrieve the payload from the POST request for the entity to
+			// create and deserialize it
+			DeserializerResult result = deserializer.entity(requestInputStream,
+					edmEntityType);
+			Entity requestEntity = result.getEntity();
+			createdEntity = this.overallService.createEntityData(request,
+					edmEntitySet, requestEntity, odata, serviceMetadata);
+
+			ContextURL contextUrl = ContextURL.with().entitySet(edmEntitySet)
+					.build();
+			options = EntitySerializerOptions.with().contextURL(contextUrl)
+					.build();
+
+		} else if (segmentCount == 2) {
+
+			UriResource firstResource = resourceParts.get(0);
+			if (!(firstResource instanceof UriResourceEntitySet)) {
+				throw new ODataApplicationException(
+						"Only EntitySet is supported",
+						HttpStatusCode.NOT_IMPLEMENTED.getStatusCode(),
+						Locale.ENGLISH);
+			}
+			UriResourceEntitySet uriResourceEntitySet = (UriResourceEntitySet) firstResource;
+			EdmEntitySet startEdmEntitySet = uriResourceEntitySet
+					.getEntitySet();
+
+			UriResourceEntitySet firstResourceEntitySet = (UriResourceEntitySet) firstResource;
+			EdmEntitySet firstEdmEntitySet = firstResourceEntitySet
+					.getEntitySet();
+			List<UriParameter> firstKeyPredicates = firstResourceEntitySet
+					.getKeyPredicates();
+			Entity firstEntity = overallService.readEntityData(
+					firstEdmEntitySet, firstKeyPredicates);
+			firstEntity.setType(edmEntityType.getFullQualifiedName()
+					.getFullQualifiedNameAsString());
+
+			UriResource secondSegment = resourceParts.get(1);
+			if (firstEntity != null
+					&& secondSegment instanceof UriResourceNavigation) {
+				UriResourceNavigation uriResourceNavigation = (UriResourceNavigation) secondSegment;
+				EdmNavigationProperty edmNavigationProperty = uriResourceNavigation
+						.getProperty();
+				edmEntitySet = EntityUtil.getNavigationTargetEntitySet(
+						startEdmEntitySet, edmNavigationProperty);
+				edmEntityType = edmEntitySet.getEntityType();
+
+				DeserializerResult result = deserializer.entity(
+						requestInputStream, edmEntityType);
+				Entity requestEntity = result.getEntity();
+
+				createdEntity = this.overallService.createCascatedEntityData(
+						firstEntity, request, edmEntitySet, requestEntity,
+						odata, serviceMetadata);
+				ContextURL contextUrl = ContextURL.with()
+						.entitySet(edmEntitySet).build();
+				final String id = request.getRawBaseUri() + "/"
+						+ edmEntitySet.getName();
+				options = EntitySerializerOptions.with().contextURL(contextUrl)
+						.build();
+			}
+
+		}
 
 		ODataSerializer serializer = this.odata
 				.createSerializer(responseFormat);
@@ -241,9 +294,7 @@ public class McEntityProcessor implements EntityProcessor, MediaEntityProcessor 
 
 		// Analyze the URI segments
 		if (segmentCount == 1) { // no navigation
-			responseEdmEntitySet = startEdmEntitySet; // since we have only one
-														// segment
-
+			responseEdmEntitySet = startEdmEntitySet;
 			// 2. step: retrieve the data from backend
 			List<UriParameter> keyPredicates = uriResourceEntitySet
 					.getKeyPredicates();

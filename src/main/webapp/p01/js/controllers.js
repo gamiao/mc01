@@ -9,18 +9,22 @@ angular.module('app.controllers', [])
 	this.currentPatient;
 }])
 
+.service('doctorService', [function($odataresource){
+	this.allDoctorList;
+}])
+
 .service('orderService', [function(){
 	this.currentOrder;
 	this.isExistingOrder;
 	this.isDoctorFixed;
 }])
-.controller('indexPageCtrl', function($scope, $state, $ionicActionSheet, orderService) {
-	
+.controller('indexPageCtrl', function($scope, $state, urlService, $odataresource, $ionicModal, $ionicActionSheet, orderService, doctorService) {
 	
 	$scope.createOrder = function() {
 		$scope.hideSheet = $ionicActionSheet.show({
 		  buttons: [
-			{ text: '指定医生' }
+       { text: '<b>不指定医生</b>' },
+       { text: '<b>指定医生</b>' }
 		  ],
 		  titleText: '新建订单',
 		  cancelText: '取消',
@@ -83,7 +87,7 @@ angular.module('app.controllers', [])
   }
 })
    
-.controller('orderDetailPageCtrl', function($scope,$odataresource, $stateParams, urlService,orderService) {		
+.controller('orderDetailPageCtrl', function($scope, $state, $odataresource, $stateParams, urlService,orderService) {		
   $scope.currentOrder=orderService.currentOrder;
   page = {};
   page.title = '已下单';
@@ -95,6 +99,7 @@ angular.module('app.controllers', [])
   $scope.page = page;
   $scope.getConvs=function(ObjectData){
 	orderService.currentOrder=ObjectData;
+	$state.go('p-sm.orderConvsPage');
   }
 })
    
@@ -188,7 +193,10 @@ angular.module('app.controllers', [])
   }
 })
    
-.controller('createOrderPageCtrl', function($scope, $state, $odataresource, $stateParams, urlService, orderService, patientService) {
+.controller('createOrderPageCtrl', function($scope,$ionicModal, $state, $odataresource, $stateParams, urlService, orderService, doctorService, patientService) {
+	$scope.isDoctorFixed = orderService.isDoctorFixed;
+
+	
 	if(orderService.isExistingOrder){
 		$scope.pageTitle = "编辑订单";
 		$scope.buttonLabel = "提交";
@@ -226,6 +234,52 @@ angular.module('app.controllers', [])
 		
 		);
 	}
+	
+	allDoctors = 
+        $odataresource(urlService.baseURL  + "Doctors")
+        .odata()
+        .query();
+	
+  $ionicModal.fromTemplateUrl('templates/doctorSelectionPage.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modal = modal;
+	$scope.modal.scope.doctors = allDoctors;
+	$scope.modal.scope.pageTitle = '请选择一位医生';
+	$scope.modal.scope.setOption = function(doctor) {
+		$scope.currentOrder.CTDoctor = doctor;
+		$scope.modal.hide();
+	}
+	$scope.modal.scope.returnClicked = function() {
+		$scope.modal.hide();
+	}
+  $scope.openModal = function() {
+    $scope.modal.show();
+  };
+  $scope.closeModal = function() {
+    $scope.modal.hide();
+  };
+  // Cleanup the modal when we're done with it!
+  $scope.$on('$destroy', function() {
+    $scope.modal.remove();
+  });
+  // Execute action on hide modal
+  $scope.$on('modal.hidden', function() {
+    // Execute action
+  });
+  // Execute action on remove modal
+  $scope.$on('modal.removed', function() {
+    // Execute action
+  });
+  
+  });
+  
+    $scope.$on('$ionicView.enter', function() {
+     // Code you want executed every time view is opened
+     $scope.openModal();
+  })
+  
 })
    
 .controller('createOrderConvPageCtrl', function($scope, $state, $odataresource, $stateParams, urlService, orderService) {
@@ -243,7 +297,7 @@ angular.module('app.controllers', [])
 		
 		myOrderConv.$save(
 		    function(myOrderConv){
-				$state.go('p-sm.orderConvsPage',null,{reload:true});
+				$state.go('p-sm.orderDetailPage');
 			},function(myOrderConv){
 			}
 		);

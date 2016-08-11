@@ -1,7 +1,7 @@
 <ion-view title="{{page.title}}（{{currentOrder.ID}}）" id="orderDetail" class=" ">
     <ion-content padding="true" class="has-header">
         <ion-list id="100345-list8" class=" ">
-            <ion-item class="item-avatar item-icon-right" id="100345-list-item6" ui-sref="p-sm.orderConvsPage" ng-click="getConvs(currentOrder)" >
+            <ion-item class="item-avatar item-icon-right" id="100345-list-item6" ng-click="getConvs(currentOrder)" >
                 <img src="../uploadedImg/{{currentOrder.CTDoctor.Avatar}}">
                 <h2>应诊：{{currentOrder.CTDoctor.Name}}</h2>
                 <p>状态：<strong>{{currentOrder.Status}}</strong></p>

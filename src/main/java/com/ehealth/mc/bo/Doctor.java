@@ -57,9 +57,20 @@ public class Doctor implements Serializable, Persistable<Long> {
 
 	@Column(name = "medical_level")
 	private String medicalLevel;
-	
+
 	@Column(name = "create_time")
 	private Date createTime;
+
+	@Column(name = "is_deleted")
+	private String isDeleted;
+
+	public String getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(String isDeleted) {
+		this.isDeleted = isDeleted;
+	}
 
 	public Long getId() {
 		return id;

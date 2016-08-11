@@ -19,6 +19,8 @@ public interface OrderService {
 
 	List<OrderHeader> findByDoctorID(Long id);
 
+	List<OrderHeader> findByDoctorIDForPickUp(Long id);
+
 	List<OrderHeader> findByPatientIDArchived(Long id);
 
 	List<OrderHeader> findByDoctorIDArchived(Long id);

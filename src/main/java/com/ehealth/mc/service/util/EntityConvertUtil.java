@@ -403,7 +403,7 @@ public class EntityConvertUtil {
 			d.setId(id);
 			if (id == null) {
 				d.setCreateTime(new Date());
-				d.setStatus("New");
+				d.setStatus("new");
 				d.setIsArchived("N");
 				d.setIsEnabled("Y");
 				d.setIsDeleted("N");

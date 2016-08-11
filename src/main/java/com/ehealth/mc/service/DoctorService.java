@@ -16,4 +16,6 @@ public interface DoctorService {
 
 	Doctor updateAvatar(String avatar, Long id);
 
+	List<Doctor> findByIsDeleted(String isDeleted);
+
 }

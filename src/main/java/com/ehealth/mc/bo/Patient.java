@@ -58,6 +58,17 @@ public class Patient implements Serializable, Persistable<Long> {
 	@Column(name = "create_time")
 	private Date createTime;
 
+	@Column(name = "is_deleted")
+	private String isDeleted;
+
+	public String getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(String isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
 	public Long getId() {
 		return id;
 	}

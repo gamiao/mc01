@@ -191,4 +191,24 @@ public class OrderServiceImpl implements OrderService {
 		return null;
 	}
 
+	@Override
+	public List<OrderHeader> findByDoctorIDForPickUp(Long id) {
+		List<OrderHeader> orderToBeConfirmed = orderHeaderDAO
+				.findByDoctorIDAndStatus(id, "new");
+		List<OrderHeader> orderToPickUp = orderHeaderDAO
+				.findByDoctorIDAndStatus(null, "new");
+		if (null == orderToBeConfirmed && null == orderToPickUp) {
+			return null;
+		}
+
+		List<OrderHeader> resultList = new ArrayList<OrderHeader>();
+		if (orderToBeConfirmed != null && orderToBeConfirmed.size() > 0) {
+			resultList.addAll(orderToBeConfirmed);
+		}
+		if (orderToPickUp != null && orderToPickUp.size() > 0) {
+			resultList.addAll(orderToPickUp);
+		}
+		return resultList;
+	}
+
 }

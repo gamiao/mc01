@@ -36,6 +36,37 @@ angular.module('app.controllers', [])
 	  $scope.imageSrc  = 'http://localhost:28080/mc/img/k9n0gpcbRiFIUhLF7S8Q_zuhuai2.jpg';
       $scope.openModal();
   }
+  
+  
+  $scope.selectables = [
+    1, 2, 3
+  ];
+
+  $scope.longList  = [];
+  for(var i=0;i<1000; i++){
+    $scope.longList.push(i);
+  }
+
+  $scope.selectableNames =  [
+    { name : "Mauro", role : "black hat"}, 
+    { name : "Silvia", role : "pineye"},
+    { name : "Merlino", role : "little canaglia"},
+  ];
+
+  $scope.someSetModel = 'Mauro';
+
+  $scope.getOpt = function(option){
+    return option.name + ":" + option.role;
+  };
+  
+  $scope.shoutLoud = function(newValuea, oldValue){
+    alert("changed from " + JSON.stringify(oldValue) + " to " + JSON.stringify(newValuea));
+  };
+  
+  $scope.shoutReset = function(){
+    alert("value was reset!");
+  };
+  
 
 })
    
@@ -188,7 +219,7 @@ angular.module('app.controllers', [])
 		myOrder.$save(
 		    function(myOrder){
 			orderService.currentOrder = myOrder;
-			$state.go('p-sm.orderDetailPage');
+			$state.go('p-sm.orderDetailPage',null,{reload:true});
 			},function(myOrder){
 			
 			}
@@ -212,10 +243,42 @@ angular.module('app.controllers', [])
 		
 		myOrderConv.$save(
 		    function(myOrderConv){
-				$state.go('p-sm.orderConvsPage');
+				$state.go('p-sm.orderConvsPage',null,{reload:true});
 			},function(myOrderConv){
 			}
 		);
 	}
 })
+
+.controller('MainCtrl', ['$scope', function ($scope) {
+  $scope.selectables = [
+    1, 2, 3
+  ];
+
+  $scope.longList  = [];
+  for(var i=0;i<1000; i++){
+    $scope.longList.push(i);
+  }
+
+  $scope.selectableNames =  [
+    { name : "Mauro", role : "black hat"}, 
+    { name : "Silvia", role : "pineye"},
+    { name : "Merlino", role : "little canaglia"},
+  ];
+
+  $scope.someSetModel = 'Mauro';
+
+  $scope.getOpt = function(option){
+    return option.name + ":" + option.role;
+  };
+  
+  $scope.shoutLoud = function(newValuea, oldValue){
+    alert("changed from " + JSON.stringify(oldValue) + " to " + JSON.stringify(newValuea));
+  };
+  
+  $scope.shoutReset = function(){
+    alert("value was reset!");
+  };
+  
+}])
  

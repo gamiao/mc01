@@ -42,5 +42,6 @@ public interface OrderHeaderDAO extends CrudRepository<OrderHeader, Integer> {
 	@Query("select oh from OrderHeader oh join oh.doctor d where (d.id = :id and oh.status = :status)")
 	List<OrderHeader> findByDoctorIDAndStatus(@Param("id") Long id,
 			@Param("status") String status);
+	
 
 }

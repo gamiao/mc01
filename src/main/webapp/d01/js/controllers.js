@@ -203,7 +203,7 @@ angular.module('app.controllers', [])
 		
 		myOrderConv.$save(
 		    function(myOrderConv){
-				$state.go('d-sm.orderConvsPage');
+				$state.go('d-sm.orderConvsPage',null,{reload:true});
 			},function(myOrderConv){
 			}
 		);

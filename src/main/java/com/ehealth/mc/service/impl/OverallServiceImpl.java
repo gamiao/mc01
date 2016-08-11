@@ -54,7 +54,7 @@ public class OverallServiceImpl implements OverallService {
 
 		if (McEdmUtil.ES_DOCTORS_NAME.equals(edmEntitySet.getName())) {
 			List<Entity> entityList = entityCollection.getEntities();
-			List<Doctor> queryResult = doctorService.findAll();
+			List<Doctor> queryResult = doctorService.findByIsDeleted("N");
 			entityList.addAll(EntityConvertUtil
 					.getDoctorEntityList(queryResult));
 			return entityCollection;

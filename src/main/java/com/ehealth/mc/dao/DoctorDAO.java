@@ -18,4 +18,6 @@ public interface DoctorDAO extends CrudRepository<Doctor, Integer> {
 	@Query("update Doctor d set d.avatar = ?1 where d.id = ?2")
 	int setAvatar(String avatar, Long id);
 
+	List<Doctor> findByIsDeleted(String isDeleted);
+
 }

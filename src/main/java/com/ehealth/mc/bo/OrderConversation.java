@@ -46,9 +46,20 @@ public class OrderConversation implements Serializable, Persistable<Long> {
 
 	@Column(name = "pictures")
 	private String pictures;
-	
+
 	@Column(name = "create_time")
 	private Date createTime;
+
+	@Column(name = "is_deleted")
+	private String isDeleted;
+
+	public String getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(String isDeleted) {
+		this.isDeleted = isDeleted;
+	}
 
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "oh_id", referencedColumnName = "id")

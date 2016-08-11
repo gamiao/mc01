@@ -76,4 +76,9 @@ public class DoctorServiceImpl implements DoctorService {
 		return null;
 	}
 
+	@Override
+	public List<Doctor> findByIsDeleted(String isDeleted) {
+		return doctorDAO.findByIsDeleted(isDeleted);
+	}
+
 }

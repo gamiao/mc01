@@ -10,6 +10,6 @@
 				<textarea style="width:100% " rows="6" placeholder="请填写病情....." ng-model="currentOrder.CTDetail.Description">{{currentOrder.CTDetail.Description}}</textarea>
 			</ion-item>
         </form>
-        <a id="createOrderPage-button" class=" button button-positive  button-block " ng-click="createOrder(currentOrder)" >{{buttonLabel}}</a>
+        <a id="createOrderPage-button" class=" button button-positive  button-block "  ui-sref="p-sm.orderConvsPage" ng-click="createOrder(currentOrder)" >{{buttonLabel}}</a>
     </ion-content>
 </ion-view>

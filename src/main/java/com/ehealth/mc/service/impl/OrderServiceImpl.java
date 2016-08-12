@@ -62,16 +62,12 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public OrderHeader findById(Long id) {
-		List<OrderHeader> resultList = orderHeaderDAO.findById(id);
-		if (resultList != null && resultList.size() == 1) {
-			return resultList.get(0);
-		}
-		return null;
+		return orderHeaderDAO.findOne(id);
 	}
 
 	@Override
 	@Transactional
-	public OrderHeader save(Entity e) {
+	public OrderHeader create(Entity e) {
 		Patient patient = null;
 		Doctor doctor = null;
 		OrderDetail orderDetail = null;
@@ -91,13 +87,13 @@ public class OrderServiceImpl implements OrderService {
 
 		ComplexValue odToSave = EntityConvertUtil.getOrderDetailComplexValue(e);
 
-		orderDetail = saveOrderDetail(odToSave);
+		orderDetail = createOrderDetail(odToSave);
 		if (orderDetail == null) {
 			// TODO rollback
 			return null;
 		}
 
-		OrderHeader orderHeader = saveOrderHeader(e, patient, doctor,
+		OrderHeader orderHeader = createOrderHeader(e, patient, doctor,
 				orderDetail);
 
 		if (orderHeader == null) {
@@ -108,7 +104,69 @@ public class OrderServiceImpl implements OrderService {
 		return orderHeader;
 	}
 
-	private OrderHeader saveOrderHeader(Entity e, Patient patient,
+	@Override
+	@Transactional
+	public OrderHeader update(Entity e) {
+		Patient patient = null;
+		Doctor doctor = null;
+		OrderDetail orderDetail = null;
+		OrderHeader orderHeader = null;
+
+		Long patientID = EntityConvertUtil.getPatientIDFromOrderEntity(e);
+		if (patientID == null) {
+			return null;// Patient does not exist
+		} else {
+			patient = patientService.findById(patientID);
+
+			if (patient == null) {
+				return null;
+			}
+		}
+
+		Long orderDetailID = EntityConvertUtil
+				.getOrderDetailIDFromOrderEntity(e);
+		if (orderDetailID == null) {
+			return null;// OrderDetail does not exist
+		} else {
+			orderDetail = orderDetailDAO.findOne(orderDetailID);
+
+			if (orderDetail == null) {
+				return null;
+			}
+		}
+
+		Long orderHeaderID = EntityConvertUtil.getID(e);
+		if (orderHeaderID == null) {
+			return null;// OrderDetail does not exist
+		} else {
+			orderHeader = orderHeaderDAO.findOne(orderHeaderID);
+
+			if (orderHeader == null) {
+				return null;
+			}
+		}
+
+		Long doctorID = EntityConvertUtil.getDoctorIDFromOrderEntity(e);
+
+		if (doctorID != null) {
+			doctor = doctorService.findById(doctorID);
+			if (doctor == null) {
+				return null;
+			}
+		}
+
+		return updateOrderHeader(e, patient, doctor, orderDetail, orderHeader);
+	}
+
+	private OrderHeader updateOrderHeader(Entity e, Patient patient,
+			Doctor doctor, OrderDetail orderDetail, OrderHeader orderHeader) {
+		EntityConvertUtil.updateOrderHeader(orderHeader, e);
+		orderHeader.setDoctor(doctor);
+		orderHeaderDAO.save(orderHeader);
+		return orderHeader;
+	}
+
+	private OrderHeader createOrderHeader(Entity e, Patient patient,
 			Doctor doctor, OrderDetail orderDetail) {
 		OrderHeader orderHeader = EntityConvertUtil.getOrderHeader(e);
 		if (orderHeader != null) {
@@ -121,7 +179,7 @@ public class OrderServiceImpl implements OrderService {
 		return null;
 	}
 
-	private OrderDetail saveOrderDetail(ComplexValue e) {
+	private OrderDetail createOrderDetail(ComplexValue e) {
 		OrderDetail objToSave = EntityConvertUtil.getOrderDetail(e);
 		if (objToSave != null) {
 			OrderDetail result = orderDetailDAO.save(objToSave);
@@ -196,7 +254,7 @@ public class OrderServiceImpl implements OrderService {
 		List<OrderHeader> orderToBeConfirmed = orderHeaderDAO
 				.findByDoctorIDAndStatus(id, "new");
 		List<OrderHeader> orderToPickUp = orderHeaderDAO
-				.findByDoctorIDAndStatus(null, "new");
+				.findByNoDoctorAndStatus("new");
 		if (null == orderToBeConfirmed && null == orderToPickUp) {
 			return null;
 		}

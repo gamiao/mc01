@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository;
 import com.ehealth.mc.bo.Doctor;
 
 @Repository
-public interface DoctorDAO extends CrudRepository<Doctor, Integer> {
+public interface DoctorDAO extends CrudRepository<Doctor, Long> {
 
-	List<Doctor> findById(Long id);
+	Doctor findOne(Long id);
 
 	@Modifying
 	@Query("update Doctor d set d.avatar = ?1 where d.id = ?2")

@@ -428,7 +428,7 @@ public class EntityConvertUtil {
 
 	public static Long getPatientIDFromOrderEntity(Entity e) {
 		Property p = e.getProperty("CTPatient");
-		if (p != null && p.getType().endsWith(McEdmUtil.CT_PATIENT_NAME)) {
+		if (p != null) {
 			ComplexValue cv = (ComplexValue) p.getValue();
 			return getID(cv);
 		}
@@ -437,7 +437,16 @@ public class EntityConvertUtil {
 
 	public static Long getDoctorIDFromOrderEntity(Entity e) {
 		Property p = e.getProperty("CTDoctor");
-		if (p != null && p.getType().endsWith(McEdmUtil.CT_DOCTOR_NAME)) {
+		if (p != null) {
+			ComplexValue cv = (ComplexValue) p.getValue();
+			return getID(cv);
+		}
+		return null;
+	}
+
+	public static Long getOrderDetailIDFromOrderEntity(Entity e) {
+		Property p = e.getProperty("CTDetail");
+		if (p != null) {
 			ComplexValue cv = (ComplexValue) p.getValue();
 			return getID(cv);
 		}
@@ -471,6 +480,38 @@ public class EntityConvertUtil {
 		}
 		return null;
 
+	}
+
+	public static void updateOrderHeader(OrderHeader orderHeader, Entity e) {
+		if (e != null) {
+			String status = getPropertyStringValue(e, "Status");
+			String isArchived = getPropertyStringValue(e, "IsArchived");
+			String isEnabled = getPropertyStringValue(e, "IsEnabled");
+			String isDeleted = getPropertyStringValue(e, "IsDeleted");
+
+			if (status != null && !status.equals("")) {
+				orderHeader.setStatus(status);
+			}
+			if (checkBooleanValue(isArchived)) {
+				orderHeader.setIsArchived(isArchived);
+			}
+			if (checkBooleanValue(isEnabled)) {
+				orderHeader.setIsEnabled(isEnabled);
+			}
+			if (checkBooleanValue(isDeleted)) {
+				orderHeader.setIsDeleted(isDeleted);
+			}
+		}
+
+	}
+
+	public static boolean checkBooleanValue(String str) {
+		if (str != null && !str.equals("")) {
+			if (str.endsWith("Y") || str.equals("N")) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

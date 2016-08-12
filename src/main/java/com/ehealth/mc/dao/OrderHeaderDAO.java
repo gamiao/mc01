@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository;
 import com.ehealth.mc.bo.OrderHeader;
 
 @Repository
-public interface OrderHeaderDAO extends CrudRepository<OrderHeader, Integer> {
+public interface OrderHeaderDAO extends CrudRepository<OrderHeader, Long> {
 
-	List<OrderHeader> findById(Long id);
+	OrderHeader findOne(Long id);
 
 	List<OrderHeader> findByStatusAndIsArchivedAndIsEnabledAndIsDeleted(
 			String status, String isArchived, String isEnabled, String isDeleted);
@@ -42,6 +42,8 @@ public interface OrderHeaderDAO extends CrudRepository<OrderHeader, Integer> {
 	@Query("select oh from OrderHeader oh join oh.doctor d where (d.id = :id and oh.status = :status)")
 	List<OrderHeader> findByDoctorIDAndStatus(@Param("id") Long id,
 			@Param("status") String status);
-	
+
+	@Query("select oh from OrderHeader oh where (oh.doctor = null and oh.status = :status)")
+	List<OrderHeader> findByNoDoctorAndStatus(@Param("status") String status);
 
 }

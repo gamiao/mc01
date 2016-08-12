@@ -13,7 +13,9 @@ public interface OrderService {
 
 	OrderHeader findById(Long id);
 
-	OrderHeader save(Entity e);
+	OrderHeader create(Entity e);
+
+	OrderHeader update(Entity e);
 
 	List<OrderHeader> findByPatientID(Long id);
 

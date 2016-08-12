@@ -1,7 +1,5 @@
 package com.ehealth.mc.service.impl;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -27,11 +25,7 @@ public class PatientServiceImpl implements PatientService {
 
 	@Override
 	public Patient findById(Long id) {
-		List<Patient> resultList = patientDAO.findById(id);
-		if (resultList != null && resultList.size() == 1) {
-			return resultList.get(0);
-		}
-		return null;
+		return patientDAO.findOne(id);
 	}
 
 	@Override

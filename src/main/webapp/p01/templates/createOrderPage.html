@@ -1,10 +1,13 @@
 <ion-view title="{{pageTitle}}" id="createOrderPage" class=" ">
     <ion-content padding="true" class="has-header" >
         <form id="createOrderPage-form" class="list " >
-            <label class="item item-input  " id="patientUpdatePage-select1">
+            <label ng-if="!isDoctorFixed" class="item item-input  " id="patientUpdatePage-select1">
                 <span class="input-label">医师选择</span>
-                <input ng-if="isDoctorFixed" type="text" readonly="true" ng-click="openModal()" placeholder="{{currentOrder.CTDoctor.Name}}">
-                <input ng-if="!isDoctorFixed" type="text" readonly="true" placeholder="不指定医师">
+                <input type="text" readonly="true" placeholder="不指定医师">
+            </label>
+            <label ng-if="isDoctorFixed" class="item item-input  " id="patientUpdatePage-select1">
+                <span class="input-label">点击选择医师</span>
+                <input type="text" readonly="true" ng-click="openModal()" placeholder="{{currentOrder.CTDoctor.Name}}">
             </label>
 			<ion-item>
 				<ion-label floating >病情描述</ion-label>

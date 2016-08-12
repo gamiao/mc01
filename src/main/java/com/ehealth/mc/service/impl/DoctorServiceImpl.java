@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ehealth.mc.bo.Doctor;
-import com.ehealth.mc.bo.Patient;
 import com.ehealth.mc.dao.DoctorDAO;
 import com.ehealth.mc.service.DoctorService;
 import com.ehealth.mc.service.util.EntityConvertUtil;
@@ -41,11 +40,7 @@ public class DoctorServiceImpl implements DoctorService {
 
 	@Override
 	public Doctor findById(Long id) {
-		List<Doctor> resultList = doctorDAO.findById(id);
-		if (resultList != null && resultList.size() == 1) {
-			return resultList.get(0);
-		}
-		return null;
+		return doctorDAO.findOne(id);
 	}
 
 	@Override

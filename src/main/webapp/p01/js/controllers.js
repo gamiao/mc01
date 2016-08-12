@@ -26,7 +26,7 @@ angular.module('app.controllers', [])
        { text: '<b>不指定医生</b>' },
        { text: '<b>指定医生</b>' }
 		  ],
-		  titleText: '新建订单',
+		  titleText: '新建咨询',
 		  cancelText: '取消',
 		  buttonClicked: function(index) {
 			  orderService.isExistingOrder = false;
@@ -75,9 +75,8 @@ angular.module('app.controllers', [])
 })
    
 .controller('historyOrderPageCtrl', function($scope,$odataresource,urlService,orderService,patientService) {
-    $scope.results = 
-        $odataresource(urlService.baseURL  + "Orders")
-        .odata()
+	Order = $odataresource(urlService.baseURL  + 'Orders', 'ID');
+    $scope.results = Order.odata()
 		.filter("CTPatient/ID",patientService.currentPatientID)
 		.filter("IsArchived", "Y")
         .query();
@@ -87,20 +86,57 @@ angular.module('app.controllers', [])
   }
 })
    
-.controller('orderDetailPageCtrl', function($scope, $state, $odataresource, $stateParams, urlService,orderService) {		
+.controller('orderDetailPageCtrl', function($scope,$ionicActionSheet, $state, $odataresource, $stateParams, urlService,orderService) {		
   $scope.currentOrder=orderService.currentOrder;
   page = {};
-  page.title = '已下单';
-  page.actionIcon = 'ion-android-chat';
+  page.title = '进行中咨询';
+  page.orderType = 'ongoing';
   if(orderService.currentOrder && orderService.currentOrder.IsArchived === 'Y'){
-	page.title = '历史订单';
-	page.actionIcon = 'ion-locked';
+	page.title = '历史咨询';
+	page.orderType = 'archived';
+  } else if(orderService.currentOrder && orderService.currentOrder.Status === 'new'){
+	page.title = '待接单';
+	page.orderType = 'new';
+  } else if(orderService.currentOrder && orderService.currentOrder.Status === 'unpaid'){
+	page.title = '待付款';
+	page.orderType = 'unpaid';
   }
+  
   $scope.page = page;
   $scope.getConvs=function(ObjectData){
 	orderService.currentOrder=ObjectData;
 	$state.go('p-sm.orderConvsPage');
   }
+  
+  
+  
+  $scope.pay=function(order){
+	actionSheetTiyle = "请确认";
+	pickupButtonLabel = "确认付款";
+	$scope.hideSheet = $ionicActionSheet.show({
+      buttons: [
+        { text: pickupButtonLabel }
+      ],
+      titleText: actionSheetTiyle,
+      cancelText: '我再想想',
+      buttonClicked: function(index) {
+		  order.Status = 'ongoing';
+		  order.$update(
+				function(order){
+					orderService.currentOrder=order;
+					$scope.currentOrder=orderService.currentOrder;
+					$scope.page.title = '进行中咨询';
+					$scope.page.orderType='ongoing';
+				},function(myOrderConv){
+				}
+			);
+			
+			
+					return true;
+      }
+    });
+  }
+  
 })
    
 .controller('orderConvsPageCtrl', function($scope,$odataresource, $stateParams, urlService,orderService) {
@@ -181,9 +217,8 @@ angular.module('app.controllers', [])
 })
    
 .controller('openOrderPageCtrl', function($scope,$odataresource,urlService,orderService,patientService) {
-    $scope.results = 
-        $odataresource(urlService.baseURL  + "Orders")
-        .odata()
+	Order = $odataresource(urlService.baseURL  + 'Orders', 'ID');
+    $scope.results = Order.odata()
 		.filter("CTPatient/ID",patientService.currentPatientID)
 		.filter("IsArchived", "N")
         .query();
@@ -198,11 +233,11 @@ angular.module('app.controllers', [])
 
 	
 	if(orderService.isExistingOrder){
-		$scope.pageTitle = "编辑订单";
+		$scope.pageTitle = "编辑咨询";
 		$scope.buttonLabel = "提交";
 		tempOrder = orderService.currentOrder;
 	}else{
-		$scope.pageTitle = "新建订单";
+		$scope.pageTitle = "新建咨询";
 		$scope.buttonLabel = "创建";
 		tempOrder = {};
 		tempOrder.CTPatient = {};
@@ -220,9 +255,11 @@ angular.module('app.controllers', [])
 		myOrder.CTPatient.ID = patientService.currentPatientID;
 		myOrder.CTDetail = {};
 		myOrder.CTDetail.Description = tempOrder.CTDetail.Description;
-		myOrder.CTDoctor = {};
-		myOrder.CTDoctor.ID = tempOrder.CTDoctor.ID;
-		myOrder.Status = 'complete';
+		if($scope.isDoctorFixed){
+			myOrder.CTDoctor = {};
+			myOrder.CTDoctor.ID = tempOrder.CTDoctor.ID;
+		}
+		myOrder.Status = 'new';
 		
 		myOrder.$save(
 		    function(myOrder){
@@ -234,6 +271,8 @@ angular.module('app.controllers', [])
 		
 		);
 	}
+	
+	if($scope.isDoctorFixed){
 	
 	allDoctors = 
         $odataresource(urlService.baseURL  + "Doctors")
@@ -279,6 +318,10 @@ angular.module('app.controllers', [])
      // Code you want executed every time view is opened
      $scope.openModal();
   })
+  
+  
+		
+	}
   
 })
    

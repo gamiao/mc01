@@ -30,6 +30,16 @@ angular.module('app.routes', [])
     }
   })
 
+  .state('d-sm.pickupOrderPage', {
+    url: '/pickupOrderPage',
+    views: {
+      'd-sm': {
+        templateUrl: 'templates/pickupOrderPage.html',
+        controller: 'pickupOrderPageCtrl'
+      }
+    }
+  })
+
   .state('d-sm.historyOrderPage', {
     url: '/historyOrderPage',
     views: {

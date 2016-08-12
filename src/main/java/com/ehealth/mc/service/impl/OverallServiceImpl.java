@@ -75,6 +75,7 @@ public class OverallServiceImpl implements OverallService {
 				Long doctorID = FormatUtil.getOrderFilterDoctorID(filterStr);
 				String isArchivedStr = FormatUtil
 						.getOrderFilterIsArchived(filterStr);
+				String status = FormatUtil.getOrderFilterStatus(filterStr);
 				if (patientID != null) {
 					if (isArchivedStr != null) {
 						if ("Y".endsWith(isArchivedStr)) {
@@ -88,7 +89,10 @@ public class OverallServiceImpl implements OverallService {
 						queryResult = orderService.findByPatientID(patientID);
 					}
 				} else if (doctorID != null) {
-					if (isArchivedStr != null) {
+					if ("pickup".equals(status)) {
+						queryResult = orderService
+								.findByDoctorIDForPickUp(doctorID);
+					} else if (isArchivedStr != null) {
 						if ("Y".endsWith(isArchivedStr)) {
 							queryResult = orderService
 									.findByDoctorIDArchived(doctorID);
@@ -245,7 +249,7 @@ public class OverallServiceImpl implements OverallService {
 					.upsertBasicInfo(newEntity));
 		} else if (newEntity.getType().equals(
 				McEdmUtil.ET_ORDER_FQN.getFullQualifiedNameAsString())) {
-			return EntityConvertUtil.getEntity(orderService.save(newEntity));
+			return EntityConvertUtil.getEntity(orderService.create(newEntity));
 		}
 		return null;
 	}
@@ -274,7 +278,8 @@ public class OverallServiceImpl implements OverallService {
 					.upsertBasicInfo(updateEntity));
 		} else if (updateEntity.getType().equals(
 				McEdmUtil.ET_ORDER_FQN.getFullQualifiedNameAsString())) {
-			return EntityConvertUtil.getEntity(orderService.save(updateEntity));
+			return EntityConvertUtil.getEntity(orderService
+					.update(updateEntity));
 		}
 		return null;
 	}

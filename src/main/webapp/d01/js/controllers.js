@@ -21,32 +21,84 @@ angular.module('app.controllers', [])
 
 })
    
-.controller('historyOrderPageCtrl', function($scope,$odataresource,urlService,orderService,doctorService) {
-    $scope.results = 
-        $odataresource(urlService.baseURL  + "Orders")
-        .odata()
+.controller('pickupOrderPageCtrl', function($scope,$state,$odataresource,urlService,orderService,doctorService,$ionicActionSheet) {
+	
+	Order = $odataresource(urlService.baseURL  + 'Orders', 'ID');
+    $scope.results = Order.odata()
+		.filter("CTDoctor/ID",doctorService.currentDoctorID)
+		.filter("Status", "pickup")
+        .query();
+
+
+  $scope.getDetail=function(ObjectData){
+	orderService.currentOrder=ObjectData;
+	$state.go('d-sm.orderDetailPage');
+  }
+})
+   
+.controller('historyOrderPageCtrl', function($scope,$state,$odataresource,urlService,orderService,doctorService) {
+    Order = $odataresource(urlService.baseURL  + 'Orders', 'ID');
+    $scope.results = Order.odata()
 		.filter("CTDoctor/ID",doctorService.currentDoctorID)
 		.filter("IsArchived", "Y")
         .query();
 
   $scope.getDetail=function(ObjectData){
 	orderService.currentOrder=ObjectData;
+	$state.go('d-sm.orderDetailPage');
   }
 })
    
-.controller('orderDetailPageCtrl', function($scope,$odataresource, $stateParams, urlService,orderService) {		
+.controller('orderDetailPageCtrl', function($scope,$state,$odataresource, $stateParams, urlService,orderService, doctorService,$ionicActionSheet) {		
   $scope.currentOrder=orderService.currentOrder;
   page = {};
-  page.title = '已下单';
-  page.actionIcon = 'ion-android-chat';
+  page.title = '进行中咨询';
+  page.orderType = 'ongoing';
   if(orderService.currentOrder && orderService.currentOrder.IsArchived === 'Y'){
-	page.title = '历史订单';
-	page.actionIcon = 'ion-locked';
+	page.title = '历史咨询';
+	page.orderType = 'archived';
+  } else if(orderService.currentOrder && orderService.currentOrder.Status === 'new'){
+	page.title = '待接单';
+	page.orderType = 'new';
   }
   $scope.page = page;
   $scope.getConvs=function(ObjectData){
 	orderService.currentOrder=ObjectData;
+	$state.go('d-sm.orderConvsPage');
   }
+  
+  $scope.pickup=function(order){
+	actionSheetTiyle = "请确认";
+	pickupButtonLabel = "确定接单";
+	if(order.Doctor === null){
+		
+	}
+	$scope.hideSheet = $ionicActionSheet.show({
+      buttons: [
+        { text: pickupButtonLabel }
+      ],
+      titleText: actionSheetTiyle,
+      cancelText: '先不接单',
+      buttonClicked: function(index) {
+		  order.CTDoctor = {};
+		  order.CTDoctor.ID = doctorService.currentDoctorID;
+		  order.Status = 'unpaid';
+		  order.$update(
+				function(order){
+					orderService.currentOrder=order;
+					$scope.currentOrder=orderService.currentOrder;
+					$scope.page.title = '进行中咨询';
+					$scope.page.orderType='ongoing';
+				},function(myOrderConv){
+				}
+			);
+			
+			
+					return true;
+      }
+    });
+  }
+  
 })
    
 .controller('orderConvsPageCtrl', function($scope,$odataresource, $stateParams, urlService,orderService) {
@@ -129,16 +181,17 @@ angular.module('app.controllers', [])
 })
    
    
-.controller('openOrderPageCtrl', function($scope,$odataresource,urlService,orderService,doctorService) {
-    $scope.results = 
-        $odataresource(urlService.baseURL  + "Orders")
-        .odata()
+.controller('openOrderPageCtrl', function($scope,$state,$odataresource,urlService,orderService,doctorService) {
+	
+	Order = $odataresource(urlService.baseURL  + 'Orders', 'ID');
+    $scope.results = Order.odata()
 		.filter("CTDoctor/ID",doctorService.currentDoctorID)
 		.filter("IsArchived", "N")
         .query();
 
   $scope.getDetail=function(ObjectData){
 	orderService.currentOrder=ObjectData;
+	$state.go('d-sm.orderDetailPage');
   }
 })
    
@@ -148,11 +201,11 @@ angular.module('app.controllers', [])
    
 .controller('createOrderPageCtrl', function($scope, $state, $odataresource, $stateParams, urlService, orderService, doctorService) {
 	if(orderService.isExistingOrder){
-		$scope.pageTitle = "编辑订单";
+		$scope.pageTitle = "编辑咨询";
 		$scope.buttonLabel = "提交";
 		tempOrder = orderService.currentOrder;
 	}else{
-		$scope.pageTitle = "新建订单";
+		$scope.pageTitle = "新建咨询";
 		$scope.buttonLabel = "创建";
 		tempOrder = {};
 		tempOrder.CTPatient = {};
@@ -163,7 +216,7 @@ angular.module('app.controllers', [])
 	$scope.currentOrder = tempOrder;
 	
 	$scope.createOrder =function(tempOrder){
-	    Order = $odataresource(urlService.baseURL  + 'Orders', 'id');
+	    Order = $odataresource(urlService.baseURL  + 'Orders', 'ID');
 		
 		var myOrder = new Order();
 		myOrder.CTPatient = {};
@@ -172,7 +225,7 @@ angular.module('app.controllers', [])
 		myOrder.CTDetail.Description = tempOrder.CTDetail.Description;
 		myOrder.CTDoctor = {};
 		myOrder.CTDoctor.ID = tempOrder.CTDoctor.ID;
-		myOrder.Status = 'complete';
+		myOrder.Status = 'new';
 		
 		myOrder.$save(
 		    function(myOrder){
@@ -194,7 +247,7 @@ angular.module('app.controllers', [])
 	$scope.currentOrderConv = tempOrderConv;
 	
 	$scope.createOrderConv =function(tempOrderConv){
-	    OrderConv = $odataresource(urlService.baseURL  + 'Orders(' + orderService.currentOrder.ID + ')/OrderConvs', 'id');
+	    OrderConv = $odataresource(urlService.baseURL  + 'Orders(' + orderService.currentOrder.ID + ')/OrderConvs', 'ID');
 		
 		var myOrderConv = new OrderConv();
 		myOrderConv.Type = 'TEXT';
@@ -203,7 +256,7 @@ angular.module('app.controllers', [])
 		
 		myOrderConv.$save(
 		    function(myOrderConv){
-				$state.go('d-sm.orderConvsPage',null,{reload:true});
+				$state.go('d-sm.orderConvsPage');
 			},function(myOrderConv){
 			}
 		);

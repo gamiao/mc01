@@ -74,6 +74,16 @@ angular.module('app.routes', [])
     }
   })
 
+  .state('p-sm.chat', {
+    url: '/chat',
+    views: {
+      'p-sm': {
+        templateUrl: 'templates/chat.html',
+        controller: 'chatCtrl'
+      }
+    }
+  })
+
   .state('p-sm.patientUpdatePage', {
     url: '/patientUpdatePage',
     views: {

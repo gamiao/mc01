@@ -86,7 +86,7 @@ angular.module('app.controllers', [])
   }
 })
    
-.controller('orderDetailPageCtrl', function($scope,$ionicActionSheet, $state, $odataresource, $stateParams, urlService,orderService) {		
+.controller('orderDetailPageCtrl', function($scope,$ionicModal,$ionicActionSheet, $state, $odataresource, $stateParams, urlService,orderService) {		
   $scope.currentOrder=orderService.currentOrder;
   page = {};
   page.title = '进行中咨询';
@@ -107,6 +107,41 @@ angular.module('app.controllers', [])
 	orderService.currentOrder=ObjectData;
 	$state.go('p-sm.chat');
   }
+  
+    $ionicModal.fromTemplateUrl('templates/fullScreenImage.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modal = modal;
+	$scope.modal.scope.closeImgModal = function() {
+		$scope.modal.hide();
+	}
+  $scope.openModal = function() {
+    $scope.modal.show();
+  };
+  $scope.closeModal = function() {
+    $scope.modal.hide();
+  };
+  // Cleanup the modal when we're done with it!
+  $scope.$on('$destroy', function() {
+    $scope.modal.remove();
+  });
+  // Execute action on hide modal
+  $scope.$on('modal.hidden', function() {
+    // Execute action
+  });
+  // Execute action on remove modal
+  $scope.$on('modal.removed', function() {
+    // Execute action
+  });
+  
+  });
+  
+  $scope.openFullScreenImage = function(order){
+	  $scope.modal.scope.imageSrc = 'patton.jpg';
+	  $scope.modal.show();
+  }
+  
   
   
   

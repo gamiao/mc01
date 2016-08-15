@@ -12,7 +12,7 @@
             
               <div ng-repeat="message in messages" class="message-wrapper">
       
-                  <div ng-if="'D'== message.Owner">
+                  <div ng-if="'P'== message.Owner">
                       
                     <img ng-click="viewProfile(message)" class="profile-pic left" 
                           ng-src="../uploadedImg/{{toUser.Avatar}}" onerror="onProfilePicError(this)" />
@@ -31,7 +31,7 @@
                       </div>
                   </div>
       
-                  <div ng-if="'P'== message.Owner">
+                  <div ng-if="'D'== message.Owner">
                     
                        <img ng-click="viewProfile(message)" class="profile-pic right" 
                           ng-src="../uploadedImg/{{user.Avatar}}" onerror="onProfilePicError(this)" />

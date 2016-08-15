@@ -76,16 +76,6 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('d-sm.createOrderPage', {
-    url: '/createOrderPage',
-    views: {
-      'd-sm': {
-        templateUrl: 'templates/createOrderPage.html',
-        controller: 'createOrderPageCtrl'
-      }
-    }
-  })
-
   .state('d-sm.doctorUpdatePage', {
     url: '/doctorUpdatePage',
     views: {
@@ -102,6 +92,16 @@ angular.module('app.routes', [])
       'd-sm': {
         templateUrl: 'templates/imageUploadPage.html',
         controller: 'imageUploadPageCtrl'
+      }
+    }
+  })
+
+  .state('d-sm.chat', {
+    url: '/chat',
+    views: {
+      'd-sm': {
+        templateUrl: 'templates/chat.html',
+        controller: 'chatCtrl'
       }
     }
   })

@@ -1,7 +1,5 @@
 angular.module('app.directives', [])
 
-
-
 // fitlers
 .filter('nl2br', ['$filter',
   function($filter) {

@@ -49,7 +49,48 @@ angular.module('app.controllers', [])
   }
 })
    
-.controller('orderDetailPageCtrl', function($scope,$state,$odataresource, $stateParams, urlService,orderService, doctorService,$ionicActionSheet) {		
+.controller('orderDetailPageCtrl', function($scope,$ionicModal,$state,$odataresource, $stateParams, urlService,orderService, doctorService,$ionicActionSheet) {		
+  var image = {};
+  image.src1 = 'jiaohuai1.jpg';
+  image.src2 = 'jiaohuai2.jpg';
+  $scope.image = image;
+
+   
+    $ionicModal.fromTemplateUrl('templates/fullScreenImage.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modal = modal;
+	$scope.modal.scope.closeImgModal = function() {
+		$scope.modal.hide();
+	}
+  $scope.openModal = function() {
+    $scope.modal.show();
+  };
+  $scope.closeModal = function() {
+    $scope.modal.hide();
+  };
+  // Cleanup the modal when we're done with it!
+  $scope.$on('$destroy', function() {
+    $scope.modal.remove();
+  });
+  // Execute action on hide modal
+  $scope.$on('modal.hidden', function() {
+    // Execute action
+  });
+  // Execute action on remove modal
+  $scope.$on('modal.removed', function() {
+    // Execute action
+  });
+  
+  });
+  
+  $scope.openFullScreenImage = function(imgSrc){
+	  $scope.modal.scope.imageSrc = imgSrc;
+	  $scope.modal.show();
+  }
+  
+
   $scope.currentOrder=orderService.currentOrder;
   page = {};
   page.title = '进行中咨询';

@@ -2,6 +2,19 @@ body {
   cursor: url('http://ionicframework.com/img/finger.png'), auto;
 }
 
+.item img{
+	height:200px;
+    max-width: 100%;
+    max-height: 200px;
+}
+input[type=file]{
+    height:0;
+    overflow:auto;
+}
+.uploadButton{
+    margin-top: -40px;
+}
+
 /* allows the bar-footer to be elastic /*
 /* optionally set a max-height */
 /* maxlength on the textarea will prevent /*

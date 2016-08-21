@@ -49,11 +49,17 @@
                 <strong>询诊图片:</strong>
             </p>
         </div>
-        <div class="">
-            <img src="img/1LNTOUeQSGsCfNn7bUzS_jiaohuai1.jpg" ng-click="openFullScreenImage(currentOrder)" width="100%" height="auto" style="display: block; margin-left: auto; margin-right: auto;">
-        </div>
-        <div class="">
-            <img src="img/4inGvTdPSsqxxWWWc9px_jiaohuai2.jpg" width="100%" height="auto" style="display: block; margin-left: auto; margin-right: auto;">
-        </div>
+		
+		        <div class="row">
+                    <div class="col col-50" >
+                        <img ng-src="../uploadedImg/{{image.src1}}" ng-click="openFullScreenImage(image.src1)" width="100%" />
+                    </div>
+                    <div class="col col-50" >
+                        <img ng-src="../uploadedImg/{{image.src2}}" ng-click="openFullScreenImage(image.src2)" width="100%" />
+                    </div>
+                    <div class="col col-50" >
+                        <img ng-src="../uploadedImg/{{image.src3}}" ui-sref="p-sm.imageUploadPage" width="100%" />
+                    </div>
+                </div>
     </ion-content>
 </ion-view>

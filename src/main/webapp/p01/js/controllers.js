@@ -18,6 +18,15 @@ angular.module('app.controllers', [])
 	this.isExistingOrder;
 	this.isDoctorFixed;
 }])
+
+.service('uploadService', [function(){
+	this.imgUploadBase64URL = "/mc01/spring/uploadImgBase64/";
+	this.param1;
+	this.param2;
+	this.param3;
+	this.fileContent;
+}])
+
 .controller('indexPageCtrl', function($scope, $state, urlService, $odataresource, $ionicModal, $ionicActionSheet, orderService, doctorService) {
 	
 	$scope.createOrder = function() {
@@ -87,6 +96,13 @@ angular.module('app.controllers', [])
 })
    
 .controller('orderDetailPageCtrl', function($scope,$ionicModal,$ionicActionSheet, $state, $odataresource, $stateParams, urlService,orderService) {		
+  var image = {};
+  image.src1 = 'jiaohuai1.jpg';
+  image.src2 = 'jiaohuai2.jpg';
+  image.src3 = 'add_img.png';
+  $scope.image = image;
+  
+
   $scope.currentOrder=orderService.currentOrder;
   page = {};
   page.title = '进行中咨询';
@@ -137,8 +153,8 @@ angular.module('app.controllers', [])
   
   });
   
-  $scope.openFullScreenImage = function(order){
-	  $scope.modal.scope.imageSrc = 'patton.jpg';
+  $scope.openFullScreenImage = function(imgSrc){
+	  $scope.modal.scope.imageSrc = imgSrc;
 	  $scope.modal.show();
   }
   
@@ -165,9 +181,7 @@ angular.module('app.controllers', [])
 				},function(myOrderConv){
 				}
 			);
-			
-			
-					return true;
+			return true;
       }
     });
   }
@@ -203,51 +217,48 @@ angular.module('app.controllers', [])
   }
 })
    
-.controller('imageUploadPageCtrl', function($scope,$odataresource, $stateParams, urlService, $ionicActionSheet) {
+   
+.controller('imageUploadPageCtrl', function($rootScope, uploadService,Upload,$scope,$odataresource, $stateParams, urlService, $ionicActionSheet) {
 
- 
-  $scope.addMedia = function() {
-    $scope.hideSheet = $ionicActionSheet.show({
-      buttons: [
-        { text: 'Take photo' },
-        { text: 'Photo from library' }
-      ],
-      titleText: 'Add images',
-      cancelText: 'Cancel',
-      buttonClicked: function(index) {
-		  $scope.takePic();
+		$scope.progressval = 0;
+
+      $scope.browseFile=function(){
+        document.getElementById('browseBtn').click();
       }
-    });
-  }
- 
-  $scope.takePic = function() {
-        var options =   {
-            quality: 50,
-            destinationType: Camera.DestinationType.FILE_URI,
-            sourceType: 1,      // 0:Photo Library, 1=Camera, 2=Saved Photo Album
-            encodingType: 0     // 0=JPG 1=PNG
+
+      angular.element(document.getElementById('browseBtn')).on('change',function(e){
+        var file=e.target.files[0];
+        angular.element(document.getElementById('browseBtn')).val('');
+        var fileReader=new FileReader();
+        fileReader.onload=function(event){
+          $rootScope.$broadcast('event:file:selected',{fileData:event.target.result, fileName:file.name})
         }
-        navigator.camera.getPicture(onSuccess,onFail,options);
-    }
-    var onSuccess = function(FILE_URI) {
-        console.log(FILE_URI);
-        $scope.picData = FILE_URI;
-        $scope.$apply();
-    };
-    var onFail = function(e) {
-        console.log("On fail " + e);
-    }
-    $scope.send = function() {   
-        var myImg = $scope.picData;
-        var options = new FileUploadOptions();
-        options.fileKey="post";
-        options.chunkedMode = false;
-        var params = {};
-        params.user_token = localStorage.getItem('auth_token');
-        params.user_email = localStorage.getItem('email');
-        options.params = params;
-        var ft = new FileTransfer();
-        ft.upload(myImg, encodeURI("https://example.com/posts/"), onUploadSuccess, onUploadFail, options);
+        fileReader.readAsDataURL(file);
+      });
+
+    $rootScope.$on('event:file:selected',function(event,data){
+        $scope.imgSrc = data.fileData;
+		$scope.$apply();
+		uploadService.fileData = data.fileData;
+		uploadService.fileName = data.fileName;
+    });
+
+	$scope.uploadFile=function(){
+		
+        uploadUrl= uploadService.imgUploadBase64URL + uploadService.param1 + 
+				"/" + uploadService.param2 + "/" + uploadService.param3;
+		Upload.upload({
+            url: uploadUrl,
+            data: {fileData: uploadService.fileData, fileName: uploadService.fileName}
+        }).then(function (resp) {
+            console.log('Success ');
+        }, function (resp) {
+            console.log('Error status: ' + resp.status);
+        }, function (evt) {
+            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+			$scope.progressval = progressPercentage;
+            console.log('progress: ');
+        });
     }
 })
    

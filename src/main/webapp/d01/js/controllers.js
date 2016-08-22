@@ -158,7 +158,7 @@ angular.module('app.controllers', [])
     $scope.doctor = doctorService.currentDoctor;
 })
    
-.controller('doctorUpdatePageCtrl', function($scope,$odataresource, $stateParams, urlService,doctorService) {
+.controller('doctorUpdatePageCtrl', function($scope,uploadService,$state,$odataresource, $stateParams, urlService,doctorService) {
 	test = $odataresource(urlService.baseURL  + "Doctors("+ doctorService.currentDoctorID +")")
         .odata()
         .single();
@@ -167,9 +167,15 @@ angular.module('app.controllers', [])
 	$scope.updateDoctor=function(){
 	   doctorService.currentDoctor.$update();
   }
+    $scope.updateImage=function(){
+	   uploadService.param1 = "Doctor";
+	   uploadService.param2 = doctorService.currentDoctorID;
+	   uploadService.param3 = "Avatar";
+	   $state.go('d-sm.imageUploadPage');
+  }
 })
    
-.controller('imageUploadPageCtrl', function($rootScope, uploadService,Upload,$scope,$odataresource, $stateParams, urlService, $ionicActionSheet) {
+.controller('imageUploadPageCtrl', function($rootScope,$ionicHistory, uploadService,Upload,$scope,$odataresource, $stateParams, urlService, $ionicActionSheet) {
 
 		$scope.progressval = 0;
 
@@ -202,6 +208,7 @@ angular.module('app.controllers', [])
             url: uploadUrl,
             data: {fileData: uploadService.fileData, fileName: uploadService.fileName}
         }).then(function (resp) {
+			$ionicHistory.goBack();
             console.log('Success ');
         }, function (resp) {
             console.log('Error status: ' + resp.status);

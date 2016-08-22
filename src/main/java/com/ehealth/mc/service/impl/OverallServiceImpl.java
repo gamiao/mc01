@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ehealth.mc.bo.Doctor;
+import com.ehealth.mc.bo.OrderConversation;
 import com.ehealth.mc.bo.OrderHeader;
 import com.ehealth.mc.bo.Patient;
 import com.ehealth.mc.service.DoctorService;
@@ -426,9 +427,13 @@ public class OverallServiceImpl implements OverallService {
 				}
 
 			} else if (entityType.equals("OrderConv")) {
-
+				if ("P".equals(method) || "D".equals(method)) {
+					OrderConversation orderConversation = orderService
+							.createImageOrderConversaction(fileName,
+									entityLongID, method);
+					return orderConversation.getPictures();
+				}
 			}
-
 		}
 
 		return null;

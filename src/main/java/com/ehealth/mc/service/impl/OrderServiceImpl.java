@@ -1,6 +1,7 @@
 package com.ehealth.mc.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -244,6 +245,26 @@ public class OrderServiceImpl implements OrderService {
 			oc.setOrderHeader(orderHeader);
 			orderConversationDAO.save(oc);
 
+			return oc;
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public OrderConversation createImageOrderConversaction(String fileName,
+			Long orderHeaderID, String owner) {
+
+		OrderHeader orderHeader = findById(orderHeaderID);
+
+		if (orderHeader != null) {
+			OrderConversation oc = new OrderConversation();
+			oc.setCreateTime(new Date());
+			oc.setType("IMAGE");
+			oc.setOwner(owner);
+			oc.setOrderHeader(orderHeader);
+			oc.setPictures(fileName);
+			orderConversationDAO.save(oc);
 			return oc;
 		}
 		return null;

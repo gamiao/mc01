@@ -74,12 +74,12 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('p-sm.chat', {
-    url: '/chat',
+  .state('p-sm.orderConvsPage', {
+    url: '/orderConvsPage',
     views: {
       'p-sm': {
-        templateUrl: 'templates/chat.html',
-        controller: 'chatCtrl'
+        templateUrl: 'templates/orderConvsPage.html',
+        controller: 'orderConvsPageCtrl'
       }
     }
   })
@@ -100,16 +100,6 @@ angular.module('app.routes', [])
       'p-sm': {
         templateUrl: 'templates/imageUploadPage.html',
         controller: 'imageUploadPageCtrl'
-      }
-    }
-  })
-
-  .state('p-sm.orderConvsPage', {
-    url: '/orderConvsPage',
-    views: {
-      'p-sm': {
-        templateUrl: 'templates/orderConvsPage.html',
-        controller: 'orderConvsPageCtrl'
       }
     }
   })

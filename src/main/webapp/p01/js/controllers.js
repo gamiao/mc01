@@ -25,6 +25,7 @@ angular.module('app.controllers', [])
 	this.param2;
 	this.param3;
 	this.fileContent;
+	this.fileName;
 }])
 
 .controller('indexPageCtrl', function($scope, $state, urlService, $odataresource, $ionicModal, $ionicActionSheet, orderService, doctorService) {
@@ -121,7 +122,7 @@ angular.module('app.controllers', [])
   $scope.page = page;
   $scope.getConvs=function(ObjectData){
 	orderService.currentOrder=ObjectData;
-	$state.go('p-sm.chat');
+	$state.go('p-sm.orderConvsPage');
   }
   
     $ionicModal.fromTemplateUrl('templates/fullScreenImage.html', {
@@ -186,17 +187,6 @@ angular.module('app.controllers', [])
     });
   }
   
-})
-   
-.controller('orderConvsPageCtrl', function($scope,$odataresource, $stateParams, urlService,orderService) {
-	if(orderService.currentOrder !== null && orderService.currentOrder.ID !== null){
-    $scope.orderConvs = 
-        $odataresource(urlService.baseURL  + "Orders("+ orderService.currentOrder.ID+")/OrderConvs")
-        .odata()
-        .query();
-	}
-	$scope.currentOrder=orderService.currentOrder;
-
 })
       
 .controller('patientInfoPageCtrl', function($scope,$odataresource, $stateParams, urlService,patientService) {
@@ -427,8 +417,7 @@ angular.module('app.controllers', [])
 
 
 
-.controller('chatCtrl', function($scope, $rootScope, $state, $stateParams, MockService,
-    $ionicActionSheet,
+.controller('orderConvsPageCtrl', function($scope, $ionicModal, uploadService, $rootScope, $state, $stateParams, $ionicActionSheet,
     $ionicPopup, $ionicScrollDelegate, $timeout, $interval,orderService,urlService,$odataresource) {
 		
 	OrderConv = $odataresource(urlService.baseURL  + 'Orders(' + orderService.currentOrder.ID + ')/OrderConvs', 'id');
@@ -450,6 +439,9 @@ angular.module('app.controllers', [])
 	page.newMessageHolder = '待病人付款后互动';
   }
     $scope.page = page;
+	
+	
+    $scope.imageSrc = "jiaohuai1.jpg";
 	$scope.currentOrder = currentOrder;
 
     // this could be on $rootScope rather than in $stateParams
@@ -516,6 +508,50 @@ angular.module('app.controllers', [])
       if (!newValue) newValue = '';
       localStorage['userMessage-' + $scope.toUser._id] = newValue;
     });
+	
+	$scope.addImage = function() {
+		uploadService.param1 = "OrderConv";
+		uploadService.param2 = orderService.currentOrder.ID;
+		uploadService.param3 = "P";
+		$state.go('p-sm.imageUploadPage');
+	}
+	
+	
+  
+  $ionicModal.fromTemplateUrl('templates/fullScreenImage.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modal = modal;
+	$scope.modal.scope.closeImgModal = function() {
+		$scope.modal.hide();
+	}
+  $scope.openModal = function() {
+    $scope.modal.show();
+  };
+  $scope.closeModal = function() {
+    $scope.modal.hide();
+  };
+  // Cleanup the modal when we're done with it!
+  $scope.$on('$destroy', function() {
+    $scope.modal.remove();
+  });
+  // Execute action on hide modal
+  $scope.$on('modal.hidden', function() {
+    // Execute action
+  });
+  // Execute action on remove modal
+  $scope.$on('modal.removed', function() {
+    // Execute action
+  });
+  
+  });
+  
+  $scope.openFullScreenImage = function(imgSrc){
+	  $scope.modal.scope.imageSrc = imgSrc;
+	  $scope.modal.show();
+  }
+	
 
     $scope.sendMessage = function(sendMessageForm) {
 
@@ -534,8 +570,6 @@ angular.module('app.controllers', [])
       // you can't see the effect of this in the browser it needs to be used on a real device
       // for some reason the one time blur event is not firing in the browser but does on devices
       keepKeyboardOpen();
-      
-      //MockService.sendMessage(message).then(function(data) {
       $scope.input.message = '';
 
       $scope.messages.push(myOrderConv);
@@ -546,7 +580,7 @@ angular.module('app.controllers', [])
       }, 0);
 
       $timeout(function() {
-        $scope.messages.push(MockService.getMockMessage());
+        //$scope.messages.push(MockService.getMockMessage());
         keepKeyboardOpen();
         viewScroll.scrollBottom(true);
       }, 2000);

@@ -79,6 +79,11 @@ img.message-pic {
   vertical-align: middle;
 }
 
+.img-item img{
+    max-width: 100%;
+    max-height: 200px;
+}
+
 .message {
   font-size: 14px;
 }

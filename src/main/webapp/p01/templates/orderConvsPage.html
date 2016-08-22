@@ -1,18 +1,90 @@
-<ion-view title="咨询互动({{currentOrder.ID}})" id="orderConvsPage" class=" ">
-    <ion-content padding="false" class="has-header">
-        <ion-list id="1003452-list6" class=" " ng-repeat="conv in orderConvs" >
-            <ion-item ng-if="conv.Owner === 'P'" class="item-avatar  " id="1003452-list-item3" >
-                <img src="../uploadedImg/{{currentOrder.CTPatient.Avatar}}">
-                <h2>{{currentOrder.CTPatient.Name}} {{conv.CreateTime}}</h2>
-                <p style="white-space:normal;">{{conv.Description}}</p>
-            </ion-item>
-            <ion-item ng-if="conv.Owner === 'D'" class="item-avatar  " id="1003452-list-item3" >
-                <img src="../uploadedImg/{{currentOrder.CTDoctor.Avatar}}">
-                <h2>{{currentOrder.CTDoctor.Name}} {{conv.CreateTime}}</h2>
-                <p style="white-space:normal;">{{conv.Description}}</p>
-            </ion-item>
-        </ion-list>
-        <a ui-sref="p-sm.imageUploadPage" disabled="true" id="1003453-button11" class=" button button-positive  button-block ">追加图片</a>
-        <a ui-sref="p-sm.createOrderConvPage" id="1003453-button11" class=" button button-positive  button-block ">追加提问</a>
-    </ion-content>
+<ion-view title="{{page.title}}({{currentOrder.ID}})" id="userMessagesView"
+          cache-view="false" >
+        
+        <div class="loader-center" ng-if="!doneLoading">
+            <div class="loader">
+              <i class="icon ion-loading-c"></i>
+            </div>
+        </div>
+      
+          <ion-content has-bouncing="true" class="has-header has-footer" 
+              delegate-handle="userMessageScroll">
+            
+              <div ng-repeat="message in messages" class="message-wrapper">
+      
+                  <div ng-if="'D'== message.Owner">
+                      
+                    <img ng-click="viewProfile(message)" class="profile-pic left" 
+                          ng-src="../uploadedImg/{{toUser.Avatar}}" onerror="onProfilePicError(this)" />
+      
+                      <div class="chat-bubble left">
+      
+                          <div ng-if="'IMAGE'== message.Type">
+							<a class="img-item">
+								<img ng-src="../uploadedImg/{{message.Pics}}" ng-click="openFullScreenImage(message.Pics)" width="100%" />
+							</a>
+						  </div>
+						  
+                          <div ng-if="'TEXT'== message.Type" class="message" ng-bind-html="message.Description | nl2br" autolinker>
+							
+                          </div>
+      
+                          <div class="message-detail">
+                              <span ng-click="viewProfile(message)" 
+                                  class="bold">{{toUser.Name}}</span>,
+                              <span am-time-ago="message.CreateTime"></span>
+                          </div>
+      
+                      </div>
+                  </div>
+      
+                  <div ng-if="'P'== message.Owner">
+                    
+                       <img ng-click="viewProfile(message)" class="profile-pic right" 
+                          ng-src="../uploadedImg/{{user.Avatar}}" onerror="onProfilePicError(this)" />
+                    
+                      <div class="chat-bubble right">
+							
+                          <div ng-if="'IMAGE'== message.Type">
+							<a class="img-item">
+								<img ng-src="../uploadedImg/{{message.Pics}}" ng-click="openFullScreenImage(message.Pics)" width="100%" />
+							</a>
+						  </div>
+      
+                          <div ng-if="'TEXT'== message.Type" class="message" ng-bind-html="message.Description | nl2br" autolinker>
+							
+                          </div>
+      
+                          <div class="message-detail">
+                              <span ng-click="viewProfile(message)" 
+                                  class="bold">{{user.Name}}</span>, 
+                              <span am-time-ago="message.CreateTime"></span>
+                          </div>
+      
+                      </div>
+                    
+                  </div>
+      
+                  <div class="cf"></div>
+      
+              </div>
+          </ion-content>
+      
+          <form name="sendMessageForm" ng-submit="sendMessage(sendMessageForm)" novalidate>
+              <ion-footer-bar class="bar-stable item-input-inset message-footer" keyboard-attach>
+                  <div class="footer-btn-wrap">
+                    <button ng-click="addImage()" class="button button-icon icon ion-image footer-btn" type="button">
+                    </button>
+                  </div>
+                  <label class="item-input-wrapper">
+                      <textarea ng-model="input.message" value="" ng-disabled="!page.enableNewMessage" placeholder="{{page.newMessageHolder}}" required minlength="1" maxlength="1500" msd-elastic></textarea>
+                  </label>
+                  <div class="footer-btn-wrap">
+                    <button class="button button-icon icon ion-android-send footer-btn" type="submit"
+                        ng-disabled="!page.enableNewMessage || (!input.message || input.message === '')">
+                    </button>
+                  </div>
+              </ion-footer-bar>
+          </form>
+          
 </ion-view>

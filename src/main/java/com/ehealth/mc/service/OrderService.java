@@ -38,4 +38,7 @@ public interface OrderService {
 	OrderConversation createOrderConversaction(Entity newEntity,
 			Entity parentEntity);
 
+	OrderConversation createImageOrderConversaction(String fileName,
+			Long orderHeaderID, String owner);
+
 }

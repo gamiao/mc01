@@ -96,26 +96,6 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('d-sm.chat', {
-    url: '/chat',
-    views: {
-      'd-sm': {
-        templateUrl: 'templates/chat.html',
-        controller: 'chatCtrl'
-      }
-    }
-  })
-
-  .state('d-sm.1003452', {
-    url: '/indexPage0',
-    views: {
-      'd-sm': {
-        templateUrl: 'templates/1003452.html',
-        controller: '1003452Ctrl'
-      }
-    }
-  })
-
   .state('d-sm.orderConvsPage', {
     url: '/orderConvsPage',
     views: {

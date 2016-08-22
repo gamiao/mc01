@@ -20,6 +20,15 @@ angular.module('app.controllers', [])
 .controller('indexPageCtrl', function($scope, $state, $ionicActionSheet, orderService) {
 
 })
+
+.service('uploadService', [function(){
+	this.imgUploadBase64URL = "/mc01/spring/uploadImgBase64/";
+	this.param1;
+	this.param2;
+	this.param3;
+	this.fileContent;
+	this.fileName;
+}])
    
 .controller('pickupOrderPageCtrl', function($scope,$state,$odataresource,urlService,orderService,doctorService,$ionicActionSheet) {
 	
@@ -105,7 +114,7 @@ angular.module('app.controllers', [])
   $scope.page = page;
   $scope.getConvs=function(ObjectData){
 	orderService.currentOrder=ObjectData;
-	$state.go('d-sm.chat');
+	$state.go('d-sm.orderConvsPage');
   }
   
   $scope.pickup=function(order){
@@ -141,17 +150,6 @@ angular.module('app.controllers', [])
   }
   
 })
-   
-.controller('orderConvsPageCtrl', function($scope,$odataresource, $stateParams, urlService,orderService) {
-	if(orderService.currentOrder !== null && orderService.currentOrder.ID !== null){
-    $scope.orderConvs = 
-        $odataresource(urlService.baseURL  + "Orders("+ orderService.currentOrder.ID+")/OrderConvs")
-        .odata()
-        .query();
-	}
-	$scope.currentOrder=orderService.currentOrder;
-
-})
       
 .controller('doctorInfoPageCtrl', function($scope,$odataresource, $stateParams, urlService,doctorService) {
 		doctorService.currentDoctor = $odataresource(urlService.baseURL  + "Doctors("+ doctorService.currentDoctorID +")")
@@ -171,54 +169,48 @@ angular.module('app.controllers', [])
   }
 })
    
-.controller('imageUploadPageCtrl', function($scope,$odataresource, $stateParams, urlService, $ionicActionSheet) {
+.controller('imageUploadPageCtrl', function($rootScope, uploadService,Upload,$scope,$odataresource, $stateParams, urlService, $ionicActionSheet) {
 
- 
-  $scope.addMedia = function() {
-    $scope.hideSheet = $ionicActionSheet.show({
-      buttons: [
-        { text: 'Take photo' },
-        { text: 'Photo from library' }
-      ],
-      titleText: 'Add images',
-      cancelText: 'Cancel',
-      buttonClicked: function(index) {
-		  $scope.takePic();
+		$scope.progressval = 0;
+
+      $scope.browseFile=function(){
+        document.getElementById('browseBtn').click();
       }
-    });
-  }
- 
-  $scope.takePic = function() {
-        var options =   {
-            quality: 50,
-            destinationType: Camera.DestinationType.FILE_URI,
-            sourceType: 1,      // 0:Photo Library, 1=Camera, 2=Saved Photo Album
-            encodingType: 0     // 0=JPG 1=PNG
+
+      angular.element(document.getElementById('browseBtn')).on('change',function(e){
+        var file=e.target.files[0];
+        angular.element(document.getElementById('browseBtn')).val('');
+        var fileReader=new FileReader();
+        fileReader.onload=function(event){
+          $rootScope.$broadcast('event:file:selected',{fileData:event.target.result, fileName:file.name})
         }
-        navigator.camera.getPicture(onSuccess,onFail,options);
+        fileReader.readAsDataURL(file);
+      });
+
+    $rootScope.$on('event:file:selected',function(event,data){
+        $scope.imgSrc = data.fileData;
+		$scope.$apply();
+		uploadService.fileData = data.fileData;
+		uploadService.fileName = data.fileName;
+    });
+
+	$scope.uploadFile=function(){
+		
+        uploadUrl= uploadService.imgUploadBase64URL + uploadService.param1 + 
+				"/" + uploadService.param2 + "/" + uploadService.param3;
+		Upload.upload({
+            url: uploadUrl,
+            data: {fileData: uploadService.fileData, fileName: uploadService.fileName}
+        }).then(function (resp) {
+            console.log('Success ');
+        }, function (resp) {
+            console.log('Error status: ' + resp.status);
+        }, function (evt) {
+            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+			$scope.progressval = progressPercentage;
+            console.log('progress: ');
+        });
     }
-    var onSuccess = function(FILE_URI) {
-        console.log(FILE_URI);
-        $scope.picData = FILE_URI;
-        $scope.$apply();
-    };
-    var onFail = function(e) {
-        console.log("On fail " + e);
-    }
-    $scope.send = function() {   
-        var myImg = $scope.picData;
-        var options = new FileUploadOptions();
-        options.fileKey="post";
-        options.chunkedMode = false;
-        var params = {};
-        params.user_token = localStorage.getItem('auth_token');
-        params.user_email = localStorage.getItem('email');
-        options.params = params;
-        var ft = new FileTransfer();
-        ft.upload(myImg, encodeURI("https://example.com/posts/"), onUploadSuccess, onUploadFail, options);
-    }
-  
-  
 })
    
    
@@ -234,10 +226,6 @@ angular.module('app.controllers', [])
 	orderService.currentOrder=ObjectData;
 	$state.go('d-sm.orderDetailPage');
   }
-})
-   
-.controller('100345Ctrl', function($scope) {
-
 })
    
 .controller('createOrderPageCtrl', function($scope, $state, $odataresource, $stateParams, urlService, orderService, doctorService) {
@@ -305,14 +293,10 @@ angular.module('app.controllers', [])
 })
 
 
-.controller('chatCtrl', function($scope, $rootScope, $state, $stateParams, MockService,
-    $ionicActionSheet,
+.controller('orderConvsPageCtrl', function($scope, uploadService,$ionicModal, $rootScope, $state, $stateParams, $ionicActionSheet,
     $ionicPopup, $ionicScrollDelegate, $timeout, $interval,orderService,urlService,$odataresource) {
-		
 	OrderConv = $odataresource(urlService.baseURL  + 'Orders(' + orderService.currentOrder.ID + ')/OrderConvs', 'id');
-		
-    orderConvs = OrderConv.odata().query();
-		
+	orderConvs = OrderConv.odata().query();
 	currentOrder = orderService.currentOrder;
 	
   page = {};
@@ -328,6 +312,7 @@ angular.module('app.controllers', [])
 	page.newMessageHolder = '待病人付款后互动';
   }
     $scope.page = page;
+    $scope.imageSrc = "jiaohuai1.jpg";
 	$scope.currentOrder = currentOrder;
 
     // this could be on $rootScope rather than in $stateParams
@@ -380,7 +365,6 @@ angular.module('app.controllers', [])
     });
 
     function getMessages() {
-      // the service is mock but you would probably pass the toUser's GUID here
         $scope.doneLoading = true;
         $scope.messages = orderConvs;
 
@@ -388,6 +372,13 @@ angular.module('app.controllers', [])
           viewScroll.scrollBottom();
         }, 0);
     }
+	
+	$scope.addImage = function() {
+		uploadService.param1 = "OrderConv";
+		uploadService.param2 = orderService.currentOrder.ID;
+		uploadService.param3 = "D";
+		$state.go('d-sm.imageUploadPage');
+	}
 
     $scope.$watch('input.message', function(newValue, oldValue) {
       console.log('input.message $watch, newValue ' + newValue);
@@ -395,6 +386,41 @@ angular.module('app.controllers', [])
       localStorage['userMessage-' + $scope.toUser._id] = newValue;
     });
 
+	  
+  $ionicModal.fromTemplateUrl('templates/fullScreenImage.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modal = modal;
+	$scope.modal.scope.closeImgModal = function() {
+		$scope.modal.hide();
+	}
+  $scope.openModal = function() {
+    $scope.modal.show();
+  };
+  $scope.closeModal = function() {
+    $scope.modal.hide();
+  };
+  // Cleanup the modal when we're done with it!
+  $scope.$on('$destroy', function() {
+    $scope.modal.remove();
+  });
+  // Execute action on hide modal
+  $scope.$on('modal.hidden', function() {
+    // Execute action
+  });
+  // Execute action on remove modal
+  $scope.$on('modal.removed', function() {
+    // Execute action
+  });
+  
+  });
+  
+  $scope.openFullScreenImage = function(imgSrc){
+	  $scope.modal.scope.imageSrc = imgSrc;
+	  $scope.modal.show();
+  }
+	
     $scope.sendMessage = function(sendMessageForm) {
 
 		var myOrderConv = new OrderConv();
@@ -413,7 +439,6 @@ angular.module('app.controllers', [])
       // for some reason the one time blur event is not firing in the browser but does on devices
       keepKeyboardOpen();
       
-      //MockService.sendMessage(message).then(function(data) {
       $scope.input.message = '';
 
       $scope.messages.push(myOrderConv);
@@ -424,7 +449,6 @@ angular.module('app.controllers', [])
       }, 0);
 
       $timeout(function() {
-        $scope.messages.push(MockService.getMockMessage());
         keepKeyboardOpen();
         viewScroll.scrollBottom(true);
       }, 2000);

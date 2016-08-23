@@ -368,28 +368,6 @@ angular.module('app.controllers', [])
 	}
   
 })
-   
-.controller('createOrderConvPageCtrl', function($scope, $state, $odataresource, $stateParams, urlService, orderService) {
-	$scope.currentOrder=orderService.currentOrder;
-	tempOrderConv = {};
-	$scope.currentOrderConv = tempOrderConv;
-	
-	$scope.createOrderConv =function(tempOrderConv){
-	    OrderConv = $odataresource(urlService.baseURL  + 'Orders(' + orderService.currentOrder.ID + ')/OrderConvs', 'id');
-		
-		var myOrderConv = new OrderConv();
-		myOrderConv.Type = 'TEXT';
-		myOrderConv.Owner = 'P';
-		myOrderConv.Description = tempOrderConv.Description;
-		
-		myOrderConv.$save(
-		    function(myOrderConv){
-				$state.go('p-sm.orderDetailPage');
-			},function(myOrderConv){
-			}
-		);
-	}
-})
 
 .controller('MainCtrl', ['$scope', function ($scope) {
   $scope.selectables = [

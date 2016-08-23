@@ -15,7 +15,11 @@
 					<strong>医生姓名：</strong>{{doctor.Name}}</p>
 
 				<p>
-					<strong>性别：</strong>{{doctor.Gender}}</p>
+					<strong>性别：</strong>{{doctor.Gender, select,
+									F {女}
+									M {男}
+									other {}
+					}}</p>
 
 				<p>
 					<strong>住址：</strong>{{doctor.Address}}</p>
@@ -28,6 +32,12 @@
 
 				<p>
 					<strong>手机号码：</strong>{{doctor.Mobile}}</p>
+
+				<p>
+					<strong>医师级别：</strong>{{doctor.MedicalLevel}}</p>
+
+				<p>
+					<strong>咨询价格：</strong>{{doctor.Price}}元</p>
 			</div>
         </div>
         <a ui-sref="d-sm.doctorUpdatePage" id="doctorInfoPage-button7" class=" button button-positive  button-block ">更新</a>

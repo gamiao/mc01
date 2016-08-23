@@ -41,6 +41,14 @@
                 <span class="input-label">手机号码</span>
                 <input type="tel" value="{{doctor.Mobile}}" ng-model="doctor.Mobile">
             </label>
+            <label class="item item-input " id="form-MedicalLevel">
+                <span class="input-label">医师级别</span>
+                <input type="text" value="{{doctor.MedicalLevel}}" ng-model="doctor.MedicalLevel">
+            </label>
+            <label class="item item-input " id="form-Price">
+                <span class="input-label">咨询价格</span>
+                <input type="number" value="{{doctor.Price}}" ng-model="doctor.Price">
+            </label>
         </form>
         <a ui-sref="d-sm.doctorInfoPage" id="updateButton" class=" button button-positive  button-block " ng-click="updateDoctor()">更新</a>
     </form>

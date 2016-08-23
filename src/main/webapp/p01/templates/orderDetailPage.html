@@ -4,26 +4,25 @@
 		    
             <ion-item ng-if="page.orderType === 'archived'"  class="item-avatar item-icon-right" id="100345-list-item6" ng-click="getConvs(currentOrder)" >
                 <img src="../uploadedImg/{{currentOrder.CTDoctor.Avatar}}">
-                <h2>应诊：{{currentOrder.CTDoctor.Name}}</h2>
-                <p>状态：<strong>{{currentOrder.Status}}</strong></p>
+                <h2>应诊：{{currentOrder.CTDoctor.Name}}（价格：{{currentOrder.CTDoctor.Price}}元）</h2>
+                <p><strong>咨询已结束，点击查看历史</strong></p>
                 <i class="icon ion-locked "></i>
             </ion-item>
             <ion-item  ng-if="page.orderType === 'ongoing'" class="item-avatar item-icon-right" id="100345-list-item6" ng-click="getConvs(currentOrder)" >
                 <img src="../uploadedImg/{{currentOrder.CTDoctor.Avatar}}">
-                <h2>应诊：{{currentOrder.CTDoctor.Name}}</h2>
-                <p>状态：<strong>{{currentOrder.Status}}</strong></p>
+                <h2>应诊：{{currentOrder.CTDoctor.Name}}（价格：{{currentOrder.CTDoctor.Price}}元）</h2>
+                <p><strong>咨询进行中，点击与医生互动</strong></p>
                 <i class="icon ion-android-chat "></i>
             </ion-item>
             <ion-item  ng-if="page.orderType === 'unpaid'" class="item-avatar item-icon-right" id="100345-list-item6" ng-click="pay(currentOrder)" >
                 <img src="../uploadedImg/{{currentOrder.CTDoctor.Avatar}}">
-                <h2>应诊：{{currentOrder.CTDoctor.Name}}</h2>
-                <p>状态：<strong>{{currentOrder.Status}}</strong></p>
+                <h2>应诊：{{currentOrder.CTDoctor.Name}}（价格：{{currentOrder.CTDoctor.Price}}元）</h2>
+                <p><strong>医生已接单，点击付款</strong></p>
                 <i class="icon ion-social-bitcoin "></i>
             </ion-item>
             <ion-item ng-if="page.orderType === 'new'" class="item-avatar item-icon-right" id="100345-list-item6" >
-                <img src="../uploadedImg/{{currentOrder.CTDoctor.Avatar}}">
-                <h2>应诊：{{currentOrder.CTDoctor.Name}}</h2>
-                <p>状态：<strong>{{currentOrder.Status}}</strong></p>
+                <img src="../uploadedImg/doctor_default01.png">
+                <h2><strong>新建订单，待医生接单</strong></h2>
                 <i class="icon ion-locked "></i>
             </ion-item>
         </ion-list>
@@ -32,7 +31,10 @@
                 <strong>患者姓名：</strong>{{currentOrder.CTPatient.Name}}</p>
 
             <p>
-                <strong>性别：</strong>{{currentOrder.CTPatient.Gender}}</p>
+                <strong>性别：</strong>{{currentOrder.CTPatient.Gender, select,
+									F {女}
+									M {男}
+									other {}}}</p>
 
             <p>
                 <strong>出生日期：</strong>{{currentOrder.CTPatient.Birthday}}</p>

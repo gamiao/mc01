@@ -161,6 +161,8 @@ public class McEdmUtil {
 			CsdlProperty medicalLevel = new CsdlProperty().setName(
 					"MedicalLevel").setType(
 					EdmPrimitiveTypeKind.String.getFullQualifiedName());
+			CsdlProperty price = new CsdlProperty().setName("Price").setType(
+					EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
 
 			// create CsdlPropertyRef for Key element
 			CsdlPropertyRef propertyRef = new CsdlPropertyRef();
@@ -170,7 +172,7 @@ public class McEdmUtil {
 			CsdlEntityType entityType = new CsdlEntityType();
 			entityType.setName(ES_DOCTORS_NAME);
 			entityType.setProperties(Arrays.asList(id, login, name, createTime,
-					gender, avatar, mail, address, mobile, birthday,
+					gender, avatar, mail, address, mobile, birthday, price,
 					medicalLevel));
 			entityType.setKey(Collections.singletonList(propertyRef));
 

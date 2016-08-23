@@ -22,6 +22,8 @@ import org.apache.olingo.server.api.uri.UriParameter;
 import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 import org.apache.olingo.server.api.uri.queryoption.FilterOption;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import com.ehealth.mc.bo.Doctor;
@@ -48,6 +50,19 @@ public class OverallServiceImpl implements OverallService {
 
 	@Autowired
 	private OrderService orderService;
+	
+	@Autowired
+	private MailSender mailSender;
+	
+	private void sendMailTest() {
+		
+		SimpleMailMessage msg = new SimpleMailMessage();
+		msg.setFrom("ehealth.mc@gmail.com");
+		msg.setTo("pattonlee@gmail.com");
+		msg.setSubject("Patton test");
+		msg.setText("Just a test");
+		mailSender.send(msg);
+	}
 
 	@Override
 	public EntityCollection findAll(EdmEntitySet edmEntitySet, UriInfo uriInfo) {
@@ -317,6 +332,8 @@ public class OverallServiceImpl implements OverallService {
 	@Override
 	public Entity readEntityData(EdmEntitySet edmEntitySet,
 			List<UriParameter> keyParams) throws ODataApplicationException {
+		
+		//sendMailTest();
 		if (edmEntitySet.getName().equals(McEdmUtil.ES_DOCTORS_NAME)) {
 			Long idValue = EntityUtil.getID(keyParams);
 			if (idValue != null) {

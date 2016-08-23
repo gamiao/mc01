@@ -15,7 +15,11 @@
 					<strong>患者姓名：</strong>{{patient.Name}}</p>
 
 				<p>
-					<strong>性别：</strong>{{patient.Gender}}</p>
+					<strong>性别：</strong>{{patient.Gender, select,
+									F {女}
+									M {男}
+									other {}
+					}}</p>
 
 				<p>
 					<strong>住址：</strong>{{patient.Address}}</p>

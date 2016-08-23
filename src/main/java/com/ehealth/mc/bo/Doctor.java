@@ -58,6 +58,9 @@ public class Doctor implements Serializable, Persistable<Long> {
 	@Column(name = "medical_level")
 	private String medicalLevel;
 
+	@Column(name = "price")
+	private Integer price;
+
 	@Column(name = "create_time")
 	private Date createTime;
 
@@ -166,6 +169,14 @@ public class Doctor implements Serializable, Persistable<Long> {
 
 	public void setMail(String mail) {
 		this.mail = mail;
+	}
+
+	public Integer getPrice() {
+		return price;
+	}
+
+	public void setPrice(Integer price) {
+		this.price = price;
 	}
 
 	@Override

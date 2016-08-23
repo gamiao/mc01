@@ -106,16 +106,6 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('d-sm.createOrderConvPage', {
-    url: '/createOrderConvPage',
-    views: {
-      'd-sm': {
-        templateUrl: 'templates/createOrderConvPage.html',
-        controller: 'createOrderConvPageCtrl'
-      }
-    }
-  })
-
 $urlRouterProvider.otherwise('/d-sm/indexPage')
 
   

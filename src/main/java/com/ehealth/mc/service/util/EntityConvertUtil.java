@@ -35,6 +35,7 @@ public class EntityConvertUtil {
 			obj.setChineseName(getPropertyStringValue(e, "Name"));
 			obj.setGender(getPropertyStringValue(e, "Gender"));
 			obj.setMedicalLevel(getPropertyStringValue(e, "MedicalLevel"));
+			obj.setPrice(getPropertyIntegerValue(e, "Price"));
 			obj.setMobile(getPropertyStringValue(e, "Mobile"));
 			return obj;
 		}
@@ -86,9 +87,22 @@ public class EntityConvertUtil {
 		if (e != null && e.getProperty(propName) != null) {
 			Property p = e.getProperty(propName);
 			if (p.getValue() != null) {
-				Long longValue = getLong(p.getValue().toString());
-				if (longValue != null) {
-					return longValue.longValue();
+				Long value = getLong(p.getValue().toString());
+				if (value != null) {
+					return value;
+				}
+			}
+		}
+		return null;
+	}
+
+	private static Integer getPropertyIntegerValue(Entity e, String propName) {
+		if (e != null && e.getProperty(propName) != null) {
+			Property p = e.getProperty(propName);
+			if (p.getValue() != null) {
+				Integer value = getInteger(p.getValue().toString());
+				if (value != null) {
+					return value;
 				}
 			}
 		}
@@ -120,6 +134,8 @@ public class EntityConvertUtil {
 					d.getCreateTime()));
 			e.addProperty(new Property(null, "MedicalLevel",
 					ValueType.PRIMITIVE, d.getMedicalLevel()));
+			e.addProperty(new Property(null, "Price", ValueType.PRIMITIVE, d
+					.getPrice()));
 			e.setId(EntityUtil.createId(McEdmUtil.ES_DOCTORS_NAME, d.getId()));
 			return e;
 		}
@@ -473,6 +489,20 @@ public class EntityConvertUtil {
 			try {
 				Long idValue = Long.valueOf(str);
 				return idValue;
+			} catch (Exception exp) {
+				return null;
+			}
+
+		}
+		return null;
+
+	}
+
+	public static Integer getInteger(String str) {
+		if (str != null) {
+			try {
+				Integer value = Integer.valueOf(str);
+				return value;
 			} catch (Exception exp) {
 				return null;
 			}

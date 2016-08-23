@@ -3,20 +3,20 @@
         <ion-list id="100345-list8" class=" ">
             <ion-item ng-if="page.orderType === 'archived'"  class="item-avatar item-icon-right" id="100345-list-item6" ng-click="getConvs(currentOrder)" >
                 <img src="../uploadedImg/{{currentOrder.CTPatient.Avatar}}">
-                <h2>患者：{{currentOrder.CTPatient.Name}}</h2>
-                <p>状态：<strong>{{currentOrder.Status}}</strong></p>
+                <h2>患者：{{currentOrder.CTPatient.Name}}（价格：{{currentOrder.CTDoctor.Price}}元）</h2>
+                <p><strong>咨询已结束，点击查看历史</strong></p>
                 <i class="icon ion-locked "></i>
             </ion-item>
             <ion-item  ng-if="page.orderType === 'ongoing'" class="item-avatar item-icon-right" id="100345-list-item6" ng-click="getConvs(currentOrder)" >
                 <img src="../uploadedImg/{{currentOrder.CTPatient.Avatar}}">
-                <h2>患者：{{currentOrder.CTPatient.Name}}</h2>
-                <p>状态：<strong>{{currentOrder.Status}}</strong></p>
+                <h2>患者：{{currentOrder.CTPatient.Name}}（价格：{{currentOrder.CTDoctor.Price}}元）</h2>
+                <p><strong>咨询进行中，点击与患者互动</strong></p>
                 <i class="icon ion-android-chat "></i>
             </ion-item>
             <ion-item ng-if="page.orderType === 'new'" class="item-avatar item-icon-right" id="100345-list-item6" ng-click="pickup(currentOrder)" >
                 <img src="../uploadedImg/{{currentOrder.CTPatient.Avatar}}">
                 <h2>患者：{{currentOrder.CTPatient.Name}}</h2>
-                <p>状态：<strong>{{currentOrder.Status}}</strong></p>
+                <h2><strong>新建订单，点击接单</strong></h2>
                 <i class="icon ion-checkmark "></i>
             </ion-item>
         </ion-list>
@@ -25,7 +25,10 @@
                 <strong>患者姓名：</strong>{{currentOrder.CTPatient.Name}}</p>
 
             <p>
-                <strong>性别：</strong>{{currentOrder.CTPatient.Gender}}</p>
+                <strong>性别：</strong>{{currentOrder.CTPatient.Gender, select,
+									F {女}
+									M {男}
+									other {}}}</p>
 
             <p>
                 <strong>出生日期：</strong>{{currentOrder.CTPatient.Birthday}}</p>

@@ -6,9 +6,12 @@
        <ion-list id="historyOrderPage-list3" class=" " ng-repeat="doctor in doctors">
             <ion-item class="item-thumbnail-left" ng-click="setOption(doctor)" >
                 <img src="../uploadedImg/{{doctor.Avatar}}">
-				<h2>{{doctor.Name}} <strong>（{{doctor.Gender}},{{doctor.MedicalLevel}}）</strong></h2>
-                <p>地址：{{doctor.Address}}</p>
-                <p>ID：{{doctor.ID}}</p>
+				<h2>{{doctor.Name}} <strong>（{{doctor.Gender, select,
+									F {女}
+									M {男}
+									other {}}}, 医师编号:{{doctor.ID}}）</strong></h2>
+                <p><strong>{{doctor.MedicalLevel}}, 咨询价格：{{doctor.Price}}元</strong></p>
+                <p>地址： {{doctor.Address}}</p>
             </ion-item>
         </ion-list>
     </ion-content>

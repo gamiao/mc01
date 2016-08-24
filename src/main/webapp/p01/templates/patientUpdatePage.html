@@ -7,7 +7,6 @@
 		height: 50%; margin-left: auto; margin-right: auto; 
 		border-radius: 50%;">
             </div>
-			<button ng-click="updateImage()" id="patientUpdatePage-button13" class=" button button-balanced button-small icon ion-ios-cloud-upload ">上传新头像</button>
         </div>
         <form id="patientUpdatePage-infoForm" class="list ">
             <label class="item item-input " id="form-Login">
@@ -42,8 +41,7 @@
                 <input type="tel" value="{{patient.Mobile}}" ng-model="patient.Mobile">
             </label>
         </form>
-        <a ui-sref="p-sm.patientInfoPage" id="updateButton" class=" button button-positive  button-block " ng-click="updatePatient()">更新</a>
-        <a ui-sref="p-sm.ngfUpload" id="updateButton" class=" button button-positive  button-block ">test</a>
+        <a id="updateButton" class=" button button-positive  button-block " ng-click="updatePatient()">更新</a>
 
     </ion-content>
 </ion-view>

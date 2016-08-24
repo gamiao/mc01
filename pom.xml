@@ -33,6 +33,7 @@
 		<odata.version>4.3.0-SNAPSHOT</odata.version>
 		<slf4j.version>1.7.11</slf4j.version>
 		<dbh2.version>1.4.191</dbh2.version>
+		<gson.version>2.6.2</gson.version>
 	</properties>
 
 	<dependencies>
@@ -76,7 +77,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-hateoas</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
@@ -159,6 +160,13 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<!-- gson begin -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>${gson.version}</version>
 		</dependency>
 
 	</dependencies>

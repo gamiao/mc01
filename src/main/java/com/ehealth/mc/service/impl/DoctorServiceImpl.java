@@ -72,8 +72,23 @@ public class DoctorServiceImpl implements DoctorService {
 	}
 
 	@Override
+	@Transactional
+	public Doctor updatePassword(String newPassword, Long id, String oldPassword) {
+		int updatedCount = doctorDAO.updatePassword(newPassword, id, oldPassword);
+		if (updatedCount > 0) {
+			return findById(id);
+		}
+		return null;
+	}
+
+	@Override
 	public List<Doctor> findByIsDeleted(String isDeleted) {
 		return doctorDAO.findByIsDeleted(isDeleted);
+	}
+
+	@Override
+	public Doctor findOneByLoginAndPassword(String login, String password) {
+		return doctorDAO.findOneByLoginAndPassword(login, password);
 	}
 
 }

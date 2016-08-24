@@ -4,10 +4,37 @@ angular.module('app.controllers', [])
 	this.baseURL = "/mc01/McService.svc/";
 }])
 
-.service('configService', [function($odataresource) {
-	this.currentPatientID = 10;
-	this.currentPatient;
-}])
+.service('configService', function($q, $http, $odataresource, urlService) {
+    return {
+        getUser: function() {
+            var deferred = $q.defer();
+            var promise = deferred.promise;
+			
+			if (this.userID){
+				$odataresource(urlService.baseURL + "Patients(" + this.userID + ")")
+					.odata().single(
+						function(patient) {
+							deferred.resolve(patient);
+						},
+						function(patient) {
+							deferred.reject('不能获得用户信息');
+						});
+			} else {
+				deferred.reject('无法获得登录ID');
+			}
+
+            promise.success = function(fn) {
+                promise.then(fn);
+                return promise;
+            }
+            promise.error = function(fn) {
+                promise.then(null, fn);
+                return promise;
+            }
+            return promise;
+        }
+    }
+})
 
 .service('orderService', [function() {
 	this.currentOrder;
@@ -24,7 +51,152 @@ angular.module('app.controllers', [])
 	this.fileName;
 }])
 
-.controller('indexPageCtrl', function($scope, $state, urlService, $odataresource, $ionicModal, $ionicActionSheet, orderService) {
+.service('accountService', function($q, $http, configService) {
+    return {
+        loginUser: function(login, pw) {
+            var deferred = $q.defer();
+            var promise = deferred.promise;
+			
+			var requestData = {};
+			requestData.login = login;
+			requestData.password = pw;
+			
+			var req = {
+				method: 'POST',
+				url: "/mc01/spring/login/P",
+				data: requestData,
+				headers: {'Content-Type': 'application/json'}
+			}
+
+			$http(req).
+			success(function(data, status, headers, config) 
+			{
+				if(status === 200 && data.result ==='S' ){
+					configService.userID = data.userID;
+					configService.getUser()
+					.success(function(data) {
+						configService.currentUser = data;
+						deferred.resolve('登录ID为' + data.userID);
+					}).error(function(data) {
+						deferred.resolve(reject);
+					});
+				}else{
+					deferred.reject('请检查登录名和密码是否正确！');
+				}
+			}).
+			error(function(data, status, headers, config) 
+			{
+				deferred.reject('请检查登录名和密码是否正确！');
+			});
+
+            promise.success = function(fn) {
+                promise.then(fn);
+                return promise;
+            }
+            promise.error = function(fn) {
+                promise.then(null, fn);
+                return promise;
+            }
+            return promise;
+        },
+		
+        updatePassword: function(id, oldPassword, newPassword) {
+            var deferred = $q.defer();
+            var promise = deferred.promise;
+ 
+            var requestData = {};
+			requestData.id = id;
+			requestData.oldPassword = oldPassword;
+			requestData.newPassword = newPassword;
+			
+			var req = {
+				method: 'POST',
+				url: "/mc01/spring/updatePassword/P",
+				data: requestData,
+				headers: {'Content-Type': 'application/json'}
+			}
+
+			$http(req).
+			success(function(data, status, headers, config) 
+			{
+				if(status === 200 && data.result ==='S' ){
+					deferred.resolve('登录ID为' + data.userID);
+				}else{
+					deferred.reject('请检查原密码是否正确！');
+				}
+			}).
+			error(function(data, status, headers, config) 
+			{
+				deferred.reject('请检查原密码是否正确！');
+			});
+			
+            promise.success = function(fn) {
+                promise.then(fn);
+                return promise;
+            }
+            promise.error = function(fn) {
+                promise.then(null, fn);
+                return promise;
+            }
+            return promise;
+        }
+    }
+})
+
+.controller('loginPageCtrl', function($scope, accountService, $ionicPopup, $state) {
+    $scope.data = {};
+ 
+    $scope.login = function() {
+        console.log("LOGIN user: " + $scope.data.username + " - PW: " + $scope.data.password);
+        accountService.loginUser($scope.data.username, $scope.data.password).success(function(data) {
+            $state.go('p-sm.indexPage');
+        }).error(function(data) {
+            var alertPopup = $ionicPopup.alert({
+                title: '登录失败',
+                template: '请检查您的用户名和密码！'
+            });
+        });
+    }
+})
+
+.controller('updatePasswordPageCtrl', function($scope, accountService, $ionicPopup, $state, configService, $ionicHistory) {
+    $scope.data = {};
+ 
+    $scope.updatePassword = function() {
+		oldPassword = $scope.data.oldPassword;
+		newPassword = $scope.data.newPassword;
+		newPasswordRepeat = $scope.data.newPasswordRepeat;
+		
+		if(newPassword !== newPasswordRepeat) {
+            var alertPopup = $ionicPopup.alert({
+                title: '输入有误',
+                template: '请检查两次输入的新密码！'
+            });
+		} else if ( !newPassword ) {
+            var alertPopup = $ionicPopup.alert({
+                title: '输入有误',
+                template: '新密码不能为空！'
+            });
+		} else if ( !oldPassword ) {
+            var alertPopup = $ionicPopup.alert({
+                title: '输入有误',
+                template: '旧密码不能为空！'
+            });
+		} else {
+			console.log("userID: " + configService.userID + " - oldPW: " + oldPassword + " - newPW: " + newPassword);
+			accountService.updatePassword(configService.userID, oldPassword, newPassword).success(function(data) {
+				$ionicHistory.goBack();
+			}).error(function(data) {
+				var alertPopup = $ionicPopup.alert({
+					title: '密码更新失败',
+					template: '请检查您的旧密码是否正确！'
+				});
+			});
+		}
+    }
+})
+
+.controller('indexPageCtrl', function($scope, $state, $odataresource, $ionicModal, $ionicActionSheet, orderService) {
 
 	$scope.createOrder = function() {
 		$scope.hideSheet = $ionicActionSheet.show({
@@ -44,19 +216,7 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('historyOrderPageCtrl', function($scope, $odataresource, urlService, orderService, configService) {
-	Order = $odataresource(urlService.baseURL + 'Orders', 'ID');
-	$scope.results = Order.odata()
-		.filter("CTPatient/ID", configService.currentPatientID)
-		.filter("IsArchived", "Y")
-		.query();
-
-	$scope.getDetail = function(ObjectData) {
-		orderService.currentOrder = ObjectData;
-	}
-})
-
-.controller('orderDetailPageCtrl', function($scope, $ionicModal, $ionicActionSheet, $state, $odataresource, $stateParams, urlService, orderService) {
+.controller('orderDetailPageCtrl', function($scope, $ionicModal, $ionicActionSheet, $state, $stateParams, orderService) {
 
 	var image = {};
 	image.src1 = 'jiaohuai1.jpg';
@@ -121,7 +281,7 @@ angular.module('app.controllers', [])
 
 	$scope.pay = function(order) {
 		actionSheetTiyle = "请确认";
-		pickupButtonLabel = "确认付款";
+		pickupButtonLabel = "确认付款(" + $scope.currentOrder.CTDoctor.Price + "元)";
 		$scope.hideSheet = $ionicActionSheet.show({
 			buttons: [{
 				text: pickupButtonLabel
@@ -146,32 +306,31 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('patientInfoPageCtrl', function($scope, uploadService, $odataresource, $stateParams, urlService, configService) {
-	configService.currentPatient = $odataresource(urlService.baseURL + "Patients(" + configService.currentPatientID + ")")
-		.odata()
-		.single();
-	$scope.patient = configService.currentPatient;
-})
-
-.controller('patientUpdatePageCtrl', function($scope, $state, $odataresource, uploadService, $stateParams, urlService, configService) {
-	test = $odataresource(urlService.baseURL + "Patients(" + configService.currentPatientID + ")")
-		.odata()
-		.single();
-	$scope.patient = configService.currentPatient;
-
-	$scope.updatePatient = function() {
-		configService.currentPatient.$update();
-	}
+.controller('patientInfoPageCtrl', function($scope, $state, uploadService, configService) {
+	$scope.patient = configService.currentUser;
 
 	$scope.updateImage = function() {
 		uploadService.param1 = "Patient";
-		uploadService.param2 = configService.currentPatientID;
+		uploadService.param2 = configService.userID;
 		uploadService.param3 = "Avatar";
 		$state.go('p-sm.imageUploadPage');
 	}
+
+	$scope.updatePassword = function() {
+		$state.go('p-sm.updatePasswordPage');
+	}
 })
 
-.controller('imageUploadPageCtrl', function($rootScope, $ionicHistory, uploadService, Upload, $scope, $odataresource, $stateParams,	urlService, $ionicActionSheet) {
+.controller('patientUpdatePageCtrl', function($scope, $state, configService) {
+	$scope.patient = configService.currentUser;
+
+	$scope.updatePatient = function() {
+		configService.currentUser.$update();
+		$state.go('p-sm.patientInfoPage');
+	}
+})
+
+.controller('imageUploadPageCtrl', function($rootScope, $ionicHistory, uploadService, Upload, $scope, $odataresource, $stateParams,	urlService, $ionicActionSheet, configService) {
 
 	$scope.progressval = 0;
 	$scope.browseFile = function() {
@@ -209,7 +368,15 @@ angular.module('app.controllers', [])
 				fileName: uploadService.fileName
 			}
 		}).then(function(resp) {
-			$ionicHistory.goBack();
+			if(uploadService.param1 === 'Patient'){
+				configService.getUser()
+				.success(function(data) {
+					configService.currentUser = data;
+					$ionicHistory.goBack();
+				}).error(function(data) {
+					$ionicHistory.goBack();
+				});
+			}
 			console.log('Success ');
 		}, function(resp) {
 			console.log('Error status: ' + resp.status);
@@ -221,10 +388,22 @@ angular.module('app.controllers', [])
 	}
 })
 
+.controller('historyOrderPageCtrl', function($scope, $odataresource, urlService, orderService, configService) {
+	Order = $odataresource(urlService.baseURL + 'Orders', 'ID');
+	$scope.results = Order.odata()
+		.filter("CTPatient/ID", configService.userID)
+		.filter("IsArchived", "Y")
+		.query();
+
+	$scope.getDetail = function(ObjectData) {
+		orderService.currentOrder = ObjectData;
+	}
+})
+
 .controller('openOrderPageCtrl', function($scope, $odataresource, urlService, orderService, configService) {
 	Order = $odataresource(urlService.baseURL + 'Orders', 'ID');
 	$scope.results = Order.odata()
-		.filter("CTPatient/ID", configService.currentPatientID)
+		.filter("CTPatient/ID", configService.userID)
 		.filter("IsArchived", "N")
 		.query();
 
@@ -257,7 +436,7 @@ angular.module('app.controllers', [])
 
 		var myOrder = new Order();
 		myOrder.CTPatient = {};
-		myOrder.CTPatient.ID = configService.currentPatientID;
+		myOrder.CTPatient.ID = configService.userID;
 		myOrder.CTDetail = {};
 		myOrder.CTDetail.Description = tempOrder.CTDetail.Description;
 		if ($scope.isDoctorFixed) {
@@ -329,43 +508,6 @@ angular.module('app.controllers', [])
 	}
 
 })
-
-.controller('MainCtrl', ['$scope', function($scope) {
-	$scope.selectables = [
-		1, 2, 3
-	];
-
-	$scope.longList = [];
-	for (var i = 0; i < 1000; i++) {
-		$scope.longList.push(i);
-	}
-
-	$scope.selectableNames = [{
-		name: "Mauro",
-		role: "black hat"
-	}, {
-		name: "Silvia",
-		role: "pineye"
-	}, {
-		name: "Merlino",
-		role: "little canaglia"
-	}, ];
-
-	$scope.someSetModel = 'Mauro';
-
-	$scope.getOpt = function(option) {
-		return option.name + ":" + option.role;
-	};
-
-	$scope.shoutLoud = function(newValuea, oldValue) {
-		alert("changed from " + JSON.stringify(oldValue) + " to " + JSON.stringify(newValuea));
-	};
-
-	$scope.shoutReset = function() {
-		alert("value was reset!");
-	};
-
-}])
 
 .controller('orderConvsPageCtrl', function($scope, $ionicModal, uploadService, $rootScope, $state, $stateParams, $ionicActionSheet,	$ionicPopup, $ionicScrollDelegate, $timeout, $interval, orderService, urlService, $odataresource) {
 

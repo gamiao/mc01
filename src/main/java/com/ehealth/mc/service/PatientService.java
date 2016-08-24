@@ -12,4 +12,8 @@ public interface PatientService {
 
 	Patient updateAvatar(String avatar, Long id);
 
+	Patient updatePassword(String newPassword, Long id, String oldPassword);
+
+	Patient findOneByLoginAndPassword(String login, String password);
+
 }

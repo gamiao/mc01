@@ -1,4 +1,4 @@
-<ion-view title="个人资料" id="patientInfoPage" class=" ">
+<ion-view title="个人资料" id="patientInfoPage" class=" " cache-view="false" >
     <ion-content padding="true" class="has-header">
 	    <div class="item item-body " id="patientUpdatePage-list-item-container1">
             <div>
@@ -7,6 +7,8 @@
 		height: 50%; margin-left: auto; margin-right: auto; 
 		border-radius: 50%;">
             </div>
+			<button ng-click="updateImage()" id="patientUpdatePage-button13" class=" button button-balanced button-small icon ion-ios-cloud-upload ">上传新头像</button>
+        </div>
 			<div id="patientInfoPage-markdown1" style="color:#000000;" class=" ">
 				<p>
 					<strong>用户名：</strong>{{patient.Login}}</p>
@@ -34,6 +36,7 @@
 					<strong>手机号码：</strong>{{patient.Mobile}}</p>
 			</div>
         </div>
-        <a ui-sref="p-sm.patientUpdatePage" id="patientInfoPage-button7" class=" button button-positive  button-block ">更新</a>
+        <a ui-sref="p-sm.patientUpdatePage" id="patientInfoPage-button7" class=" button button-positive  button-block icon ion-arrow-up-c ">更新</a>
+        <a ui-sref="p-sm.updatePasswordPage" id="patientInfoPage-button7" class=" button button-balanced  button-block icon ion-key ">修改密码</a>
     </ion-content>
 </ion-view>

@@ -54,4 +54,21 @@ public class PatientServiceImpl implements PatientService {
 		return null;
 	}
 
+	@Override
+	@Transactional
+	public Patient updatePassword(String newPassword, Long id,
+			String oldPassword) {
+		int updatedCount = patientDAO.updatePassword(newPassword, id,
+				oldPassword);
+		if (updatedCount > 0) {
+			return findById(id);
+		}
+		return null;
+	}
+
+	@Override
+	public Patient findOneByLoginAndPassword(String login, String password) {
+		return patientDAO.findOneByLoginAndPassword(login, password);
+	}
+
 }

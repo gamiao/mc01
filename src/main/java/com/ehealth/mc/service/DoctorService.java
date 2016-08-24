@@ -16,6 +16,10 @@ public interface DoctorService {
 
 	Doctor updateAvatar(String avatar, Long id);
 
+	Doctor updatePassword(String newPassword, Long id, String oldPassword);
+
 	List<Doctor> findByIsDeleted(String isDeleted);
+
+	Doctor findOneByLoginAndPassword(String login, String password);
 
 }

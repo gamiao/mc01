@@ -50,12 +50,12 @@ public class OverallServiceImpl implements OverallService {
 
 	@Autowired
 	private OrderService orderService;
-	
+
 	@Autowired
 	private MailSender mailSender;
-	
+
 	private void sendMailTest() {
-		
+
 		SimpleMailMessage msg = new SimpleMailMessage();
 		msg.setFrom("ehealth.mc@gmail.com");
 		msg.setTo("pattonlee@gmail.com");
@@ -332,8 +332,8 @@ public class OverallServiceImpl implements OverallService {
 	@Override
 	public Entity readEntityData(EdmEntitySet edmEntitySet,
 			List<UriParameter> keyParams) throws ODataApplicationException {
-		
-		//sendMailTest();
+
+		// sendMailTest();
 		if (edmEntitySet.getName().equals(McEdmUtil.ES_DOCTORS_NAME)) {
 			Long idValue = EntityUtil.getID(keyParams);
 			if (idValue != null) {
@@ -468,6 +468,48 @@ public class OverallServiceImpl implements OverallService {
 		if (edmEntitySet.getName().equals(McEdmUtil.ES_ORDER_CONVS_NAME)) {
 			return createEntity(edmEntitySet, edmEntityType, requestEntity,
 					rawServiceUri, odata, edm, parentEntity);
+		}
+		return null;
+	}
+
+	@Override
+	public Long getLoginUserID(String loginType, String login, String password) {
+
+		if ("S".equals(loginType)) {
+
+		} else if ("D".equals(loginType)) {
+			Doctor user = doctorService.findOneByLoginAndPassword(login,
+					password);
+			if (user != null) {
+				return user.getId();
+			}
+		} else if ("P".equals(loginType)) {
+			Patient user = patientService.findOneByLoginAndPassword(login,
+					password);
+			if (user != null) {
+				return user.getId();
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public Long updatePassword(String loginType, Long id, String oldPassword,
+			String newPassword) {
+		if ("S".equals(loginType)) {
+
+		} else if ("D".equals(loginType)) {
+			Doctor user = doctorService.updatePassword(newPassword, id,
+					oldPassword);
+			if (user != null) {
+				return user.getId();
+			}
+		} else if ("P".equals(loginType)) {
+			Patient user = patientService.updatePassword(newPassword, id,
+					oldPassword);
+			if (user != null) {
+				return user.getId();
+			}
 		}
 		return null;
 	}

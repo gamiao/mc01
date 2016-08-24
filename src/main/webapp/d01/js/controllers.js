@@ -54,8 +54,8 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('orderDetailPageCtrl', function($scope, $ionicModal, $state, $odataresource, $stateParams, urlService, orderService,
-	configService, $ionicActionSheet) {
+.controller('orderDetailPageCtrl', function($scope, $ionicModal, $state, $odataresource, $stateParams, urlService, orderService, configService, $ionicActionSheet) {
+	
 	var image = {};
 	image.src1 = 'jiaohuai1.jpg';
 	image.src2 = 'jiaohuai2.jpg';
@@ -142,7 +142,6 @@ angular.module('app.controllers', [])
 			}
 		});
 	}
-
 })
 
 .controller('doctorInfoPageCtrl', function($scope, $odataresource, $stateParams, urlService, configService) {
@@ -169,11 +168,9 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('imageUploadPageCtrl', function($rootScope, $ionicHistory, uploadService, Upload, $scope, $odataresource, $stateParams,
-	urlService, $ionicActionSheet) {
+.controller('imageUploadPageCtrl', function($rootScope, $ionicHistory, uploadService, Upload, $scope, $odataresource, $stateParams,	urlService, $ionicActionSheet) {
 
 	$scope.progressval = 0;
-
 	$scope.browseFile = function() {
 		document.getElementById('browseBtn').click();
 	}
@@ -235,8 +232,8 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('orderConvsPageCtrl', function($scope, uploadService, $ionicModal, $rootScope, $state, $stateParams, $ionicActionSheet,
-	$ionicPopup, $ionicScrollDelegate, $timeout, $interval, orderService, urlService, $odataresource) {
+.controller('orderConvsPageCtrl', function($scope, uploadService, $ionicModal, $rootScope, $state, $stateParams, $ionicActionSheet,	$ionicPopup, $ionicScrollDelegate, $timeout, $interval, orderService, urlService, $odataresource) {
+	
 	OrderConv = $odataresource(urlService.baseURL + 'Orders(' + orderService.currentOrder.ID + ')/OrderConvs', 'id');
 	orderConvs = OrderConv.odata().query();
 	currentOrder = orderService.currentOrder;

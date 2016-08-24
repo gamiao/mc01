@@ -42,46 +42,6 @@ angular.module('app.controllers', [])
 			}
 		});
 	}
-
-	$scope.showImage = function() {
-		$scope.imageSrc = 'http://localhost:28080/mc/img/k9n0gpcbRiFIUhLF7S8Q_zuhuai2.jpg';
-		$scope.openModal();
-	}
-
-	$scope.selectables = [
-		1, 2, 3
-	];
-
-	$scope.longList = [];
-	for (var i = 0; i < 1000; i++) {
-		$scope.longList.push(i);
-	}
-
-	$scope.selectableNames = [{
-		name: "Mauro",
-		role: "black hat"
-	}, {
-		name: "Silvia",
-		role: "pineye"
-	}, {
-		name: "Merlino",
-		role: "little canaglia"
-	}, ];
-
-	$scope.someSetModel = 'Mauro';
-
-	$scope.getOpt = function(option) {
-		return option.name + ":" + option.role;
-	};
-
-	$scope.shoutLoud = function(newValuea, oldValue) {
-		alert("changed from " + JSON.stringify(oldValue) + " to " + JSON.stringify(newValuea));
-	};
-
-	$scope.shoutReset = function() {
-		alert("value was reset!");
-	};
-
 })
 
 .controller('historyOrderPageCtrl', function($scope, $odataresource, urlService, orderService, configService) {
@@ -96,8 +56,8 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('orderDetailPageCtrl', function($scope, $ionicModal, $ionicActionSheet, $state, $odataresource, $stateParams, urlService,
-	orderService) {
+.controller('orderDetailPageCtrl', function($scope, $ionicModal, $ionicActionSheet, $state, $odataresource, $stateParams, urlService, orderService) {
+
 	var image = {};
 	image.src1 = 'jiaohuai1.jpg';
 	image.src2 = 'jiaohuai2.jpg';
@@ -211,11 +171,9 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('imageUploadPageCtrl', function($rootScope, $ionicHistory, uploadService, Upload, $scope, $odataresource, $stateParams,
-	urlService, $ionicActionSheet) {
+.controller('imageUploadPageCtrl', function($rootScope, $ionicHistory, uploadService, Upload, $scope, $odataresource, $stateParams,	urlService, $ionicActionSheet) {
 
 	$scope.progressval = 0;
-
 	$scope.browseFile = function() {
 		document.getElementById('browseBtn').click();
 	}
@@ -275,8 +233,8 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('createOrderPageCtrl', function($scope, $ionicModal, $state, $odataresource, $stateParams, urlService, orderService,
-	configService) {
+.controller('createOrderPageCtrl', function($scope, $ionicModal, $state, $odataresource, $stateParams, urlService, orderService, configService) {
+	
 	$scope.isDoctorFixed = orderService.isDoctorFixed;
 
 	if (orderService.isExistingOrder) {
@@ -323,7 +281,6 @@ angular.module('app.controllers', [])
 	}
 
 	if ($scope.isDoctorFixed) {
-
 		allDoctors =
 			$odataresource(urlService.baseURL + "Doctors")
 			.odata()
@@ -410,13 +367,10 @@ angular.module('app.controllers', [])
 
 }])
 
-.controller('orderConvsPageCtrl', function($scope, $ionicModal, uploadService, $rootScope, $state, $stateParams, $ionicActionSheet,
-	$ionicPopup, $ionicScrollDelegate, $timeout, $interval, orderService, urlService, $odataresource) {
+.controller('orderConvsPageCtrl', function($scope, $ionicModal, uploadService, $rootScope, $state, $stateParams, $ionicActionSheet,	$ionicPopup, $ionicScrollDelegate, $timeout, $interval, orderService, urlService, $odataresource) {
 
 	OrderConv = $odataresource(urlService.baseURL + 'Orders(' + orderService.currentOrder.ID + ')/OrderConvs', 'id');
-
 	orderConvs = OrderConv.odata().query();
-
 	currentOrder = orderService.currentOrder;
 
 	page = {};

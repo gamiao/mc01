@@ -1,17 +1,15 @@
 angular.module('app.controllers', [])
 
-.service('urlService', [function() {
-	this.baseURL = "/mc01/McService.svc/";
-}])
+.value('ODATA_SERVICE_URL','/mc01/McService.svc/')
 
-.service('configService', function($q, $http, $odataresource, urlService) {
+.service('configService', function($q, $http, $odataresource, ODATA_SERVICE_URL) {
     return {
         getUser: function() {
             var deferred = $q.defer();
             var promise = deferred.promise;
 			
 			if (this.userID){
-				$odataresource(urlService.baseURL + "Patients(" + this.userID + ")")
+				$odataresource(ODATA_SERVICE_URL + "Patients(" + this.userID + ")")
 					.odata().single(
 						function(patient) {
 							deferred.resolve(patient);
@@ -330,7 +328,7 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('imageUploadPageCtrl', function($rootScope, $ionicHistory, uploadService, Upload, $scope, $odataresource, $stateParams,	urlService, $ionicActionSheet, configService) {
+.controller('imageUploadPageCtrl', function($rootScope, $ionicHistory, uploadService, Upload, $scope, $odataresource, $stateParams, $ionicActionSheet, configService) {
 
 	$scope.progressval = 0;
 	$scope.browseFile = function() {
@@ -388,8 +386,8 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('historyOrderPageCtrl', function($scope, $odataresource, urlService, orderService, configService) {
-	Order = $odataresource(urlService.baseURL + 'Orders', 'ID');
+.controller('historyOrderPageCtrl', function($scope, $odataresource, ODATA_SERVICE_URL, orderService, configService) {
+	Order = $odataresource(ODATA_SERVICE_URL + 'Orders', 'ID');
 	$scope.results = Order.odata()
 		.filter("CTPatient/ID", configService.userID)
 		.filter("IsArchived", "Y")
@@ -400,8 +398,8 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('openOrderPageCtrl', function($scope, $odataresource, urlService, orderService, configService) {
-	Order = $odataresource(urlService.baseURL + 'Orders', 'ID');
+.controller('openOrderPageCtrl', function($scope, $odataresource, ODATA_SERVICE_URL, orderService, configService) {
+	Order = $odataresource(ODATA_SERVICE_URL + 'Orders', 'ID');
 	$scope.results = Order.odata()
 		.filter("CTPatient/ID", configService.userID)
 		.filter("IsArchived", "N")
@@ -412,7 +410,7 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('createOrderPageCtrl', function($scope, $ionicModal, $state, $odataresource, $stateParams, urlService, orderService, configService) {
+.controller('createOrderPageCtrl', function($scope, $ionicModal, $state, $odataresource, $stateParams, ODATA_SERVICE_URL, orderService, configService) {
 	
 	$scope.isDoctorFixed = orderService.isDoctorFixed;
 
@@ -432,7 +430,7 @@ angular.module('app.controllers', [])
 	$scope.currentOrder = tempOrder;
 
 	$scope.createOrder = function(tempOrder) {
-		Order = $odataresource(urlService.baseURL + 'Orders', 'id');
+		Order = $odataresource(ODATA_SERVICE_URL + 'Orders', 'id');
 
 		var myOrder = new Order();
 		myOrder.CTPatient = {};
@@ -461,7 +459,7 @@ angular.module('app.controllers', [])
 
 	if ($scope.isDoctorFixed) {
 		allDoctors =
-			$odataresource(urlService.baseURL + "Doctors")
+			$odataresource(ODATA_SERVICE_URL + "Doctors")
 			.odata()
 			.query();
 
@@ -509,9 +507,9 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('orderConvsPageCtrl', function($scope, $ionicModal, uploadService, $rootScope, $state, $stateParams, $ionicActionSheet,	$ionicPopup, $ionicScrollDelegate, $timeout, $interval, orderService, urlService, $odataresource) {
+.controller('orderConvsPageCtrl', function($scope, $ionicModal, uploadService, $rootScope, $state, $stateParams, $ionicActionSheet,	$ionicPopup, $ionicScrollDelegate, $timeout, $interval, orderService, ODATA_SERVICE_URL, $odataresource) {
 
-	OrderConv = $odataresource(urlService.baseURL + 'Orders(' + orderService.currentOrder.ID + ')/OrderConvs', 'id');
+	OrderConv = $odataresource(ODATA_SERVICE_URL + 'Orders(' + orderService.currentOrder.ID + ')/OrderConvs', 'id');
 	orderConvs = OrderConv.odata().query();
 	currentOrder = orderService.currentOrder;
 

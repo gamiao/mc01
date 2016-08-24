@@ -58,8 +58,8 @@ public class AccountController {
 					Long userID = overallService.getLoginUserID(loginType,
 							login, password);
 					if (userID != null) {
-						return "{\"result\":\"S\",\"userID\":\""
-								+ userID.toString() + "\"}";
+						return "{\"result\":\"S\",\"userID\":"
+								+ userID.toString() + "}";
 					}
 				}
 			}
@@ -92,8 +92,8 @@ public class AccountController {
 					Long userID = overallService.updatePassword(loginType, id,
 							oldPassword, newPassword);
 					if (userID != null) {
-						return "{\"result\":\"S\",\"userID\":\""
-								+ userID.toString() + "\"}";
+						return "{\"result\":\"S\",\"userID\":"
+								+ userID.toString() + "}";
 					}
 				}
 			}

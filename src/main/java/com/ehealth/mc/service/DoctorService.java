@@ -22,4 +22,6 @@ public interface DoctorService {
 
 	Doctor findOneByLoginAndPassword(String login, String password);
 
+	Doctor findOneByLogin(String login);
+
 }

@@ -40,4 +40,6 @@ public interface OverallService {
 	Long updatePassword(String loginType, Long id, String oldPassword,
 			String newPassword);
 
+	boolean checkLogin(String loginType, String login);
+
 }

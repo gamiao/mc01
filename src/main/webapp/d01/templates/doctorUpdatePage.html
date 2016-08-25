@@ -1,4 +1,4 @@
-<ion-view title="编辑个人资料" id="doctorUpdatePage" class=" ">
+<ion-view title="编辑个人资料" id="doctorUpdatePage" class=" " cache-view="false" >
     <ion-content padding="true" class="has-header">
 	    <div class="item item-body " id="doctorUpdatePage-list-item-container1">
             <div>
@@ -7,7 +7,6 @@
 		height: 50%; margin-left: auto; margin-right: auto; 
 		border-radius: 50%;">
             </div>
-			<button ng-click="updateImage()" id="doctorUpdatePage-button13" class=" button button-balanced button-small icon ion-ios-cloud-upload ">上传新头像</button>
         </div>
         <form id="doctorUpdatePage-infoForm" class="list ">
             <label class="item item-input " id="form-Login">
@@ -50,7 +49,7 @@
                 <input type="number" value="{{doctor.Price}}" ng-model="doctor.Price">
             </label>
         </form>
-        <a ui-sref="d-sm.doctorInfoPage" id="updateButton" class=" button button-positive  button-block " ng-click="updateDoctor()">更新</a>
+        <a id="updateButton" class=" button button-positive  button-block " ng-click="updateDoctor()">更新</a>
     </form>
     </ion-content>
 </ion-view>

@@ -1,13 +1,38 @@
 angular.module('app.controllers', [])
 
-.service('urlService', [function() {
-	this.baseURL = "/mc01/McService.svc/";
-}])
+.value('ODATA_SERVICE_URL','/mc01/McService.svc/')
 
-.service('configService', [function($odataresource) {
-	this.currentDoctorID = 5;
-	this.currentDoctor;
-}])
+.service('configService', function($q, $http, $odataresource, ODATA_SERVICE_URL) {
+    return {
+        getUser: function() {
+            var deferred = $q.defer();
+            var promise = deferred.promise;
+			
+			if (this.userID){
+				$odataresource(ODATA_SERVICE_URL + "Doctors(" + this.userID + ")")
+					.odata().single(
+						function(user) {
+							deferred.resolve(user);
+						},
+						function(user) {
+							deferred.reject('不能获得用户信息');
+						});
+			} else {
+				deferred.reject('无法获得登录ID');
+			}
+
+            promise.success = function(fn) {
+                promise.then(fn);
+                return promise;
+            }
+            promise.error = function(fn) {
+                promise.then(null, fn);
+                return promise;
+            }
+            return promise;
+        }
+    }
+})
 
 .service('orderService', [function() {
 	this.currentOrder;
@@ -23,15 +48,259 @@ angular.module('app.controllers', [])
 	this.fileName;
 }])
 
+.service('accountService', function($q, $http, configService) {
+    return {
+        loginUser: function(login, pw) {
+            var deferred = $q.defer();
+            var promise = deferred.promise;
+			
+			var requestData = {};
+			requestData.login = login;
+			requestData.password = pw;
+			
+			var req = {
+				method: 'POST',
+				url: "/mc01/spring/login/D",
+				data: requestData,
+				headers: {'Content-Type': 'application/json'}
+			}
+
+			$http(req).
+			success(function(data, status, headers, config) {
+				if(status === 200 && data.result ==='S' ){
+					configService.userID = data.userID;
+					configService.getUser()
+					.success(function(data) {
+						configService.currentUser = data;
+						deferred.resolve('登录ID为' + data.userID);
+					}).error(function(data) {
+						deferred.reject('获取用户信息失败');
+					});
+				}else{
+					deferred.reject('请检查登录名和密码是否正确！');
+				}
+			}).
+			error(function(data, status, headers, config) {
+				deferred.reject('请检查登录名和密码是否正确！');
+			});
+
+            promise.success = function(fn) {
+                promise.then(fn);
+                return promise;
+            }
+            promise.error = function(fn) {
+                promise.then(null, fn);
+                return promise;
+            }
+            return promise;
+        },
+		
+        createUser: function(user) {
+            var deferred = $q.defer();
+            var promise = deferred.promise;
+
+			user.$save(
+				function(result) {
+					configService.currentUser = result;
+					deferred.resolve('注册用户成功');
+				},
+				function(result) {
+					deferred.reject('注册用户失败');
+				}
+			);
+			
+            promise.success = function(fn) {
+                promise.then(fn);
+                return promise;
+            }
+            promise.error = function(fn) {
+                promise.then(null, fn);
+                return promise;
+            }
+            return promise;
+        },
+		
+        checkLogin: function(login) {
+            var deferred = $q.defer();
+            var promise = deferred.promise;
+			
+			var requestData = {};
+			requestData.login = login;
+			
+			var req = {
+				method: 'POST',
+				url: "/mc01/spring/checkLogin/D",
+				data: requestData,
+				headers: {'Content-Type': 'application/json'}
+			}
+
+			$http(req).
+			success(function(data, status, headers, config) {
+				if(status === 200 && data.result ==='S' ){
+					deferred.resolve('检查正常！');
+				}else{
+					deferred.reject('用户名已存在！');
+				}
+			}).
+			error(function(data, status, headers, config) {
+				deferred.reject('服务器没响应！');
+			});
+			
+            promise.success = function(fn) {
+                promise.then(fn);
+                return promise;
+            }
+            promise.error = function(fn) {
+                promise.then(null, fn);
+                return promise;
+            }
+            return promise;
+        },
+		
+        updatePassword: function(id, oldPassword, newPassword) {
+            var deferred = $q.defer();
+            var promise = deferred.promise;
+ 
+            var requestData = {};
+			requestData.id = id;
+			requestData.oldPassword = oldPassword;
+			requestData.newPassword = newPassword;
+			
+			var req = {
+				method: 'POST',
+				url: "/mc01/spring/updatePassword/D",
+				data: requestData,
+				headers: {'Content-Type': 'application/json'}
+			}
+
+			$http(req).
+			success(function(data, status, headers, config) 
+			{
+				if(status === 200 && data.result ==='S' ){
+					deferred.resolve('登录ID为' + data.userID);
+				}else{
+					deferred.reject('请检查原密码是否正确！');
+				}
+			}).
+			error(function(data, status, headers, config) 
+			{
+				deferred.reject('请检查原密码是否正确！');
+			});
+			
+            promise.success = function(fn) {
+                promise.then(fn);
+                return promise;
+            }
+            promise.error = function(fn) {
+                promise.then(null, fn);
+                return promise;
+            }
+            return promise;
+        }
+    }
+})
+
+
 .controller('indexPageCtrl', function($scope, $state, $ionicActionSheet, orderService) {
 
 })
 
-.controller('pickupOrderPageCtrl', function($scope, $state, $odataresource, urlService, orderService, configService, $ionicActionSheet) {
+.controller('loginPageCtrl', function($scope, accountService, $ionicPopup, $state) {
+    $scope.data = {};
+ 
+    $scope.login = function() {
+        console.log("LOGIN user: " + $scope.data.username + " - PW: " + $scope.data.password);
+        accountService.loginUser($scope.data.username, $scope.data.password).success(function(data) {
+            $state.go('d-sm.indexPage');
+        }).error(function(data) {
+            var alertPopup = $ionicPopup.alert({
+                title: '登录失败',
+                template: '请检查您的用户名和密码！'
+            });
+        });
+    }
+})
 
-	Order = $odataresource(urlService.baseURL + 'Orders', 'ID');
+.controller('signupPageCtrl', function($scope, $state, $ionicPopup, accountService, ODATA_SERVICE_URL, $odataresource, $ionicHistory) {
+	Doctor = $odataresource(ODATA_SERVICE_URL + 'Doctors', 'ID');
+	$scope.user = new Doctor();
+	$scope.temp = {};
+
+	$scope.signup = function() {
+		if(!$scope.user.Password || !$scope.user.Login){
+			var alertPopup = $ionicPopup.alert({
+				title: '输入有误',
+				template: '登录名和密码不能为空！'
+			});
+		} else if ($scope.user.Password !== $scope.temp.passwordRepeat) {
+			var alertPopup = $ionicPopup.alert({
+				title: '输入有误',
+				template: '两次密码输入不一致！'
+			});
+		} else {
+			accountService.checkLogin($scope.user.Login)
+			.success(function(checkLoginResult) {
+				accountService.createUser($scope.user)
+				.success(function(data) {
+					$ionicHistory.goBack();
+				}).error(function(data) {
+					var alertPopup = $ionicPopup.alert({
+						title: '注册用户失败',
+						template: '网络问题，请稍后再试！'
+					});
+				});
+			}).error(function(checkLoginResult) {
+				var alertPopup = $ionicPopup.alert({
+					title: '账户检查失败',
+					template: checkLoginResult
+				});
+			});
+		}
+	}
+})
+
+.controller('updatePasswordPageCtrl', function($scope, accountService, $ionicPopup, $state, configService, $ionicHistory) {
+    $scope.data = {};
+ 
+    $scope.updatePassword = function() {
+		oldPassword = $scope.data.oldPassword;
+		newPassword = $scope.data.newPassword;
+		newPasswordRepeat = $scope.data.newPasswordRepeat;
+		
+		if(newPassword !== newPasswordRepeat) {
+            var alertPopup = $ionicPopup.alert({
+                title: '输入有误',
+                template: '请检查两次输入的新密码！'
+            });
+		} else if ( !newPassword ) {
+            var alertPopup = $ionicPopup.alert({
+                title: '输入有误',
+                template: '新密码不能为空！'
+            });
+		} else if ( !oldPassword ) {
+            var alertPopup = $ionicPopup.alert({
+                title: '输入有误',
+                template: '旧密码不能为空！'
+            });
+		} else {
+			console.log("userID: " + configService.userID + " - oldPW: " + oldPassword + " - newPW: " + newPassword);
+			accountService.updatePassword(configService.userID, oldPassword, newPassword).success(function(data) {
+				$ionicHistory.goBack();
+			}).error(function(data) {
+				var alertPopup = $ionicPopup.alert({
+					title: '密码更新失败',
+					template: '请检查您的旧密码是否正确！'
+				});
+			});
+		}
+    }
+})
+
+.controller('pickupOrderPageCtrl', function($scope, $state, $odataresource, ODATA_SERVICE_URL, orderService, configService, $ionicActionSheet) {
+
+	Order = $odataresource(ODATA_SERVICE_URL + 'Orders', 'ID');
 	$scope.results = Order.odata()
-		.filter("CTDoctor/ID", configService.currentDoctorID)
+		.filter("CTDoctor/ID", configService.userID)
 		.filter("Status", "pickup")
 		.query();
 
@@ -41,10 +310,10 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('historyOrderPageCtrl', function($scope, $state, $odataresource, urlService, orderService, configService) {
-	Order = $odataresource(urlService.baseURL + 'Orders', 'ID');
+.controller('historyOrderPageCtrl', function($scope, $state, $odataresource, ODATA_SERVICE_URL, orderService, configService) {
+	Order = $odataresource(ODATA_SERVICE_URL + 'Orders', 'ID');
 	$scope.results = Order.odata()
-		.filter("CTDoctor/ID", configService.currentDoctorID)
+		.filter("CTDoctor/ID", configService.userID)
 		.filter("IsArchived", "Y")
 		.query();
 
@@ -54,7 +323,7 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('orderDetailPageCtrl', function($scope, $ionicModal, $state, $odataresource, $stateParams, urlService, orderService, configService, $ionicActionSheet) {
+.controller('orderDetailPageCtrl', function($scope, $ionicModal, $state, $odataresource, $stateParams, orderService, configService, $ionicActionSheet) {
 	
 	var image = {};
 	image.src1 = 'jiaohuai1.jpg';
@@ -126,7 +395,7 @@ angular.module('app.controllers', [])
 			cancelText: '先不接单',
 			buttonClicked: function(index) {
 				order.CTDoctor = {};
-				order.CTDoctor.ID = configService.currentDoctorID;
+				order.CTDoctor.ID = configService.userID;
 				order.Status = 'unpaid';
 				order.$update(
 					function(order) {
@@ -144,31 +413,31 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('doctorInfoPageCtrl', function($scope, $odataresource, $stateParams, urlService, configService) {
-	configService.currentDoctor = $odataresource(urlService.baseURL + "Doctors(" + configService.currentDoctorID + ")")
-		.odata()
-		.single();
-	$scope.doctor = configService.currentDoctor;
-})
-
-.controller('doctorUpdatePageCtrl', function($scope, uploadService, $state, $odataresource, $stateParams, urlService, configService) {
-	test = $odataresource(urlService.baseURL + "Doctors(" + configService.currentDoctorID + ")")
-		.odata()
-		.single();
-	$scope.doctor = configService.currentDoctor;
-
-	$scope.updateDoctor = function() {
-		configService.currentDoctor.$update();
-	}
+.controller('doctorInfoPageCtrl', function($scope, $state, uploadService, configService) {
+	$scope.doctor = configService.currentUser;
 	$scope.updateImage = function() {
 		uploadService.param1 = "Doctor";
-		uploadService.param2 = configService.currentDoctorID;
+		uploadService.param2 = configService.userID;
 		uploadService.param3 = "Avatar";
 		$state.go('d-sm.imageUploadPage');
 	}
+
+	$scope.updatePassword = function() {
+		$state.go('d-sm.updatePasswordPage');
+	}
 })
 
-.controller('imageUploadPageCtrl', function($rootScope, $ionicHistory, uploadService, Upload, $scope, $odataresource, $stateParams,	urlService, $ionicActionSheet) {
+
+.controller('doctorUpdatePageCtrl', function($scope, $state, configService) {
+	$scope.doctor = configService.currentUser;
+
+	$scope.updateDoctor = function() {
+		configService.currentUser.$update();
+		$state.go('d-sm.doctorInfoPage');
+	}
+})
+
+.controller('imageUploadPageCtrl', function($rootScope, $ionicHistory, uploadService, Upload, $scope, $stateParams) {
 
 	$scope.progressval = 0;
 	$scope.browseFile = function() {
@@ -218,11 +487,11 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('openOrderPageCtrl', function($scope, $state, $odataresource, urlService, orderService, configService) {
+.controller('openOrderPageCtrl', function($scope, $state, $odataresource, ODATA_SERVICE_URL, orderService, configService) {
 
-	Order = $odataresource(urlService.baseURL + 'Orders', 'ID');
+	Order = $odataresource(ODATA_SERVICE_URL + 'Orders', 'ID');
 	$scope.results = Order.odata()
-		.filter("CTDoctor/ID", configService.currentDoctorID)
+		.filter("CTDoctor/ID", configService.userID)
 		.filter("IsArchived", "N")
 		.query();
 
@@ -232,9 +501,9 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('orderConvsPageCtrl', function($scope, uploadService, $ionicModal, $rootScope, $state, $stateParams, $ionicActionSheet,	$ionicPopup, $ionicScrollDelegate, $timeout, $interval, orderService, urlService, $odataresource) {
+.controller('orderConvsPageCtrl', function($scope, uploadService, $ionicModal, $rootScope, $state, $stateParams, $ionicActionSheet,	$ionicPopup, $ionicScrollDelegate, $timeout, $interval, orderService, ODATA_SERVICE_URL, $odataresource) {
 	
-	OrderConv = $odataresource(urlService.baseURL + 'Orders(' + orderService.currentOrder.ID + ')/OrderConvs', 'id');
+	OrderConv = $odataresource(ODATA_SERVICE_URL + 'Orders(' + orderService.currentOrder.ID + ')/OrderConvs', 'id');
 	orderConvs = OrderConv.odata().query();
 	currentOrder = orderService.currentOrder;
 

@@ -22,12 +22,21 @@ import com.ehealth.mc.bo.Patient;
 
 public class EntityConvertUtil {
 
+	public static String PATIENT_DEFAULT_AVATAR = "patient_default01.png";
+
+	public static String DOCTOR_DEFAULT_AVATAR = "doctor_default01.png";
+
 	public static Doctor getDoctor(Entity e, Doctor original) {
 		if (e != null) {
 			Doctor obj = new Doctor();
-			obj.setCreateTime(new Date());
 			if (original != null) {
 				obj = original;
+			} else {
+				obj.setCreateTime(new Date());
+				obj.setIsDeleted("N");
+				obj.setAvatar(DOCTOR_DEFAULT_AVATAR);
+				obj.setLogin(getPropertyStringValue(e, "Login"));
+				obj.setPassword(getPropertyStringValue(e, "Password"));
 			}
 			obj.setAddress(getPropertyStringValue(e, "Address"));
 			obj.setMail(getPropertyStringValue(e, "Mail"));
@@ -45,9 +54,14 @@ public class EntityConvertUtil {
 	public static Patient getPatient(Entity e, Patient original) {
 		if (e != null) {
 			Patient obj = new Patient();
-			obj.setCreateTime(new Date());
 			if (original != null) {
 				obj = original;
+			} else {
+				obj.setCreateTime(new Date());
+				obj.setIsDeleted("N");
+				obj.setAvatar(PATIENT_DEFAULT_AVATAR);
+				obj.setLogin(getPropertyStringValue(e, "Login"));
+				obj.setPassword(getPropertyStringValue(e, "Password"));
 			}
 			obj.setAddress(getPropertyStringValue(e, "Address"));
 			obj.setMail(getPropertyStringValue(e, "Mail"));

@@ -115,6 +115,12 @@ angular.module('app.routes', [])
       templateUrl: 'templates/loginPage.html',
       controller: 'loginPageCtrl'
   })
+	
+  .state('signup', {
+      url: '/signup',
+      templateUrl: 'templates/signupPage.html',
+      controller: 'signupPageCtrl'
+  })
 
 	$urlRouterProvider.otherwise('/login')
 

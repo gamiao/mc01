@@ -26,4 +26,6 @@ public interface DoctorDAO extends CrudRepository<Doctor, Long> {
 
 	Doctor findOneByLoginAndPassword(String login, String password);
 
+	Doctor findOneByLogin(String login);
+
 }

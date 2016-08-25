@@ -16,4 +16,6 @@ public interface PatientService {
 
 	Patient findOneByLoginAndPassword(String login, String password);
 
+	Patient findOneByLogin(String login);
+
 }

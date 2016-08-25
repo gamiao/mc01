@@ -71,4 +71,9 @@ public class PatientServiceImpl implements PatientService {
 		return patientDAO.findOneByLoginAndPassword(login, password);
 	}
 
+	@Override
+	public Patient findOneByLogin(String login) {
+		return patientDAO.findOneByLogin(login);
+	}
+
 }

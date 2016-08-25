@@ -22,4 +22,6 @@ public interface PatientDAO extends CrudRepository<Patient, Long> {
 
 	Patient findOneByLoginAndPassword(String login, String password);
 
+	Patient findOneByLogin(String login);
+
 }

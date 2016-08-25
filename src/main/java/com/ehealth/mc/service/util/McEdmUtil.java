@@ -141,6 +141,9 @@ public class McEdmUtil {
 					EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
 			CsdlProperty login = new CsdlProperty().setName("Login").setType(
 					EdmPrimitiveTypeKind.String.getFullQualifiedName());
+			CsdlProperty password = new CsdlProperty()
+					.setName("Password")
+					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty name = new CsdlProperty().setName("Name").setType(
 					EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty createTime = new CsdlProperty().setName("CreateTime")
@@ -171,9 +174,9 @@ public class McEdmUtil {
 			// configure EntityType
 			CsdlEntityType entityType = new CsdlEntityType();
 			entityType.setName(ES_DOCTORS_NAME);
-			entityType.setProperties(Arrays.asList(id, login, name, createTime,
-					gender, avatar, mail, address, mobile, birthday, price,
-					medicalLevel));
+			entityType.setProperties(Arrays.asList(id, login, password, name,
+					createTime, gender, avatar, mail, address, mobile,
+					birthday, price, medicalLevel));
 			entityType.setKey(Collections.singletonList(propertyRef));
 
 			return entityType;
@@ -182,6 +185,9 @@ public class McEdmUtil {
 					EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
 			CsdlProperty login = new CsdlProperty().setName("Login").setType(
 					EdmPrimitiveTypeKind.String.getFullQualifiedName());
+			CsdlProperty password = new CsdlProperty()
+					.setName("Password")
+					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty name = new CsdlProperty().setName("Name").setType(
 					EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty createTime = new CsdlProperty().setName("CreateTime")
@@ -207,8 +213,9 @@ public class McEdmUtil {
 			// configure EntityType
 			CsdlEntityType entityType = new CsdlEntityType();
 			entityType.setName(ES_PATIENTS_NAME);
-			entityType.setProperties(Arrays.asList(id, login, name, createTime,
-					gender, avatar, mail, address, mobile, birthday));
+			entityType.setProperties(Arrays
+					.asList(id, login, password, name, createTime, gender,
+							avatar, mail, address, mobile, birthday));
 			entityType.setKey(Collections.singletonList(propertyRef));
 
 			return entityType;

@@ -67,8 +67,7 @@ angular.module('app.controllers', [])
 			}
 
 			$http(req).
-			success(function(data, status, headers, config) 
-			{
+			success(function(data, status, headers, config) {
 				if(status === 200 && data.result ==='S' ){
 					configService.userID = data.userID;
 					configService.getUser()
@@ -76,17 +75,78 @@ angular.module('app.controllers', [])
 						configService.currentUser = data;
 						deferred.resolve('登录ID为' + data.userID);
 					}).error(function(data) {
-						deferred.resolve(reject);
+						deferred.reject('获取用户信息失败');
 					});
 				}else{
 					deferred.reject('请检查登录名和密码是否正确！');
 				}
 			}).
-			error(function(data, status, headers, config) 
-			{
+			error(function(data, status, headers, config) {
 				deferred.reject('请检查登录名和密码是否正确！');
 			});
 
+            promise.success = function(fn) {
+                promise.then(fn);
+                return promise;
+            }
+            promise.error = function(fn) {
+                promise.then(null, fn);
+                return promise;
+            }
+            return promise;
+        },
+		
+        createUser: function(user) {
+            var deferred = $q.defer();
+            var promise = deferred.promise;
+
+			user.$save(
+				function(result) {
+					configService.currentUser = result;
+					deferred.resolve('注册用户成功');
+				},
+				function(result) {
+					deferred.reject('注册用户失败');
+				}
+			);
+			
+            promise.success = function(fn) {
+                promise.then(fn);
+                return promise;
+            }
+            promise.error = function(fn) {
+                promise.then(null, fn);
+                return promise;
+            }
+            return promise;
+        },
+		
+        checkLogin: function(login) {
+            var deferred = $q.defer();
+            var promise = deferred.promise;
+			
+			var requestData = {};
+			requestData.login = login;
+			
+			var req = {
+				method: 'POST',
+				url: "/mc01/spring/checkLogin/P",
+				data: requestData,
+				headers: {'Content-Type': 'application/json'}
+			}
+
+			$http(req).
+			success(function(data, status, headers, config) {
+				if(status === 200 && data.result ==='S' ){
+					deferred.resolve('检查正常！');
+				}else{
+					deferred.reject('用户名已存在！');
+				}
+			}).
+			error(function(data, status, headers, config) {
+				deferred.reject('服务器没响应！');
+			});
+			
             promise.success = function(fn) {
                 promise.then(fn);
                 return promise;
@@ -194,7 +254,7 @@ angular.module('app.controllers', [])
     }
 })
 
-.controller('indexPageCtrl', function($scope, $state, $odataresource, $ionicModal, $ionicActionSheet, orderService) {
+.controller('indexPageCtrl', function($scope, $state, $ionicActionSheet, orderService) {
 
 	$scope.createOrder = function() {
 		$scope.hideSheet = $ionicActionSheet.show({
@@ -211,6 +271,44 @@ angular.module('app.controllers', [])
 				$state.go('p-sm.createOrderPage');
 			}
 		});
+	}
+})
+
+.controller('signupPageCtrl', function($scope, $state, $ionicPopup, accountService, ODATA_SERVICE_URL, $odataresource, $ionicHistory) {
+	Patient = $odataresource(ODATA_SERVICE_URL + 'Patients', 'ID');
+	$scope.user = new Patient();
+	$scope.temp = {};
+
+	$scope.signup = function() {
+		if(!$scope.user.Password || !$scope.user.Login){
+			var alertPopup = $ionicPopup.alert({
+				title: '输入有误',
+				template: '登录名和密码不能为空！'
+			});
+		} else if ($scope.user.Password !== $scope.temp.passwordRepeat) {
+			var alertPopup = $ionicPopup.alert({
+				title: '输入有误',
+				template: '两次密码输入不一致！'
+			});
+		} else {
+			accountService.checkLogin($scope.user.Login)
+			.success(function(checkLoginResult) {
+				accountService.createUser($scope.user)
+				.success(function(data) {
+					$ionicHistory.goBack();
+				}).error(function(data) {
+					var alertPopup = $ionicPopup.alert({
+						title: '注册用户失败',
+						template: '网络问题，请稍后再试！'
+					});
+				});
+			}).error(function(checkLoginResult) {
+				var alertPopup = $ionicPopup.alert({
+					title: '账户检查失败',
+					template: checkLoginResult
+				});
+			});
+		}
 	}
 })
 
@@ -328,7 +426,7 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('imageUploadPageCtrl', function($rootScope, $ionicHistory, uploadService, Upload, $scope, $odataresource, $stateParams, $ionicActionSheet, configService) {
+.controller('imageUploadPageCtrl', function($rootScope, $ionicHistory, uploadService, Upload, $scope, $stateParams, $ionicActionSheet, configService) {
 
 	$scope.progressval = 0;
 	$scope.browseFile = function() {

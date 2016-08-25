@@ -100,6 +100,28 @@ angular.module('app.routes', [])
 		}
 	})
 
-	$urlRouterProvider.otherwise('/d-sm/indexPage')
+	.state('d-sm.updatePasswordPage', {
+		url: '/updatePasswordPage',
+		views: {
+			'd-sm': {
+				templateUrl: 'templates/updatePasswordPage.html',
+				controller: 'updatePasswordPageCtrl'
+			}
+		}
+	})
+	
+  .state('login', {
+      url: '/login',
+      templateUrl: 'templates/loginPage.html',
+      controller: 'loginPageCtrl'
+  })
+	
+  .state('signup', {
+      url: '/signup',
+      templateUrl: 'templates/signupPage.html',
+      controller: 'signupPageCtrl'
+  })
+
+	$urlRouterProvider.otherwise('/login')
 
 });

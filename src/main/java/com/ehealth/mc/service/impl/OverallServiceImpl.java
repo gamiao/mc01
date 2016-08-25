@@ -2,6 +2,7 @@ package com.ehealth.mc.service.impl;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
@@ -512,5 +513,23 @@ public class OverallServiceImpl implements OverallService {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public boolean checkLogin(String loginType, String login) {
+		if ("S".equals(loginType)) {
+
+		} else if ("D".equals(loginType)) {
+			Doctor user = doctorService.findOneByLogin(login);
+			if (user != null) {
+				return false;
+			}
+		} else if ("P".equals(loginType)) {
+			Patient user = patientService.findOneByLogin(login);
+			if (user != null) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

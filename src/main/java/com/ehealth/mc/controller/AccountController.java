@@ -102,6 +102,33 @@ public class AccountController {
 		return returnMsg;
 	}
 
+	@RequestMapping(method = RequestMethod.POST, value = "/checkLogin/{loginType}")
+	public @ResponseBody String checkLogin(@PathVariable String loginType,
+			@RequestBody String requestBody) {
+
+		String returnMsg = "{\"result\":\"E\"}";
+		if (isLoginTypeValid(loginType)) {
+
+			Map<String, String> requestObject = null;
+
+			try {
+				requestObject = gson.fromJson(requestBody,
+						new TypeToken<Map<String, String>>() {
+						}.getType());
+			} catch (JsonSyntaxException e) {
+			}
+			if (requestObject != null) {
+				String login = requestObject.get("login");
+				if (login != null
+						&& overallService.checkLogin(loginType, login)) {
+					return "{\"result\":\"S\"}";
+				}
+			}
+		}
+
+		return returnMsg;
+	}
+
 	private boolean isLoginTypeValid(String roleType) {
 		for (String i : VALID_LOGIN_TYPES) {
 			if (i.equals(roleType)) {

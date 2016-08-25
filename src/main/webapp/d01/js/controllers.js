@@ -475,7 +475,15 @@ angular.module('app.controllers', [])
 				fileName: uploadService.fileName
 			}
 		}).then(function(resp) {
-			$ionicHistory.goBack();
+			if(uploadService.param1 === 'Doctor'){
+				configService.getUser()
+				.success(function(data) {
+					configService.currentUser = data;
+					$ionicHistory.goBack();
+				}).error(function(data) {
+					$ionicHistory.goBack();
+				});
+			}
 			console.log('Success ');
 		}, function(resp) {
 			console.log('Error status: ' + resp.status);

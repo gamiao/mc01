@@ -1,4 +1,4 @@
-<ion-view title="进行中咨询" id="openOrderPage" class=" ">
+<ion-view title="进行中咨询" id="openOrderPage" class=" " cache-view="false" >
     <ion-content padding="true" class="has-header">
         <ion-list id="historyOrderPage-list3" class=" " ng-repeat="order in results">
             <ion-item ng-if="order.CTDoctor" class="item-thumbnail-left" ui-sref="p-sm.orderDetailPage" ng-click="getDetail(order)" >
@@ -21,5 +21,8 @@
                 <p>病情：{{order.CTDetail.Description}}</p>
             </ion-item>
         </ion-list>
+		<div ng-if="!results.length || results.length === 0" style="height:200px;line-height:200px;text-align:center; vertical-align:middle;">
+			<strong>没有可以显示的记录</strong>
+		</div>
     </ion-content>
 </ion-view>

@@ -49,8 +49,14 @@ angular.module('app.controllers', [])
 	this.fileName;
 }])
 
-.service('accountService', function($q, $http, configService) {
+.service('accountService', function($q, $http, configService, $state) {
     return {
+        checkCurrentUser: function() {
+			if(!configService.userID || !configService.currentUser) {
+				$state.go("login");
+			}
+        },
+		
         loginUser: function(login, pw) {
             var deferred = $q.defer();
             var promise = deferred.promise;
@@ -218,6 +224,7 @@ angular.module('app.controllers', [])
 })
 
 .controller('updatePasswordPageCtrl', function($scope, accountService, $ionicPopup, $state, configService, $ionicHistory) {
+	accountService.checkCurrentUser();
     $scope.data = {};
  
     $scope.updatePassword = function() {
@@ -254,7 +261,8 @@ angular.module('app.controllers', [])
     }
 })
 
-.controller('indexPageCtrl', function($scope, $state, $ionicActionSheet, orderService) {
+.controller('indexPageCtrl', function($scope, $state, $ionicActionSheet, orderService, accountService) {
+	accountService.checkCurrentUser();
 
 	$scope.createOrder = function() {
 		$scope.hideSheet = $ionicActionSheet.show({
@@ -274,7 +282,7 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('signupPageCtrl', function($scope, $state, $ionicPopup, accountService, ODATA_SERVICE_URL, $odataresource, $ionicHistory) {
+.controller('signupPageCtrl', function($scope, $state, $ionicPopup, accountService, ODATA_SERVICE_URL, $odataresource, $ionicHistory, accountService) {
 	Patient = $odataresource(ODATA_SERVICE_URL + 'Patients', 'ID');
 	$scope.user = new Patient();
 	$scope.temp = {};
@@ -312,7 +320,8 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('orderDetailPageCtrl', function($scope, $ionicModal, $ionicActionSheet, $state, $stateParams, orderService) {
+.controller('orderDetailPageCtrl', function($scope, $ionicModal, $ionicActionSheet, $state, orderService, accountService) {
+	accountService.checkCurrentUser();
 
 	var image = {};
 	image.src1 = 'jiaohuai1.jpg';
@@ -402,7 +411,8 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('patientInfoPageCtrl', function($scope, $state, uploadService, configService) {
+.controller('patientInfoPageCtrl', function($scope, $state, uploadService, configService, accountService) {
+	accountService.checkCurrentUser();
 	$scope.patient = configService.currentUser;
 
 	$scope.updateImage = function() {
@@ -417,7 +427,8 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('patientUpdatePageCtrl', function($scope, $state, configService) {
+.controller('patientUpdatePageCtrl', function($scope, $state, configService, accountService) {
+	accountService.checkCurrentUser();
 	$scope.patient = configService.currentUser;
 
 	$scope.updatePatient = function() {
@@ -426,7 +437,8 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('imageUploadPageCtrl', function($rootScope, $ionicHistory, uploadService, Upload, $scope, $stateParams, $ionicActionSheet, configService) {
+.controller('imageUploadPageCtrl', function($rootScope, $ionicHistory, uploadService, Upload, $scope, configService, accountService) {
+	accountService.checkCurrentUser();
 
 	$scope.progressval = 0;
 	$scope.browseFile = function() {
@@ -484,7 +496,8 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('historyOrderPageCtrl', function($scope, $odataresource, ODATA_SERVICE_URL, orderService, configService) {
+.controller('historyOrderPageCtrl', function($scope, $odataresource, ODATA_SERVICE_URL, orderService, configService, accountService) {
+	accountService.checkCurrentUser();
 	Order = $odataresource(ODATA_SERVICE_URL + 'Orders', 'ID');
 	$scope.results = Order.odata()
 		.filter("CTPatient/ID", configService.userID)
@@ -496,7 +509,8 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('openOrderPageCtrl', function($scope, $odataresource, ODATA_SERVICE_URL, orderService, configService) {
+.controller('openOrderPageCtrl', function($scope, $odataresource, ODATA_SERVICE_URL, orderService, configService, accountService) {
+	accountService.checkCurrentUser();
 	Order = $odataresource(ODATA_SERVICE_URL + 'Orders', 'ID');
 	$scope.results = Order.odata()
 		.filter("CTPatient/ID", configService.userID)
@@ -508,7 +522,8 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('createOrderPageCtrl', function($scope, $ionicModal, $state, $odataresource, $stateParams, ODATA_SERVICE_URL, orderService, configService) {
+.controller('createOrderPageCtrl', function($scope, $ionicModal, $state, $odataresource, ODATA_SERVICE_URL, orderService, configService, accountService) {
+	accountService.checkCurrentUser();
 	
 	$scope.isDoctorFixed = orderService.isDoctorFixed;
 
@@ -605,7 +620,8 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('orderConvsPageCtrl', function($scope, $ionicModal, uploadService, $rootScope, $state, $stateParams, $ionicActionSheet,	$ionicPopup, $ionicScrollDelegate, $timeout, $interval, orderService, ODATA_SERVICE_URL, $odataresource) {
+.controller('orderConvsPageCtrl', function($scope, $ionicModal, uploadService, $rootScope, $state, $stateParams, $ionicActionSheet,	$ionicPopup, $ionicScrollDelegate, $timeout, $interval, orderService, ODATA_SERVICE_URL, $odataresource, accountService) {
+	accountService.checkCurrentUser();
 
 	OrderConv = $odataresource(ODATA_SERVICE_URL + 'Orders(' + orderService.currentOrder.ID + ')/OrderConvs', 'id');
 	orderConvs = OrderConv.odata().query();

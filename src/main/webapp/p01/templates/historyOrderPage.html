@@ -2,7 +2,7 @@
     <ion-content padding="true" class="has-header">
         <ion-list id="historyOrderPage-list3" class=" " ng-repeat="order in results">
             <ion-item class="item-thumbnail-left" ui-sref="p-sm.orderDetailPage" ng-click="getDetail(order)" >
-                <img src="../uploadedImg/{{order.CTDoctor.Avatar}}">
+                <img ng-src="../uploadedImg/{{order.CTDoctor.Avatar}}">
                 <p>咨询号：{{order.ID}} -- {{order.CreateTime}}</p>
 				<h2>医师：{{order.CTDoctor.Name}}（<strong>{{order.Status, select,
 						ongoing {进行中}

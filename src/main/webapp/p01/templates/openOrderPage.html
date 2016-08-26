@@ -2,7 +2,7 @@
     <ion-content padding="true" class="has-header">
         <ion-list id="historyOrderPage-list3" class=" " ng-repeat="order in results">
             <ion-item ng-if="order.CTDoctor" class="item-thumbnail-left" ui-sref="p-sm.orderDetailPage" ng-click="getDetail(order)" >
-                <img src="../uploadedImg/{{order.CTDoctor.Avatar}}">
+                <img ng-src="../uploadedImg/{{order.CTDoctor.Avatar}}">
                 <p>咨询号：{{order.ID}} -- {{order.CreateTime}}</p>
 				<h2>医师：{{order.CTDoctor.Name}} （<strong>{{order.Status, select,
 						ongoing {进行中}
@@ -15,7 +15,7 @@
                 <p>病情：{{order.CTDetail.Description}}</p>
             </ion-item>
             <ion-item ng-if="!order.CTDoctor.ID" class="item-thumbnail-left" ui-sref="p-sm.orderDetailPage" ng-click="getDetail(order)" >
-                <img src="../uploadedImg/doctor_default01.png">
+                <img ng-src="../uploadedImg/doctor_default01.png">
                 <p>咨询号：{{order.ID}} {{order.CreateTime}}</p>
                 <h2><strong>待医生接单</strong></h2>
                 <p>病情：{{order.CTDetail.Description}}</p>

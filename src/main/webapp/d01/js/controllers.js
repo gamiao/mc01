@@ -453,7 +453,7 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('imageUploadPageCtrl', function($rootScope, $ionicHistory, uploadService, configService, Upload, $scope, accountService) {
+.controller('imageUploadPageCtrl', function($rootScope, $ionicHistory, uploadService, configService, Upload, $scope, accountService, $ionicPopup) {
 	accountService.checkCurrentUser();
 
 	$scope.progressval = 0;
@@ -464,14 +464,23 @@ angular.module('app.controllers', [])
 	angular.element(document.getElementById('browseBtn')).on('change', function(e) {
 		var file = e.target.files[0];
 		angular.element(document.getElementById('browseBtn')).val('');
-		var fileReader = new FileReader();
-		fileReader.onload = function(event) {
-			$rootScope.$broadcast('event:file:selected', {
-				fileData: event.target.result,
-				fileName: file.name
-			})
+		
+		if(file && file.size && file.size < 2100000) {
+			var fileReader = new FileReader();
+			fileReader.onload = function(event) {
+				$rootScope.$broadcast('event:file:selected', {
+					fileData: event.target.result,
+					fileName: file.name
+				})
+			}
+			fileReader.readAsDataURL(file);
+		} else {
+			var alertPopup = $ionicPopup.alert({
+				title: '文件有误',
+				template: '请确保图片文件存在，并且小于2M！'
+			});
 		}
-		fileReader.readAsDataURL(file);
+		
 	});
 
 	$rootScope.$on('event:file:selected', function(event, data) {

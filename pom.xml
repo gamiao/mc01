@@ -45,15 +45,6 @@
 			<version>0.9.5.2</version>
 		</dependency>
 
-
-		<!-- mysql begin -->
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-
-
 		<!-- H2 DB -->
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -153,13 +144,6 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<scope>compile</scope>
-		</dependency>
-
-		<!-- junit begin -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
 		</dependency>
 
 		<!-- gson begin -->

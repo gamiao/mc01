@@ -13,6 +13,8 @@ import com.ehealth.mc.bo.Doctor;
 import com.ehealth.mc.dao.DoctorDAO;
 import com.ehealth.mc.service.DoctorService;
 import com.ehealth.mc.service.util.EntityConvertUtil;
+import com.ehealth.mc.service.util.QueryExpressionUtil;
+import com.querydsl.core.types.Predicate;
 
 @Service("doctorService")
 @Transactional(readOnly = true)
@@ -95,6 +97,25 @@ public class DoctorServiceImpl implements DoctorService {
 	@Override
 	public Doctor findOneByLogin(String login) {
 		return doctorDAO.findOneByLogin(login);
+	}
+
+	@Override
+	public List<Doctor> findByFilterString(String filterString) {
+		Predicate querys = QueryExpressionUtil
+				.getDoctorWhereClausesByFilterString(filterString);
+		if (querys != null) {
+			Iterable<Doctor> result = doctorDAO.findAll(querys);
+			if (result != null) {
+				List<Doctor> eList = new ArrayList<Doctor>();
+				Iterator<Doctor> i = result.iterator();
+				while (i.hasNext()) {
+					eList.add(i.next());
+				}
+				return eList;
+			}
+		}
+
+		return null;
 	}
 
 }

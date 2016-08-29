@@ -79,9 +79,29 @@ public class FormatUtil {
 		return null;
 	}
 
+	public static String getCommonFilterString(String filterText) {
+		if (filterText != null) {
+			Pattern fullPattern = Pattern
+					.compile("Address eq '[\u4E00-\u9FA5A-Za-z0-9|\\s|\\S]+'");
+			Matcher fullMatcher = fullPattern.matcher(filterText);
+			if (fullMatcher.find()) {
+				String subFilterText = filterText.substring(
+						fullMatcher.start(), fullMatcher.end());
+				int beginIndex = subFilterText.indexOf("'") + 1;
+				int endIndex = subFilterText.length() - 1;
+
+				String resultStr = subFilterText
+						.substring(beginIndex, endIndex);
+				return resultStr;
+			}
+		}
+		return null;
+	}
+
 	public static String getOrderFilterIsArchived(String filterText) {
 		if (filterText != null) {
-			Pattern fullPattern = Pattern.compile("IsArchived eq '[a-zA-Z0-9_-]+'");
+			Pattern fullPattern = Pattern
+					.compile("IsArchived eq '[a-zA-Z0-9_-]+'");
 			Matcher fullMatcher = fullPattern.matcher(filterText);
 			if (fullMatcher.find()) {
 				String subFilterText = filterText.substring(

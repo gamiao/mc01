@@ -69,25 +69,32 @@ public class OverallServiceImpl implements OverallService {
 	public EntityCollection findAll(EdmEntitySet edmEntitySet, UriInfo uriInfo) {
 		EntityCollection entityCollection = new EntityCollection();
 
+		String filterStr = null;
+
+		if (uriInfo != null && uriInfo.getFilterOption() != null) {
+			FilterOption filterOption = uriInfo.getFilterOption();
+			filterStr = filterOption.getText();
+		}
+
 		if (McEdmUtil.ES_DOCTORS_NAME.equals(edmEntitySet.getName())) {
 			List<Entity> entityList = entityCollection.getEntities();
-			List<Doctor> queryResult = doctorService.findByIsDeleted("N");
+			String filterString = FormatUtil.getCommonFilterString(filterStr);
+			List<Doctor> queryResult = null;
+
+			if (filterString != null && !filterString.isEmpty()) {
+				queryResult = doctorService.findByFilterString(filterString);
+			} else {
+				queryResult = doctorService.findByIsDeleted("N");
+			}
 			entityList.addAll(EntityConvertUtil
 					.getDoctorEntityList(queryResult));
 			return entityCollection;
 		} else if (McEdmUtil.ES_ORDERS_NAME.equals(edmEntitySet.getName())) {
 
-			FilterOption filterOption = null;
-
-			if (uriInfo != null) {
-				filterOption = uriInfo.getFilterOption();
-			}
-
 			List<Entity> entityList = entityCollection.getEntities();
 			List<OrderHeader> queryResult = null;
 
-			if (filterOption != null && filterOption.getText() != null) {
-				String filterStr = filterOption.getText();
+			if (filterStr != null && !filterStr.isEmpty()) {
 				Long patientID = FormatUtil.getOrderFilterPatientID(filterStr);
 				Long doctorID = FormatUtil.getOrderFilterDoctorID(filterStr);
 				String isArchivedStr = FormatUtil

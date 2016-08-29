@@ -583,6 +583,7 @@ angular.module('app.controllers', [])
 		allDoctors =
 			$odataresource(ODATA_SERVICE_URL + "Doctors")
 			.odata()
+			.filter("Address", "男 已删除")
 			.query();
 
 		$ionicModal.fromTemplateUrl('templates/doctorSelectionPage.html', {

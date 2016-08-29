@@ -1,0 +1,24 @@
+<ion-view title="瑞金足踝首页（已登录）" id="indexPage" class=" ">
+    <ion-content padding="true" class="has-header">
+        <div class="">
+            <img ng-src="img/admin_index01.jpg" width="100%" height="auto" style="display: block; margin-left: auto; margin-right: auto;">
+        </div>
+        <ion-list id="indexPage-list1" class=" ">
+            <ion-item class="item-thumbnail-left" ng-click="p-sm.patientListPage">
+                <img ng-src="img/doctor01.png">
+                <h2>查询患者</h2>
+                <p>查询患者，并且对其进行管理</p>
+            </ion-item>
+            <ion-item class="item-thumbnail-left" ui-sref="p-sm.openOrderPage">
+                <img ng-src="img/order01.png">
+                <h2>进行中咨询</h2>
+                <p>查看咨询详情，并与医师互动</p>
+            </ion-item>
+            <ion-item class="item-thumbnail-left" ui-sref="p-sm.historyOrderPage">
+                <img ng-src="img/history01.png">
+                <h2>历史咨询</h2>
+                <p>查看历史咨询和互动历史</p>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

@@ -1,0 +1,47 @@
+<ion-view title="编辑个人资料" id="patientUpdatePage" class=" " cache-view="false" >
+    <ion-content padding="true" class="has-header">
+	    <div class="item item-body " id="patientUpdatePage-list-item-container1">
+            <div>
+                <img ng-src="../uploadedImg/{{patient.Avatar}}" style="display: block; 
+		width: 50%;
+		height: 50%; margin-left: auto; margin-right: auto; 
+		border-radius: 50%;">
+            </div>
+        </div>
+        <form id="patientUpdatePage-infoForm" class="list ">
+            <label class="item item-input " id="form-Login">
+                <span class="input-label">用户名</span>
+                <input type="text" readonly="true" value="{{patient.Login}}" >
+            </label>
+            <label class="item item-input " id="form-Name">
+                <span class="input-label">患者姓名</span>
+                <input type="text" value="{{patient.Name}}" ng-model="patient.Name">
+            </label>
+			<label class="item item-select " id="form-Gender">
+                <span class="input-label">性别：</span>
+                <select ng-model="patient.Gender">
+                    <option value="F">女</option>
+                    <option value="M">男</option>
+                </select>
+            </label>
+            <label class="item item-input " id="form-Address">
+                <span class="input-label">住址</span>
+                <input type="text" value="{{patient.Address}}" ng-model="patient.Address">
+            </label>
+            <label class="item item-input " id="form-Mail">
+                <span class="input-label">邮箱</span>
+                <input type="email" value="{{patient.Mail}}" ng-model="patient.Mail">
+            </label>
+            <label class="item item-input " id="form-Birthday">
+                <span class="input-label">出生日期</span>
+                <input type="date" value="{{patient.Birthday}}">
+            </label>
+            <label class="item item-input " id="form-Mobile">
+                <span class="input-label">手机号码</span>
+                <input type="tel" value="{{patient.Mobile}}" ng-model="patient.Mobile">
+            </label>
+        </form>
+        <a id="updateButton" class=" button button-positive  button-block " ng-click="updatePatient()">更新</a>
+
+    </ion-content>
+</ion-view>

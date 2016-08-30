@@ -4,33 +4,6 @@ angular.module('app.controllers', [])
 
 .service('configService', function($q, $http, $odataresource, ODATA_SERVICE_URL) {
     return {
-        getUser: function() {
-            var deferred = $q.defer();
-            var promise = deferred.promise;
-			
-			if (this.userID){
-				$odataresource(ODATA_SERVICE_URL + "Patients(" + this.userID + ")")
-					.odata().single(
-						function(patient) {
-							deferred.resolve(patient);
-						},
-						function(patient) {
-							deferred.reject('不能获得用户信息');
-						});
-			} else {
-				deferred.reject('无法获得登录ID');
-			}
-
-            promise.success = function(fn) {
-                promise.then(fn);
-                return promise;
-            }
-            promise.error = function(fn) {
-                promise.then(null, fn);
-                return promise;
-            }
-            return promise;
-        }
     }
 })
 
@@ -67,7 +40,7 @@ angular.module('app.controllers', [])
 			
 			var req = {
 				method: 'POST',
-				url: "/mc01/spring/login/P",
+				url: "/mc01/spring/login/S",
 				data: requestData,
 				headers: {'Content-Type': 'application/json'}
 			}
@@ -76,13 +49,6 @@ angular.module('app.controllers', [])
 			success(function(data, status, headers, config) {
 				if(status === 200 && data.result ==='S' ){
 					configService.userID = data.userID;
-					configService.getUser()
-					.success(function(data) {
-						configService.currentUser = data;
-						deferred.resolve('登录ID为' + data.userID);
-					}).error(function(data) {
-						deferred.reject('获取用户信息失败');
-					});
 				}else{
 					deferred.reject('请检查登录名和密码是否正确！');
 				}
@@ -100,110 +66,8 @@ angular.module('app.controllers', [])
                 return promise;
             }
             return promise;
-        },
-		
-        createUser: function(user) {
-            var deferred = $q.defer();
-            var promise = deferred.promise;
-
-			user.$save(
-				function(result) {
-					configService.currentUser = result;
-					deferred.resolve('注册用户成功');
-				},
-				function(result) {
-					deferred.reject('注册用户失败');
-				}
-			);
-			
-            promise.success = function(fn) {
-                promise.then(fn);
-                return promise;
-            }
-            promise.error = function(fn) {
-                promise.then(null, fn);
-                return promise;
-            }
-            return promise;
-        },
-		
-        checkLogin: function(login) {
-            var deferred = $q.defer();
-            var promise = deferred.promise;
-			
-			var requestData = {};
-			requestData.login = login;
-			
-			var req = {
-				method: 'POST',
-				url: "/mc01/spring/checkLogin/P",
-				data: requestData,
-				headers: {'Content-Type': 'application/json'}
-			}
-
-			$http(req).
-			success(function(data, status, headers, config) {
-				if(status === 200 && data.result ==='S' ){
-					deferred.resolve('检查正常！');
-				}else{
-					deferred.reject('用户名已存在！');
-				}
-			}).
-			error(function(data, status, headers, config) {
-				deferred.reject('服务器没响应！');
-			});
-			
-            promise.success = function(fn) {
-                promise.then(fn);
-                return promise;
-            }
-            promise.error = function(fn) {
-                promise.then(null, fn);
-                return promise;
-            }
-            return promise;
-        },
-		
-        updatePassword: function(id, oldPassword, newPassword) {
-            var deferred = $q.defer();
-            var promise = deferred.promise;
- 
-            var requestData = {};
-			requestData.id = id;
-			requestData.oldPassword = oldPassword;
-			requestData.newPassword = newPassword;
-			
-			var req = {
-				method: 'POST',
-				url: "/mc01/spring/updatePassword/P",
-				data: requestData,
-				headers: {'Content-Type': 'application/json'}
-			}
-
-			$http(req).
-			success(function(data, status, headers, config) 
-			{
-				if(status === 200 && data.result ==='S' ){
-					deferred.resolve('登录ID为' + data.userID);
-				}else{
-					deferred.reject('请检查原密码是否正确！');
-				}
-			}).
-			error(function(data, status, headers, config) 
-			{
-				deferred.reject('请检查原密码是否正确！');
-			});
-			
-            promise.success = function(fn) {
-                promise.then(fn);
-                return promise;
-            }
-            promise.error = function(fn) {
-                promise.then(null, fn);
-                return promise;
-            }
-            return promise;
         }
+		
     }
 })
 
@@ -213,7 +77,7 @@ angular.module('app.controllers', [])
     $scope.login = function() {
         console.log("LOGIN user: " + $scope.data.username + " - PW: " + $scope.data.password);
         accountService.loginUser($scope.data.username, $scope.data.password).success(function(data) {
-            $state.go('p-sm.indexPage');
+            $state.go('s-sm.indexPage');
         }).error(function(data) {
             var alertPopup = $ionicPopup.alert({
                 title: '登录失败',
@@ -223,45 +87,52 @@ angular.module('app.controllers', [])
     }
 })
 
-.controller('updatePasswordPageCtrl', function($scope, accountService, $ionicPopup, $state, configService, $ionicHistory) {
-	accountService.checkCurrentUser();
-    $scope.data = {};
- 
-    $scope.updatePassword = function() {
-		oldPassword = $scope.data.oldPassword;
-		newPassword = $scope.data.newPassword;
-		newPasswordRepeat = $scope.data.newPasswordRepeat;
-		
-		if(newPassword !== newPasswordRepeat) {
-            var alertPopup = $ionicPopup.alert({
-                title: '输入有误',
-                template: '请检查两次输入的新密码！'
-            });
-		} else if ( !newPassword ) {
-            var alertPopup = $ionicPopup.alert({
-                title: '输入有误',
-                template: '新密码不能为空！'
-            });
-		} else if ( !oldPassword ) {
-            var alertPopup = $ionicPopup.alert({
-                title: '输入有误',
-                template: '旧密码不能为空！'
-            });
-		} else {
-			console.log("userID: " + configService.userID + " - oldPW: " + oldPassword + " - newPW: " + newPassword);
-			accountService.updatePassword(configService.userID, oldPassword, newPassword).success(function(data) {
-				$ionicHistory.goBack();
-			}).error(function(data) {
-				var alertPopup = $ionicPopup.alert({
-					title: '密码更新失败',
-					template: '请检查您的旧密码是否正确！'
-				});
-			});
-		}
-    }
+.controller('indexPageCtrl', function($scope, $state, $ionicActionSheet, orderService, accountService) {
+
 })
 
-.controller('indexPageCtrl', function($scope, $state, $ionicActionSheet, orderService, accountService) {
+.controller('doctorListPageCtrl', function($scope, $state, $odataresource, ODATA_SERVICE_URL, $ionicActionSheet, orderService, accountService, $ionicFilterBar, $timeout) {
+
+    var filterBarInstance;
+
+    function getItems () {
+      var allDoctors = [];
+	  allDoctors =
+			$odataresource(ODATA_SERVICE_URL + "Doctors")
+			.odata()
+			.query();
+      $scope.items = allDoctors;
+    }
+
+    getItems();
+
+    $scope.showFilterBar = function () {
+      filterBarInstance = $ionicFilterBar.show({
+        items: $scope.items,
+        update: function (filteredItems, filterText) {
+          $scope.items = filteredItems;
+          if (filterText) {
+            console.log(filterText);
+          }
+        }
+      });
+    };
+
+    $scope.refreshItems = function () {
+      if (filterBarInstance) {
+        filterBarInstance();
+        filterBarInstance = null;
+      }
+
+      $timeout(function () {
+        getItems();
+        $scope.$broadcast('scroll.refreshComplete');
+      }, 1000);
+    };
+
+})
+
+.controller('orderListPageCtrl', function($scope, $state, $ionicActionSheet, orderService, accountService) {
 
 })
 
@@ -306,43 +177,6 @@ angular.module('app.controllers', [])
     };
   })
 
-.controller('signupPageCtrl', function($scope, $state, $ionicPopup, accountService, ODATA_SERVICE_URL, $odataresource, $ionicHistory, accountService) {
-	Patient = $odataresource(ODATA_SERVICE_URL + 'Patients', 'ID');
-	$scope.user = new Patient();
-	$scope.temp = {};
-
-	$scope.signup = function() {
-		if(!$scope.user.Password || !$scope.user.Login){
-			var alertPopup = $ionicPopup.alert({
-				title: '输入有误',
-				template: '登录名和密码不能为空！'
-			});
-		} else if ($scope.user.Password !== $scope.temp.passwordRepeat) {
-			var alertPopup = $ionicPopup.alert({
-				title: '输入有误',
-				template: '两次密码输入不一致！'
-			});
-		} else {
-			accountService.checkLogin($scope.user.Login)
-			.success(function(checkLoginResult) {
-				accountService.createUser($scope.user)
-				.success(function(data) {
-					$ionicHistory.goBack();
-				}).error(function(data) {
-					var alertPopup = $ionicPopup.alert({
-						title: '注册用户失败',
-						template: '网络问题，请稍后再试！'
-					});
-				});
-			}).error(function(checkLoginResult) {
-				var alertPopup = $ionicPopup.alert({
-					title: '账户检查失败',
-					template: checkLoginResult
-				});
-			});
-		}
-	}
-})
 
 .controller('orderDetailPageCtrl', function($scope, $ionicModal, $ionicActionSheet, $state, orderService, accountService) {
 	accountService.checkCurrentUser();
@@ -371,7 +205,7 @@ angular.module('app.controllers', [])
 	$scope.page = page;
 	$scope.getConvs = function(ObjectData) {
 		orderService.currentOrder = ObjectData;
-		$state.go('p-sm.orderConvsPage');
+		$state.go('s-sm.orderConvsPage');
 	}
 
 	$ionicModal.fromTemplateUrl('templates/fullScreenImage.html', {
@@ -443,215 +277,12 @@ angular.module('app.controllers', [])
 		uploadService.param1 = "Patient";
 		uploadService.param2 = configService.userID;
 		uploadService.param3 = "Avatar";
-		$state.go('p-sm.imageUploadPage');
+		$state.go('s-sm.imageUploadPage');
 	}
 
 	$scope.updatePassword = function() {
-		$state.go('p-sm.updatePasswordPage');
+		$state.go('s-sm.updatePasswordPage');
 	}
-})
-
-.controller('patientUpdatePageCtrl', function($scope, $state, configService, accountService) {
-	accountService.checkCurrentUser();
-	$scope.patient = configService.currentUser;
-
-	$scope.updatePatient = function() {
-		configService.currentUser.$update();
-		$state.go('p-sm.patientInfoPage');
-	}
-})
-
-.controller('imageUploadPageCtrl', function($rootScope, $ionicHistory, uploadService, Upload, $scope, configService, accountService, $ionicPopup) {
-	accountService.checkCurrentUser();
-
-	$scope.progressval = 0;
-	$scope.browseFile = function() {
-		document.getElementById('browseBtn').click();
-	}
-
-	angular.element(document.getElementById('browseBtn')).on('change', function(e) {
-		var file = e.target.files[0];
-		angular.element(document.getElementById('browseBtn')).val('');
-		
-		if(file && file.size && file.size < 2100000) {
-			var fileReader = new FileReader();
-			fileReader.onload = function(event) {
-				$rootScope.$broadcast('event:file:selected', {
-					fileData: event.target.result,
-					fileName: file.name
-				})
-			}
-			fileReader.readAsDataURL(file);
-		} else {
-			var alertPopup = $ionicPopup.alert({
-				title: '文件有误',
-				template: '请确保图片文件存在，并且小于2M！'
-			});
-		}
-		
-	});
-
-	$rootScope.$on('event:file:selected', function(event, data) {
-		$scope.imgSrc = data.fileData;
-		$scope.$apply();
-		uploadService.fileData = data.fileData;
-		uploadService.fileName = data.fileName;
-	});
-
-	$scope.uploadFile = function() {
-
-		uploadUrl = uploadService.imgUploadBase64URL + uploadService.param1 +
-			"/" + uploadService.param2 + "/" + uploadService.param3;
-		Upload.upload({
-			url: uploadUrl,
-			data: {
-				fileData: uploadService.fileData,
-				fileName: uploadService.fileName
-			}
-		}).then(function(resp) {
-			if(uploadService.param1 === 'Patient'){
-				configService.getUser()
-				.success(function(data) {
-					configService.currentUser = data;
-					$ionicHistory.goBack();
-				}).error(function(data) {
-					$ionicHistory.goBack();
-				});
-			}
-			console.log('Success ');
-		}, function(resp) {
-			console.log('Error status: ' + resp.status);
-		}, function(evt) {
-			var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-			$scope.progressval = progressPercentage;
-			console.log('progress: ');
-		});
-	}
-})
-
-.controller('historyOrderPageCtrl', function($scope, $odataresource, ODATA_SERVICE_URL, orderService, configService, accountService) {
-	accountService.checkCurrentUser();
-	Order = $odataresource(ODATA_SERVICE_URL + 'Orders', 'ID');
-	$scope.results = Order.odata()
-		.filter("CTPatient/ID", configService.userID)
-		.filter("IsArchived", "Y")
-		.query();
-
-	$scope.getDetail = function(ObjectData) {
-		orderService.currentOrder = ObjectData;
-	}
-})
-
-.controller('openOrderPageCtrl', function($scope, $odataresource, ODATA_SERVICE_URL, orderService, configService, accountService) {
-	accountService.checkCurrentUser();
-	Order = $odataresource(ODATA_SERVICE_URL + 'Orders', 'ID');
-	$scope.results = Order.odata()
-		.filter("CTPatient/ID", configService.userID)
-		.filter("IsArchived", "N")
-		.query();
-
-	$scope.getDetail = function(ObjectData) {
-		orderService.currentOrder = ObjectData;
-	}
-})
-
-.controller('createOrderPageCtrl', function($scope, $ionicModal, $state, $odataresource, ODATA_SERVICE_URL, orderService, configService, accountService) {
-	accountService.checkCurrentUser();
-	
-	$scope.isDoctorFixed = orderService.isDoctorFixed;
-
-	if (orderService.isExistingOrder) {
-		$scope.pageTitle = "编辑咨询";
-		$scope.buttonLabel = "提交";
-		tempOrder = orderService.currentOrder;
-	} else {
-		$scope.pageTitle = "新建咨询";
-		$scope.buttonLabel = "创建";
-		tempOrder = {};
-		tempOrder.CTPatient = {};
-		tempOrder.CTDoctor = {};
-		tempOrder.CTDoctor.ID = 5;
-		tempOrder.CTDetail = {};
-	}
-	$scope.currentOrder = tempOrder;
-
-	$scope.createOrder = function(tempOrder) {
-		Order = $odataresource(ODATA_SERVICE_URL + 'Orders', 'id');
-
-		var myOrder = new Order();
-		myOrder.CTPatient = {};
-		myOrder.CTPatient.ID = configService.userID;
-		myOrder.CTDetail = {};
-		myOrder.CTDetail.Description = tempOrder.CTDetail.Description;
-		if ($scope.isDoctorFixed) {
-			myOrder.CTDoctor = {};
-			myOrder.CTDoctor.ID = tempOrder.CTDoctor.ID;
-		}
-		myOrder.Status = 'new';
-
-		myOrder.$save(
-			function(myOrder) {
-				orderService.currentOrder = myOrder;
-				$state.go('p-sm.orderDetailPage', null, {
-					reload: true
-				});
-			},
-			function(myOrder) {
-
-			}
-
-		);
-	}
-
-	if ($scope.isDoctorFixed) {
-		allDoctors =
-			$odataresource(ODATA_SERVICE_URL + "Doctors")
-			.odata()
-			.filter("Address", "男 已删除")
-			.query();
-
-		$ionicModal.fromTemplateUrl('templates/doctorSelectionPage.html', {
-			scope: $scope,
-			animation: 'slide-in-up'
-		}).then(function(modal) {
-			$scope.modal = modal;
-			$scope.modal.scope.doctors = allDoctors;
-			$scope.modal.scope.pageTitle = '请选择一位医生';
-			$scope.modal.scope.setOption = function(doctor) {
-				$scope.currentOrder.CTDoctor = doctor;
-				$scope.modal.hide();
-			}
-			$scope.modal.scope.returnClicked = function() {
-				$scope.modal.hide();
-			}
-			$scope.openModal = function() {
-				$scope.modal.show();
-			};
-			$scope.closeModal = function() {
-				$scope.modal.hide();
-			};
-			// Cleanup the modal when we're done with it!
-			$scope.$on('$destroy', function() {
-				$scope.modal.remove();
-			});
-			// Execute action on hide modal
-			$scope.$on('modal.hidden', function() {
-				// Execute action
-			});
-			// Execute action on remove modal
-			$scope.$on('modal.removed', function() {
-				// Execute action
-			});
-
-		});
-
-		$scope.$on('$ionicView.enter', function() {
-			// Code you want executed every time view is opened
-			$scope.openModal();
-		})
-
-	}
-
 })
 
 .controller('orderConvsPageCtrl', function($scope, $ionicModal, uploadService, $rootScope, $state, $stateParams, $ionicActionSheet,	$ionicPopup, $ionicScrollDelegate, $timeout, $interval, orderService, ODATA_SERVICE_URL, $odataresource, accountService) {
@@ -747,7 +378,7 @@ angular.module('app.controllers', [])
 		uploadService.param1 = "OrderConv";
 		uploadService.param2 = orderService.currentOrder.ID;
 		uploadService.param3 = "P";
-		$state.go('p-sm.imageUploadPage');
+		$state.go('s-sm.imageUploadPage');
 	}
 
 	$ionicModal.fromTemplateUrl('templates/fullScreenImage.html', {

@@ -2,7 +2,6 @@ package com.ehealth.mc.service.impl;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
@@ -31,6 +30,7 @@ import com.ehealth.mc.bo.Doctor;
 import com.ehealth.mc.bo.OrderConversation;
 import com.ehealth.mc.bo.OrderHeader;
 import com.ehealth.mc.bo.Patient;
+import com.ehealth.mc.service.AdminService;
 import com.ehealth.mc.service.DoctorService;
 import com.ehealth.mc.service.OrderService;
 import com.ehealth.mc.service.OverallService;
@@ -45,6 +45,9 @@ public class OverallServiceImpl implements OverallService {
 
 	@Autowired
 	private DoctorService doctorService;
+
+	@Autowired
+	private AdminService adminService;
 
 	@Autowired
 	private PatientService patientService;
@@ -482,9 +485,11 @@ public class OverallServiceImpl implements OverallService {
 
 	@Override
 	public Long getLoginUserID(String loginType, String login, String password) {
-
 		if ("S".equals(loginType)) {
-
+			Long id = adminService.findOneByLoginAndPassword(login, password);
+			if (id != null) {
+				return id;
+			}
 		} else if ("D".equals(loginType)) {
 			Doctor user = doctorService.findOneByLoginAndPassword(login,
 					password);
@@ -505,7 +510,7 @@ public class OverallServiceImpl implements OverallService {
 	public Long updatePassword(String loginType, Long id, String oldPassword,
 			String newPassword) {
 		if ("S".equals(loginType)) {
-
+			// not support for admin
 		} else if ("D".equals(loginType)) {
 			Doctor user = doctorService.updatePassword(newPassword, id,
 					oldPassword);
@@ -525,7 +530,7 @@ public class OverallServiceImpl implements OverallService {
 	@Override
 	public boolean checkLogin(String loginType, String login) {
 		if ("S".equals(loginType)) {
-
+			// not support for admin
 		} else if ("D".equals(loginType)) {
 			Doctor user = doctorService.findOneByLogin(login);
 			if (user != null) {

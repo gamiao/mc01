@@ -306,15 +306,45 @@ angular.module('app.controllers', [])
     }
 })
 
-.controller('pickupOrderPageCtrl', function($scope, $state, $odataresource, ODATA_SERVICE_URL, orderService, configService, $ionicActionSheet, accountService) {
+.controller('pickupOrderPageCtrl', function($scope, $state, $odataresource, ODATA_SERVICE_URL, orderService, configService, $ionicActionSheet, accountService, $ionicFilterBar, $timeout) {
 	
 	accountService.checkCurrentUser();
-
 	Order = $odataresource(ODATA_SERVICE_URL + 'Orders', 'ID');
-	$scope.results = Order.odata()
+    var filterBarInstance;
+
+    function getItems () {
+	  results = Order.odata()
 		.filter("CTDoctor/ID", configService.userID)
 		.filter("Status", "pickup")
 		.query();
+      $scope.items = results;
+    }
+
+    getItems();
+
+    $scope.showFilterBar = function () {
+      filterBarInstance = $ionicFilterBar.show({
+        items: $scope.items,
+        update: function (filteredItems, filterText) {
+          $scope.items = filteredItems;
+          if (filterText) {
+            console.log(filterText);
+          }
+        }
+      });
+    };
+
+    $scope.refreshItems = function () {
+      if (filterBarInstance) {
+        filterBarInstance();
+        filterBarInstance = null;
+      }
+
+      $timeout(function () {
+        getItems();
+        $scope.$broadcast('scroll.refreshComplete');
+      }, 1000);
+    };
 
 	$scope.getDetail = function(ObjectData) {
 		orderService.currentOrder = ObjectData;
@@ -322,13 +352,90 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('historyOrderPageCtrl', function($scope, $state, $odataresource, ODATA_SERVICE_URL, orderService, configService, accountService) {
+.controller('historyOrderPageCtrl', function($scope, $state, $odataresource, ODATA_SERVICE_URL, orderService, configService, accountService, $ionicFilterBar, $timeout) {
 	accountService.checkCurrentUser();
 	Order = $odataresource(ODATA_SERVICE_URL + 'Orders', 'ID');
-	$scope.results = Order.odata()
+	var filterBarInstance;
+
+    function getItems () {
+	  results = Order.odata()
 		.filter("CTDoctor/ID", configService.userID)
 		.filter("IsArchived", "Y")
 		.query();
+      $scope.items = results;
+    }
+
+    getItems();
+
+    $scope.showFilterBar = function () {
+      filterBarInstance = $ionicFilterBar.show({
+        items: $scope.items,
+        update: function (filteredItems, filterText) {
+          $scope.items = filteredItems;
+          if (filterText) {
+            console.log(filterText);
+          }
+        }
+      });
+    };
+
+    $scope.refreshItems = function () {
+      if (filterBarInstance) {
+        filterBarInstance();
+        filterBarInstance = null;
+      }
+
+      $timeout(function () {
+        getItems();
+        $scope.$broadcast('scroll.refreshComplete');
+      }, 1000);
+    };
+
+	$scope.getDetail = function(ObjectData) {
+		orderService.currentOrder = ObjectData;
+		$state.go('d-sm.orderDetailPage');
+	}
+})
+
+.controller('openOrderPageCtrl', function($scope, $state, $odataresource, ODATA_SERVICE_URL, orderService, configService, accountService, $ionicFilterBar, $timeout) {
+	accountService.checkCurrentUser();
+
+	Order = $odataresource(ODATA_SERVICE_URL + 'Orders', 'ID');
+	var filterBarInstance;
+
+    function getItems () {
+	  results = Order.odata()
+		.filter("CTDoctor/ID", configService.userID)
+		.filter("IsArchived", "N")
+		.query();
+      $scope.items = results;
+    }
+
+    getItems();
+
+    $scope.showFilterBar = function () {
+      filterBarInstance = $ionicFilterBar.show({
+        items: $scope.items,
+        update: function (filteredItems, filterText) {
+          $scope.items = filteredItems;
+          if (filterText) {
+            console.log(filterText);
+          }
+        }
+      });
+    };
+
+    $scope.refreshItems = function () {
+      if (filterBarInstance) {
+        filterBarInstance();
+        filterBarInstance = null;
+      }
+
+      $timeout(function () {
+        getItems();
+        $scope.$broadcast('scroll.refreshComplete');
+      }, 1000);
+    };
 
 	$scope.getDetail = function(ObjectData) {
 		orderService.currentOrder = ObjectData;
@@ -518,21 +625,6 @@ angular.module('app.controllers', [])
 			$scope.progressval = progressPercentage;
 			console.log('progress: ');
 		});
-	}
-})
-
-.controller('openOrderPageCtrl', function($scope, $state, $odataresource, ODATA_SERVICE_URL, orderService, configService, accountService) {
-	accountService.checkCurrentUser();
-
-	Order = $odataresource(ODATA_SERVICE_URL + 'Orders', 'ID');
-	$scope.results = Order.odata()
-		.filter("CTDoctor/ID", configService.userID)
-		.filter("IsArchived", "N")
-		.query();
-
-	$scope.getDetail = function(ObjectData) {
-		orderService.currentOrder = ObjectData;
-		$state.go('d-sm.orderDetailPage');
 	}
 })
 

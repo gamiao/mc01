@@ -1,0 +1,23 @@
+<ion-side-menus enable-menu-with-back-views="false">
+    <ion-side-menu-content>
+        <ion-nav-bar class="bar-stable">
+            <ion-nav-back-button></ion-nav-back-button>
+            <ion-nav-buttons side="left">
+                <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+            </ion-nav-buttons>
+        </ion-nav-bar>
+        <ion-nav-view name="s-sm"></ion-nav-view>
+    </ion-side-menu-content>
+    <ion-side-menu side="left" id="s-sm">
+        <ion-header-bar class="bar-stable">
+            <div class="title">菜单</div>
+        </ion-header-bar>
+        <ion-content padding="false" class="side-menu-left has-header">
+            <a ui-sref="s-sm.indexPage" menu-close="" id="s-sm-button1" class=" button button-positive  button-block ">首页</a>
+            <a ui-sref="s-sm.patientListPage" menu-close="" id="s-sm-button2" class=" button button-positive  button-block ">患者管理</a>
+            <a ui-sref="s-sm.doctorListPage" menu-close="" id="s-sm-button2" class=" button button-positive  button-block ">医师管理</a>
+            <a ui-sref="s-sm.orderListPage" menu-close="" id="s-sm-button3" class=" button button-positive  button-block ">咨询管理</a>
+            <button ui-sref="login" id="s-sm-button5" class=" button button-dark  button-block ">退出登录</button>
+        </ion-content>
+    </ion-side-menu>
+</ion-side-menus>

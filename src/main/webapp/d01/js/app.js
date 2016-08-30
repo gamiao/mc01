@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('app', ['ionic', 'ngMessageFormat', 'app.controllers', 'ngFileUpload', 'app.routes', 'app.services', 'app.directives','ODataResources'])
+angular.module('app', ['ionic', 'ngMessageFormat', 'app.controllers', 'ngFileUpload', 'app.routes', 'app.services', 'app.directives','ODataResources', 'monospaced.elastic', 'angularMoment', 'jett.ionic.filter.bar'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {

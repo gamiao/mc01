@@ -1,0 +1,32 @@
+<ion-view view-title="医师管理">
+
+  <ion-nav-buttons side="secondary">
+    <button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()">
+    </button>
+  </ion-nav-buttons>
+
+  <ion-content direction="y" scrollbar-y="false">
+
+    <ion-refresher pulling-icon="ion-arrow-down-b" on-refresh="refreshItems()">
+    </ion-refresher>
+
+    <ion-list>
+       <ion-list id="historyOrderPage-list3" class=" " ng-repeat="doctor in items">
+            <ion-item class="item-icon-left" ng-click="setOption(doctor)" >
+                <i class="icon ion-ionic"></i>
+				<h2>{{doctor.Name}} <strong>（{{doctor.Gender, select,
+									F {女}
+									M {男}
+									other {}}}, 医师编号:{{doctor.ID}}）</strong></h2>
+                <p><strong>{{doctor.MedicalLevel}}, 咨询价格：{{doctor.Price}}元</strong></p>
+                <p>地址： {{doctor.Address}}</p>
+            </ion-item>
+        </ion-list>
+    </ion-list>
+		
+		<div ng-if="items !== undefined && !items.length" style="height:200px;line-height:200px;text-align:center; vertical-align:middle;">
+			<strong>没有可以显示的记录</strong>
+		</div>
+    </ion-content>
+
+</ion-view>

@@ -4,118 +4,78 @@ angular.module('app.routes', [])
 
 	$stateProvider
 
-		.state('p-sm.indexPage', {
+		.state('s-sm.indexPage', {
 		url: '/indexPage',
 		views: {
-			'p-sm': {
+			's-sm': {
 				templateUrl: 'templates/indexPage.html',
 				controller: 'indexPageCtrl'
 			}
 		}
 	})
 
-	.state('p-sm.patientListPage', {
+	.state('s-sm.patientListPage', {
 		url: '/patientListPage',
 		views: {
-			'p-sm': {
+			's-sm': {
 				templateUrl: 'templates/patientListPage.html',
 				controller: 'patientListPageCtrl'
 			}
 		}
 	})
 
-	.state('p-sm.openOrderPage', {
-		url: '/openOrderPage',
+	.state('s-sm.doctorListPage', {
+		url: '/doctorListPage',
 		views: {
-			'p-sm': {
-				templateUrl: 'templates/openOrderPage.html',
-				controller: 'openOrderPageCtrl'
+			's-sm': {
+				templateUrl: 'templates/doctorListPage.html',
+				controller: 'doctorListPageCtrl'
 			}
 		}
 	})
 
-	.state('p-sm.historyOrderPage', {
-		url: '/historyOrderPage',
+	.state('s-sm.orderListPage', {
+		url: '/orderListPage',
 		views: {
-			'p-sm': {
-				templateUrl: 'templates/historyOrderPage.html',
-				controller: 'historyOrderPageCtrl'
+			's-sm': {
+				templateUrl: 'templates/orderListPage.html',
+				controller: 'orderListPageCtrl'
 			}
 		}
 	})
 
-	.state('p-sm', {
-		url: '/p-sm',
-		templateUrl: 'templates/p-sm.html',
+	.state('s-sm', {
+		url: '/s-sm',
+		templateUrl: 'templates/s-sm.html',
 		abstract: true
 	})
 
-	.state('p-sm.patientInfoPage', {
+	.state('s-sm.patientInfoPage', {
 		url: '/patientInfoPage',
 		views: {
-			'p-sm': {
+			's-sm': {
 				templateUrl: 'templates/patientInfoPage.html',
 				controller: 'patientInfoPageCtrl'
 			}
 		}
 	})
 
-	.state('p-sm.orderDetailPage', {
+	.state('s-sm.orderDetailPage', {
 		url: '/orderDetailPage',
 		views: {
-			'p-sm': {
+			's-sm': {
 				templateUrl: 'templates/orderDetailPage.html',
 				controller: 'orderDetailPageCtrl'
 			}
 		}
 	})
 
-	.state('p-sm.createOrderPage', {
-		url: '/createOrderPage',
-		views: {
-			'p-sm': {
-				templateUrl: 'templates/createOrderPage.html',
-				controller: 'createOrderPageCtrl'
-			}
-		}
-	})
-
-	.state('p-sm.orderConvsPage', {
+	.state('s-sm.orderConvsPage', {
 		url: '/orderConvsPage',
 		views: {
-			'p-sm': {
+			's-sm': {
 				templateUrl: 'templates/orderConvsPage.html',
 				controller: 'orderConvsPageCtrl'
-			}
-		}
-	})
-
-	.state('p-sm.patientUpdatePage', {
-		url: '/patientUpdatePage',
-		views: {
-			'p-sm': {
-				templateUrl: 'templates/patientUpdatePage.html',
-				controller: 'patientUpdatePageCtrl'
-			}
-		}
-	})
-
-	.state('p-sm.imageUploadPage', {
-		url: '/imageUploadPage',
-		views: {
-			'p-sm': {
-				templateUrl: 'templates/imageUploadPage.html',
-				controller: 'imageUploadPageCtrl'
-			}
-		}
-	})
-
-	.state('p-sm.updatePasswordPage', {
-		url: '/updatePasswordPage',
-		views: {
-			'p-sm': {
-				templateUrl: 'templates/updatePasswordPage.html',
-				controller: 'updatePasswordPageCtrl'
 			}
 		}
 	})
@@ -125,13 +85,7 @@ angular.module('app.routes', [])
       templateUrl: 'templates/loginPage.html',
       controller: 'loginPageCtrl'
   })
-	
-  .state('signup', {
-      url: '/signup',
-      templateUrl: 'templates/signupPage.html',
-      controller: 'signupPageCtrl'
-  })
 
-	$urlRouterProvider.otherwise('/p-sm/indexPage')
+	$urlRouterProvider.otherwise('/s-sm/indexPage')
 
 });

@@ -12,14 +12,15 @@
 
     <ion-list>
        <ion-list id="historyOrderPage-list3" class=" " ng-repeat="doctor in items">
-            <ion-item class="item-icon-left" ng-click="setOption(doctor)" >
-                <i class="icon ion-ionic"></i>
+            <ion-item class="item-thumbnail-left item-icon-right" ng-click="showDoctor(doctor)" >
+                <img ng-src="../uploadedImg/{{doctor.Avatar}}">
 				<h2>{{doctor.Name}} <strong>（{{doctor.Gender, select,
 									F {女}
 									M {男}
 									other {}}}, 医师编号:{{doctor.ID}}）</strong></h2>
                 <p><strong>{{doctor.MedicalLevel}}, 咨询价格：{{doctor.Price}}元</strong></p>
                 <p>地址： {{doctor.Address}}</p>
+                <i class="icon ion-android-radio-button-off "></i>
             </ion-item>
         </ion-list>
     </ion-list>

@@ -49,6 +49,7 @@ angular.module('app.controllers', [])
 			success(function(data, status, headers, config) {
 				if(status === 200 && data.result ==='S' ){
 					configService.userID = data.userID;
+					deferred.resolve('登录ID为' + data.userID);
 				}else{
 					deferred.reject('请检查登录名和密码是否正确！');
 				}
@@ -96,12 +97,12 @@ angular.module('app.controllers', [])
     var filterBarInstance;
 
     function getItems () {
-      var allDoctors = [];
-	  allDoctors =
+      var items = [];
+	  items =
 			$odataresource(ODATA_SERVICE_URL + "Doctors")
 			.odata()
 			.query();
-      $scope.items = allDoctors;
+      $scope.items = items;
     }
 
     getItems();
@@ -132,8 +133,44 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('orderListPageCtrl', function($scope, $state, $ionicActionSheet, orderService, accountService) {
+.controller('orderListPageCtrl', function($scope, $state, $odataresource, ODATA_SERVICE_URL, $ionicActionSheet, orderService, accountService, $ionicFilterBar, $timeout) {
 
+    var filterBarInstance;
+
+    function getItems () {
+      var items = [];
+	  items =
+			$odataresource(ODATA_SERVICE_URL + "Orders")
+			.odata()
+			.query();
+      $scope.items = items;
+    }
+
+    getItems();
+
+    $scope.showFilterBar = function () {
+      filterBarInstance = $ionicFilterBar.show({
+        items: $scope.items,
+        update: function (filteredItems, filterText) {
+          $scope.items = filteredItems;
+          if (filterText) {
+            console.log(filterText);
+          }
+        }
+      });
+    };
+
+    $scope.refreshItems = function () {
+      if (filterBarInstance) {
+        filterBarInstance();
+        filterBarInstance = null;
+      }
+
+      $timeout(function () {
+        getItems();
+        $scope.$broadcast('scroll.refreshComplete');
+      }, 1000);
+    };
 })
 
 

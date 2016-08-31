@@ -69,22 +69,5 @@
       
               </div>
           </ion-content>
-      
-          <form name="sendMessageForm" ng-submit="sendMessage(sendMessageForm)" novalidate>
-              <ion-footer-bar class="bar-stable item-input-inset message-footer" keyboard-attach>
-                  <div class="footer-btn-wrap">
-                    <button ng-click="addImage()" class="button button-icon icon ion-image footer-btn" type="button">
-                    </button>
-                  </div>
-                  <label class="item-input-wrapper">
-                      <textarea ng-model="input.message" value="" ng-disabled="!page.enableNewMessage" placeholder="{{page.newMessageHolder}}" required minlength="1" maxlength="1500" msd-elastic></textarea>
-                  </label>
-                  <div class="footer-btn-wrap">
-                    <button class="button button-icon icon ion-android-send footer-btn" type="submit"
-                        ng-disabled="!page.enableNewMessage || (!input.message || input.message === '')">
-                    </button>
-                  </div>
-              </ion-footer-bar>
-          </form>
           
 </ion-view>

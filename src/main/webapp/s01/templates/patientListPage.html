@@ -1,4 +1,4 @@
-<ion-view view-title="Ionic Filter Bar">
+<ion-view view-title="患者管理">
 
   <ion-nav-buttons side="secondary">
     <button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()">
@@ -11,15 +11,24 @@
     </ion-refresher>
 
     <ion-list>
-      <ion-item collection-repeat="item in items" >
-        <p>{{item.text}}</p>
-      </ion-item>
+       <ion-list id="historyOrderPage-list3" class=" " ng-repeat="patient in items">
+            <ion-item class="item-thumbnail-left item-icon-right " ng-click="showItem(patient)" >
+                <img ng-src="../uploadedImg/{{patient.Avatar}}">
+                <p>患者编号:{{patient.ID}}， 注册时间：{{patient.CreateTime}}</p>
+				<h2><strong>{{patient.Name}},{{patient.Gender, select,
+									F {女}
+									M {男}
+									other {}}}, 手机号码:{{patient.Mobile}}</strong></h2>
+                <p>家庭住址： {{patient.Address}}</p>
+                <p>邮箱地址： {{patient.Mail}}</p>
+                <i class="icon ion-android-radio-button-off "  ng-click="onIconClick(patient)"></i>
+            </ion-item>
+        </ion-list>
     </ion-list>
-
-    <div ng-if="items !== undefined && !items.length" class="no-results">
-      <p>No Results</p>
-    </div>
-
-  </ion-content>
+		
+		<div ng-if="items !== undefined && !items.length" style="height:200px;line-height:200px;text-align:center; vertical-align:middle;">
+			<strong>没有可以显示的记录</strong>
+		</div>
+    </ion-content>
 
 </ion-view>

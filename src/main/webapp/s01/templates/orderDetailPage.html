@@ -1,51 +1,151 @@
-<ion-view title="{{page.title}}（{{currentOrder.ID}}）" id="orderDetail" class=" " cache-view="false" >
+<ion-view title="咨询详情（{{currentOrder.ID}}）" id="orderDetail" class=" " cache-view="false" >
     <ion-content padding="true" class="has-header">
         <ion-list id="100345-list8" class=" ">
+		
 		    
-            <ion-item ng-if="page.orderType === 'archived'"  class="item-avatar item-icon-right" id="100345-list-item6" ng-click="getConvs(currentOrder)" >
-                <img ng-src="../uploadedImg/{{currentOrder.CTDoctor.Avatar}}">
-                <h2>应诊：{{currentOrder.CTDoctor.Name}}（价格：{{currentOrder.CTDoctor.Price}}元）</h2>
-                <p><strong>咨询已结束，点击查看历史</strong></p>
-                <i class="icon ion-locked "></i>
-            </ion-item>
-            <ion-item  ng-if="page.orderType === 'ongoing'" class="item-avatar item-icon-right" id="100345-list-item6" ng-click="getConvs(currentOrder)" >
-                <img ng-src="../uploadedImg/{{currentOrder.CTDoctor.Avatar}}">
-                <h2>应诊：{{currentOrder.CTDoctor.Name}}（价格：{{currentOrder.CTDoctor.Price}}元）</h2>
-                <p><strong>咨询进行中，点击与医生互动</strong></p>
-                <i class="icon ion-android-chat "></i>
-            </ion-item>
-            <ion-item  ng-if="page.orderType === 'unpaid'" class="item-avatar item-icon-right" id="100345-list-item6" ng-click="pay(currentOrder)" >
-                <img ng-src="../uploadedImg/{{currentOrder.CTDoctor.Avatar}}">
-                <h2>应诊：{{currentOrder.CTDoctor.Name}}（价格：{{currentOrder.CTDoctor.Price}}元）</h2>
-                <p><strong>医生已接单，点击付款</strong></p>
-                <i class="icon ion-social-bitcoin "></i>
-            </ion-item>
-            <ion-item ng-if="page.orderType === 'new'" class="item-avatar item-icon-right" id="100345-list-item6" >
-                <img ng-src="../uploadedImg/doctor_default01.png">
-                <h2><strong>新建订单，待医生接单</strong></h2>
-                <i class="icon ion-locked "></i>
-            </ion-item>
-        </ion-list>
-        <div id="100345-markdown2" style="color:#000000;" class=" ">
-            <p>
-                <strong>患者姓名：</strong>{{currentOrder.CTPatient.Name}}</p>
-
-            <p>
-                <strong>性别：</strong>{{currentOrder.CTPatient.Gender, select,
+            <ion-item class="item-icon-right" ng-click="getConvs(currentOrder)" >
+                <p>咨询号：{{currentOrder.ID}} -- {{currentOrder.CreateTime}} （<strong>{{currentOrder.Status, select,
+						ongoing {进行中}
+						unpaid {待付款}
+						complete {已结束}
+						new {待接单}
+						other {未知状态}
+				}}</strong>）</p>
+				<h2>医师：{{currentOrder.CTDoctor.Name}}，{{currentOrder.CTDoctor.MedicalLevel}}（<strong>价格：{{currentOrder.CTDoctor.Price}}元</strong>）</h2>
+				<h2>患者：{{currentOrder.CTPatient.Name}}，{{currentOrder.CTPatient.Gender, select,
 									F {女}
 									M {男}
-									other {}}}</p>
+									other {}}}</h2>
+                <i class="icon ion-chatbubbles "></i>
+            </ion-item>
+        </ion-list>
+		<div class="item item-body ">
+			<div id="100345-markdown2" style="color:#000000;" class=" ">
+			<div style="height:50px;line-height:50px;text-align:center; vertical-align:middle;">
+				<strong>咨询状态</strong>
+			</div>
+		
+            <p><strong>创建时间：</strong>{{currentOrder.CreateTime}}</p>
+		
+            <p><strong>是否生效：</strong>{{currentOrder.IsDeleted, select,
+					    Y {未生效}
+						other {正常}
+				}}</p>
+		
+            <p><strong>是否已存档：</strong>{{currentOrder.IsArchived, select,
+					    Y {是}
+						other {不是}
+				}}</p>
+		
+            <p><strong>当前状态： {{currentOrder.Status, select,
+						ongoing {进行中}
+						unpaid {待付款}
+						complete {已结束}
+						new {待接单}
+						other {未知状态}
+				}}</strong></p>
+				
+			<p><strong>病情描述:</strong></p>
+			<textarea style="width:100% " rows="10" readonly="true">{{currentOrder.CTDetail.Description}}</textarea>
 
-            <p>
-                <strong>出生日期：</strong>{{currentOrder.CTPatient.Birthday}}</p>
-
-            <p>
-                <strong>手机号码：</strong>{{currentOrder.CTPatient.Mobile}}</p>
-
-            <p>
-                <strong>病情描述:</strong></p>
-			
-				<textarea style="width:100% " rows="10" readonly="true">{{currentOrder.CTDetail.Description}}</textarea>
         </div>
+		
+        </div>
+		<div class="item item-body ">
+			<div style="height:50px;line-height:50px;text-align:center; vertical-align:middle;">
+				<strong>患者详情（ID:{{currentOrder.CTPatient.ID}}）</strong>
+			</div>
+            <div>
+                <img ng-src="../uploadedImg/{{currentOrder.CTPatient.Avatar}}" style="display: block; width: 50%; height: 50%; margin-left: auto; margin-right: auto; border-radius: 50%;">
+            </div>
+		
+			<div id="patientInfoPage-markdown1" style="color:#000000;" class=" ">
+				<p>
+					<strong>用户名：</strong>{{currentOrder.CTPatient.Login}}</p>
+				
+				<p>
+					<strong>创建时间：</strong>{{currentOrder.CTPatient.CreateTime}}</p>
+				
+				<p>
+					<strong>账户状态：</strong>{{currentOrder.CTPatient.IsDeleted, select,
+					        Y {停用}
+							other {正常}
+				}}</p>
+
+				<p>
+					<strong>患者姓名：</strong>{{currentOrder.CTPatient.Name}}</p>
+
+				<p>
+					<strong>性别：</strong>{{currentOrder.CTPatient.Gender, select,
+									F {女}
+									M {男}
+									other {}
+					}}</p>
+
+				<p>
+					<strong>住址：</strong>{{currentOrder.CTPatient.Address}}</p>
+
+				<p>
+					<strong>邮箱：</strong>{{currentOrder.CTPatient.Mail}}</p>
+
+				<p>
+					<strong>出生日期：</strong>{{currentOrder.CTPatient.Birthday}}</p>
+
+				<p>
+					<strong>手机号码：</strong>{{currentOrder.CTPatient.Mobile}}</p>
+			</div>
+		
+        </div>
+		<div ng-if="currentOrder.CTDoctor" class="item item-body ">
+			<div style="height:50px;line-height:50px;text-align:center; vertical-align:middle;">
+				<strong>医师详情（ID:{{currentOrder.CTDoctor.ID}}）</strong>
+			</div>
+            <div>
+				<img ng-src="../uploadedImg/{{currentOrder.CTDoctor.Avatar}}" style="display: block; width: 50%; height: 50%; margin-left: auto; margin-right: auto; border-radius: 50%;">
+            </div>
+			
+			<div id="doctorInfoPage-markdown1" style="color:#000000;" class=" ">
+		
+				<p>
+					<strong>用户名：</strong>{{currentOrder.CTDoctor.Login}}</p>
+				
+				<p>
+					<strong>创建时间：</strong>{{currentOrder.CTDoctor.CreateTime}}</p>
+				
+				<p>
+					<strong>账户状态：</strong>{{currentOrder.CTDoctor.IsDeleted, select,
+					        Y {停用}
+							other {正常}
+				}}</p>
+
+				<p>
+					<strong>医生姓名：</strong>{{currentOrder.CTDoctor.Name}}</p>
+
+				<p>
+					<strong>性别：</strong>{{currentOrder.CTDoctor.Gender, select,
+									F {女}
+									M {男}
+									other {}
+					}}</p>
+
+				<p>
+					<strong>住址：</strong>{{currentOrder.CTDoctor.Address}}</p>
+
+				<p>
+					<strong>邮箱：</strong>{{currentOrder.CTDoctor.Mail}}</p>
+
+				<p>
+					<strong>出生日期：</strong>{{currentOrder.CTDoctor.Birthday}}</p>
+
+				<p>
+					<strong>手机号码：</strong>{{currentOrder.CTDoctor.Mobile}}</p>
+
+				<p>
+					<strong>医师级别：</strong>{{currentOrder.CTDoctor.MedicalLevel}}</p>
+
+				<p>
+					<strong>咨询价格：</strong>{{currentOrder.CTDoctor.Price}}元</p>
+			</div>
+		</div>
     </ion-content>
 </ion-view>

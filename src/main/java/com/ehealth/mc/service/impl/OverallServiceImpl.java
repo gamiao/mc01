@@ -92,6 +92,20 @@ public class OverallServiceImpl implements OverallService {
 			entityList.addAll(EntityConvertUtil
 					.getDoctorEntityList(queryResult));
 			return entityCollection;
+		} else if (McEdmUtil.ES_PATIENTS_NAME.equals(edmEntitySet.getName())) {
+			List<Entity> entityList = entityCollection.getEntities();
+			String filterString = FormatUtil.getCommonFilterString(filterStr);
+			List<Patient> queryResult = null;
+
+			if (filterString != null && !filterString.isEmpty()) {
+				queryResult = patientService.findByFilterString(filterString);
+			} else {
+				queryResult = patientService.findAll();
+			}
+			
+			entityList.addAll(EntityConvertUtil
+					.getPatientEntityList(queryResult));
+			return entityCollection;
 		} else if (McEdmUtil.ES_ORDERS_NAME.equals(edmEntitySet.getName())) {
 
 			List<Entity> entityList = entityCollection.getEntities();

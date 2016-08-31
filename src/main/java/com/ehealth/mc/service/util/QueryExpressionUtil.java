@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.ehealth.mc.bo.QDoctor;
+import com.ehealth.mc.bo.QPatient;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberPath;
@@ -52,6 +53,66 @@ public class QueryExpressionUtil {
 				}
 
 				clause = getChinesename(doctor.chineseName, str);
+				if (clause != null) {
+					clauses.add(clause);
+					continue;
+				}
+
+			}
+		}
+
+		// Return
+		if (clauses.size() == 1) {
+			return clauses.get(0);
+		} else if (clauses.size() > 1) {
+			BooleanExpression firstClause = clauses.get(0);
+			for (int i = 1; i < clauses.size(); i++) {
+				firstClause.and(clauses.get(i));
+			}
+			return firstClause;
+		}
+		return null;
+	}
+
+	public static Predicate getPatientWhereClausesByFilterString(
+			String filterString) {
+		if (filterString == null || filterString.isEmpty()) {
+			return null;
+		}
+
+		List<BooleanExpression> clauses = new ArrayList<BooleanExpression>();
+		QPatient patient = QPatient.patient;
+		String[] subStrings = filterString.split(" ");
+
+		BooleanExpression clause = null;
+
+		if (subStrings != null && subStrings.length > 0) {
+			for (String str : subStrings) {
+				clause = getGenderValue(patient.gender, str);
+				if (clause != null) {
+					clauses.add(clause);
+					continue;
+				}
+
+				clause = getIsDeleted(patient.isDeleted, str);
+				if (clause != null) {
+					clauses.add(clause);
+					continue;
+				}
+
+				clause = getMobile(patient.mobile, str);
+				if (clause != null) {
+					clauses.add(clause);
+					continue;
+				}
+
+				clause = getID(patient.id, str);
+				if (clause != null) {
+					clauses.add(clause);
+					continue;
+				}
+
+				clause = getChinesename(patient.chineseName, str);
 				if (clause != null) {
 					clauses.add(clause);
 					continue;

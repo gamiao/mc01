@@ -24,6 +24,7 @@ under the License.
 <a href="McService.svc/">McService Demo Service</a></br>
 <a href="p01/">Patient home</a></br>
 <a href="d01/">Doctor home</a></br>
+<a href="s01/">Admin home</a></br>
 <a href="H2Console/">H2 DB</a></br>
 </body>
 </html>

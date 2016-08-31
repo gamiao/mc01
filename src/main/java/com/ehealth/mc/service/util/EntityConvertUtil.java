@@ -222,6 +222,20 @@ public class EntityConvertUtil {
 		return null;
 	}
 
+	public static List<Entity> getPatientEntityList(List<Patient> objList) {
+		if (objList != null && objList.size() > 0) {
+			List<Entity> entityList = new ArrayList<Entity>();
+			for (Patient obj : objList) {
+				Entity entity = getEntity(obj);
+				if (entity != null) {
+					entityList.add(entity);
+				}
+			}
+			return entityList;
+		}
+		return null;
+	}
+
 	public static List<Entity> getDoctorEntityList(List<Doctor> objList) {
 		if (objList != null && objList.size() > 0) {
 			List<Entity> entityList = new ArrayList<Entity>();

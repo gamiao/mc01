@@ -1,0 +1,53 @@
+<ion-view title="医师详情（{{doctor.ID}}）" id="doctorInfoPage" class=" " cache-view="false" >
+    <ion-content padding="true" class="has-header">
+	    <div class="item item-body " id="doctorUpdatePage-list-item-container1">
+            <div>
+                <img ng-src="../uploadedImg/{{doctor.Avatar}}" style="display: block; 
+		width: 50%;
+		height: 50%; margin-left: auto; margin-right: auto; 
+		border-radius: 50%;">
+            </div>
+			<div id="doctorInfoPage-markdown1" style="color:#000000;" class=" ">
+				<p>
+					<strong>用户名：</strong>{{doctor.Login}}</p>
+				
+				<p>
+					<strong>创建时间：</strong>{{doctor.CreateTime}}</p>
+				
+				<p>
+					<strong>账户状态：</strong>{{doctor.IsDeleted, select,
+					        Y {停用}
+							other {正常}
+				}}</p>
+
+				<p>
+					<strong>医生姓名：</strong>{{doctor.Name}}</p>
+
+				<p>
+					<strong>性别：</strong>{{doctor.Gender, select,
+									F {女}
+									M {男}
+									other {}
+					}}</p>
+
+				<p>
+					<strong>住址：</strong>{{doctor.Address}}</p>
+
+				<p>
+					<strong>邮箱：</strong>{{doctor.Mail}}</p>
+
+				<p>
+					<strong>出生日期：</strong>{{doctor.Birthday}}</p>
+
+				<p>
+					<strong>手机号码：</strong>{{doctor.Mobile}}</p>
+
+				<p>
+					<strong>医师级别：</strong>{{doctor.MedicalLevel}}</p>
+
+				<p>
+					<strong>咨询价格：</strong>{{doctor.Price}}元</p>
+			</div>
+        </div>
+    </ion-content>
+</ion-view>

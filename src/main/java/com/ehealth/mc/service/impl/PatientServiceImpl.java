@@ -1,5 +1,9 @@
 package com.ehealth.mc.service.impl;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -12,6 +16,8 @@ import com.ehealth.mc.bo.Patient;
 import com.ehealth.mc.dao.PatientDAO;
 import com.ehealth.mc.service.PatientService;
 import com.ehealth.mc.service.util.EntityConvertUtil;
+import com.ehealth.mc.service.util.QueryExpressionUtil;
+import com.querydsl.core.types.Predicate;
 
 @Service("patientService")
 @Transactional(readOnly = true)
@@ -74,6 +80,42 @@ public class PatientServiceImpl implements PatientService {
 	@Override
 	public Patient findOneByLogin(String login) {
 		return patientDAO.findOneByLogin(login);
+	}
+
+	@Override
+	public List<Patient> findByFilterString(String filterString) {
+
+		Predicate querys = QueryExpressionUtil
+				.getPatientWhereClausesByFilterString(filterString);
+		if (querys != null) {
+			Iterable<Patient> result = patientDAO.findAll(querys);
+			if (result != null) {
+				List<Patient> eList = new ArrayList<Patient>();
+				Iterator<Patient> i = result.iterator();
+				while (i.hasNext()) {
+					eList.add(i.next());
+				}
+				return eList;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public List<Patient> findAll() {
+		List<Patient> eList = new ArrayList<Patient>();
+		if (patientDAO != null) {
+
+			Iterable<Patient> result = patientDAO.findAll();
+			if (result != null) {
+				Iterator<Patient> i = result.iterator();
+				while (i.hasNext()) {
+					eList.add(i.next());
+				}
+				return eList;
+			}
+		}
+		return null;
 	}
 
 }

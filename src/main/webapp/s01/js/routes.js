@@ -50,12 +50,22 @@ angular.module('app.routes', [])
 		abstract: true
 	})
 
-	.state('s-sm.patientInfoPage', {
-		url: '/patientInfoPage',
+	.state('s-sm.patientDetailPage', {
+		url: '/patientDetailPage',
 		views: {
 			's-sm': {
-				templateUrl: 'templates/patientInfoPage.html',
-				controller: 'patientInfoPageCtrl'
+				templateUrl: 'templates/patientDetailPage.html',
+				controller: 'patientDetailPageCtrl'
+			}
+		}
+	})
+
+	.state('s-sm.doctorDetailPage', {
+		url: '/doctorDetailPage',
+		views: {
+			's-sm': {
+				templateUrl: 'templates/doctorDetailPage.html',
+				controller: 'doctorDetailPageCtrl'
 			}
 		}
 	})

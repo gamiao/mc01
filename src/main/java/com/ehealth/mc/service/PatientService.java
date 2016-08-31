@@ -1,10 +1,14 @@
 package com.ehealth.mc.service;
 
+import java.util.List;
+
 import org.apache.olingo.commons.api.data.Entity;
 
 import com.ehealth.mc.bo.Patient;
 
 public interface PatientService {
+
+	List<Patient> findAll();
 
 	Patient findById(Long id);
 
@@ -17,5 +21,7 @@ public interface PatientService {
 	Patient findOneByLoginAndPassword(String login, String password);
 
 	Patient findOneByLogin(String login);
+
+	List<Patient> findByFilterString(String filterString);
 
 }

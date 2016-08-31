@@ -7,8 +7,14 @@ angular.module('app.controllers', [])
     }
 })
 
+.service('doctorService', [function() {
+}])
+
+.service('patientService', [function() {
+}])
+
 .service('orderService', [function() {
-	this.currentOrder;
+	this.currentItem;
 	this.isExistingOrder;
 	this.isDoctorFixed;
 }])
@@ -26,7 +32,7 @@ angular.module('app.controllers', [])
     return {
         checkCurrentUser: function() {
 			if(!configService.userID || !configService.currentUser) {
-				$state.go("login");
+				//$state.go("login");
 			}
         },
 		
@@ -92,7 +98,7 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('doctorListPageCtrl', function($scope, $state, $odataresource, ODATA_SERVICE_URL, $ionicActionSheet, orderService, accountService, $ionicFilterBar, $timeout) {
+.controller('doctorListPageCtrl', function($scope, $state, $odataresource, ODATA_SERVICE_URL, $ionicActionSheet, doctorService, accountService, $ionicFilterBar, $timeout) {
 
     var filterBarInstance;
 
@@ -104,6 +110,12 @@ angular.module('app.controllers', [])
 			.query();
       $scope.items = items;
     }
+	
+	$scope.showItem = function (item) {
+		doctorService.currentItem = item;
+		console.log(item.Name);
+		$state.go('s-sm.doctorDetailPage');
+	}
 
     getItems();
 
@@ -145,6 +157,14 @@ angular.module('app.controllers', [])
 			.query();
       $scope.items = items;
     }
+	
+	
+	
+	$scope.showItem = function (item) {
+		orderService.currentItem = item;
+		console.log(item.Name);
+		$state.go('s-sm.orderDetailPage');
+	}
 
     getItems();
 
@@ -173,19 +193,24 @@ angular.module('app.controllers', [])
     };
 })
 
-
-
-  .controller('patientListPageCtrl', function($scope, $timeout, $ionicFilterBar) {
+.controller('patientListPageCtrl', function($scope, $state, $odataresource, ODATA_SERVICE_URL, $ionicActionSheet, patientService, accountService, $ionicFilterBar, $timeout) {
 
     var filterBarInstance;
 
     function getItems () {
       var items = [];
-      for (var x = 1; x < 2000; x++) {
-        items.push({text: 'This is item number ' + x + ' which is an ' + (x % 2 === 0 ? 'EVEN' : 'ODD') + ' number.'});
-      }
+	  items =
+			$odataresource(ODATA_SERVICE_URL + "Patients")
+			.odata()
+			.query();
       $scope.items = items;
     }
+	
+	$scope.showItem = function (item) {
+		patientService.currentItem = item;
+		console.log(item.Name);
+		$state.go('s-sm.patientDetailPage');
+	}
 
     getItems();
 
@@ -224,24 +249,25 @@ angular.module('app.controllers', [])
 	image.src3 = 'add_img.png';
 	$scope.image = image;
 
-	$scope.currentOrder = orderService.currentOrder;
+	currentOrder = orderService.currentItem;
+	$scope.currentOrder = currentOrder;
 	page = {};
 	page.title = '进行中咨询';
 	page.orderType = 'ongoing';
-	if (orderService.currentOrder && orderService.currentOrder.IsArchived === 'Y') {
+	if (currentOrder && currentOrder.IsArchived === 'Y') {
 		page.title = '历史咨询';
 		page.orderType = 'archived';
-	} else if (orderService.currentOrder && orderService.currentOrder.Status === 'new') {
+	} else if (currentOrder && currentOrder.Status === 'new') {
 		page.title = '待接单';
 		page.orderType = 'new';
-	} else if (orderService.currentOrder && orderService.currentOrder.Status === 'unpaid') {
+	} else if (currentOrder && currentOrder.Status === 'unpaid') {
 		page.title = '待付款';
 		page.orderType = 'unpaid';
 	}
 
 	$scope.page = page;
 	$scope.getConvs = function(ObjectData) {
-		orderService.currentOrder = ObjectData;
+		currentOrder = ObjectData;
 		$state.go('s-sm.orderConvsPage');
 	}
 
@@ -279,65 +305,36 @@ angular.module('app.controllers', [])
 		$scope.modal.show();
 	}
 
-	$scope.pay = function(order) {
-		actionSheetTiyle = "请确认";
-		pickupButtonLabel = "确认付款(" + $scope.currentOrder.CTDoctor.Price + "元)";
-		$scope.hideSheet = $ionicActionSheet.show({
-			buttons: [{
-				text: pickupButtonLabel
-			}],
-			titleText: actionSheetTiyle,
-			cancelText: '我再想想',
-			buttonClicked: function(index) {
-				order.Status = 'ongoing';
-				order.$update(
-					function(order) {
-						orderService.currentOrder = order;
-						$scope.currentOrder = orderService.currentOrder;
-						$scope.page.title = '进行中咨询';
-						$scope.page.orderType = 'ongoing';
-					},
-					function(myOrderConv) {}
-				);
-				return true;
-			}
-		});
-	}
-
 })
 
-.controller('patientInfoPageCtrl', function($scope, $state, uploadService, configService, accountService) {
+.controller('doctorDetailPageCtrl', function($scope, $state, doctorService, configService, accountService) {
 	accountService.checkCurrentUser();
-	$scope.patient = configService.currentUser;
+	$scope.doctor = doctorService.currentItem;
+})
 
-	$scope.updateImage = function() {
-		uploadService.param1 = "Patient";
-		uploadService.param2 = configService.userID;
-		uploadService.param3 = "Avatar";
-		$state.go('s-sm.imageUploadPage');
-	}
-
-	$scope.updatePassword = function() {
-		$state.go('s-sm.updatePasswordPage');
-	}
+.controller('patientDetailPageCtrl', function($scope, $state, patientService, configService, accountService) {
+	accountService.checkCurrentUser();
+	$scope.patient = patientService.currentItem;
 })
 
 .controller('orderConvsPageCtrl', function($scope, $ionicModal, uploadService, $rootScope, $state, $stateParams, $ionicActionSheet,	$ionicPopup, $ionicScrollDelegate, $timeout, $interval, orderService, ODATA_SERVICE_URL, $odataresource, accountService) {
 	accountService.checkCurrentUser();
+	
+	
+	currentOrder = orderService.currentItem;
 
-	OrderConv = $odataresource(ODATA_SERVICE_URL + 'Orders(' + orderService.currentOrder.ID + ')/OrderConvs', 'id');
+	OrderConv = $odataresource(ODATA_SERVICE_URL + 'Orders(' + currentOrder.ID + ')/OrderConvs', 'id');
 	orderConvs = OrderConv.odata().query();
-	currentOrder = orderService.currentOrder;
 
 	page = {};
 	page.title = '咨询互动';
 	page.enableNewMessage = true;
 	page.newMessageHolder = '发消息给' + currentOrder.CTDoctor.Name + '：';
-	if (orderService.currentOrder && orderService.currentOrder.IsArchived === 'Y') {
+	if (currentOrder && currentOrder.IsArchived === 'Y') {
 		page.title = '互动历史';
 		page.enableNewMessage = false;
 		page.newMessageHolder = '已停止互动';
-	} else if (orderService.currentOrder && orderService.currentOrder.Status === 'new') {
+	} else if (currentOrder && currentOrder.Status === 'new') {
 		page.enableNewMessage = false;
 		page.newMessageHolder = '待病人付款后互动';
 	}
@@ -413,7 +410,7 @@ angular.module('app.controllers', [])
 
 	$scope.addImage = function() {
 		uploadService.param1 = "OrderConv";
-		uploadService.param2 = orderService.currentOrder.ID;
+		uploadService.param2 = currentOrder.ID;
 		uploadService.param3 = "P";
 		$state.go('s-sm.imageUploadPage');
 	}

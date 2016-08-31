@@ -118,4 +118,29 @@ public class DoctorServiceImpl implements DoctorService {
 		return null;
 	}
 
+	@Override
+	@Transactional(rollbackFor = RuntimeException.class)
+	public boolean updateIsDeleted(String value, Long[] objIDs)
+			throws RuntimeException {
+		for (Long id : objIDs) {
+			if (id == null) {
+				throw new RuntimeException("Some id is empty!");
+			}
+			Doctor obj = doctorDAO.findOne(id);
+			if (obj == null) {
+				throw new RuntimeException("Can not find the object with ID:"
+						+ id);
+			}
+			obj.setIsDeleted(value);
+
+			try {
+				doctorDAO.save(obj);
+			} catch (Exception e) {
+				throw new RuntimeException("Can't update the object with ID:"
+						+ id);
+			}
+		}
+		return true;
+	}
+
 }

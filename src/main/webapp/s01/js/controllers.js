@@ -4,6 +4,39 @@ angular.module('app.controllers', [])
 
 .service('configService', function($q, $http, $odataresource, ODATA_SERVICE_URL) {
     return {
+		postToController: function(subUrl, postObj) {
+            var deferred = $q.defer();
+            var promise = deferred.promise;
+			
+			var req = {
+				method: 'POST',
+				url: '/mc01/spring' + subUrl,
+				data: postObj,
+				headers: {'Content-Type': 'application/json'}
+			}
+
+			$http(req).
+			success(function(data, status, headers, config) {
+				if(status === 200 && data.result ==='S' ){
+					deferred.resolve('请求成功');
+				}else{
+					deferred.reject('请求失败');
+				}
+			}).
+			error(function(data, status, headers, config) {
+				deferred.reject('请求失败');
+			});
+
+            promise.success = function(fn) {
+                promise.then(fn);
+                return promise;
+            }
+            promise.error = function(fn) {
+                promise.then(null, fn);
+                return promise;
+            }
+            return promise;
+        }
     }
 })
 
@@ -14,9 +47,6 @@ angular.module('app.controllers', [])
 }])
 
 .service('orderService', [function() {
-	this.currentItem;
-	this.isExistingOrder;
-	this.isDoctorFixed;
 }])
 
 .service('uploadService', [function() {
@@ -99,15 +129,13 @@ angular.module('app.controllers', [])
 })
 
 .controller('doctorListPageCtrl', function($scope, $state, $odataresource, ODATA_SERVICE_URL, $ionicActionSheet, doctorService, accountService, $ionicFilterBar, $timeout) {
-
+	
+	Doctor = $odataresource(ODATA_SERVICE_URL + 'Doctors', 'ID');
     var filterBarInstance;
 
     function getItems () {
       var items = [];
-	  items =
-			$odataresource(ODATA_SERVICE_URL + "Doctors")
-			.odata()
-			.query();
+	  items = Doctor.odata().query();
       $scope.items = items;
     }
 	
@@ -146,15 +174,13 @@ angular.module('app.controllers', [])
 })
 
 .controller('orderListPageCtrl', function($scope, $state, $odataresource, ODATA_SERVICE_URL, $ionicActionSheet, orderService, accountService, $ionicFilterBar, $timeout) {
-
+	
+	Order = $odataresource(ODATA_SERVICE_URL + 'Orders', 'ID');
     var filterBarInstance;
 
     function getItems () {
       var items = [];
-	  items =
-			$odataresource(ODATA_SERVICE_URL + "Orders")
-			.odata()
-			.query();
+	  items = Order.odata().query();
       $scope.items = items;
     }
 	
@@ -194,15 +220,13 @@ angular.module('app.controllers', [])
 })
 
 .controller('patientListPageCtrl', function($scope, $state, $odataresource, ODATA_SERVICE_URL, $ionicActionSheet, patientService, accountService, $ionicFilterBar, $timeout) {
-
+	
+	Patient = $odataresource(ODATA_SERVICE_URL + 'Patients', 'ID');
     var filterBarInstance;
 
     function getItems () {
       var items = [];
-	  items =
-			$odataresource(ODATA_SERVICE_URL + "Patients")
-			.odata()
-			.query();
+	  items = Patient.odata().query();
       $scope.items = items;
     }
 	
@@ -240,7 +264,7 @@ angular.module('app.controllers', [])
   })
 
 
-.controller('orderDetailPageCtrl', function($scope, $ionicModal, $ionicActionSheet, $state, orderService, accountService) {
+.controller('orderDetailPageCtrl', function($scope, $ionicModal, $ionicActionSheet, configService, $state, orderService, accountService, $ionicPopup) {
 	accountService.checkCurrentUser();
 
 	var image = {};
@@ -248,6 +272,88 @@ angular.module('app.controllers', [])
 	image.src2 = 'jiaohuai2.jpg';
 	image.src3 = 'add_img.png';
 	$scope.image = image;
+	
+	$scope.changeIsArchived = function(object) {
+		var actionMsg = '存档';
+		var valueChangeTo = 'Y';
+		if(object.IsDeleted === 'Y'){
+			actionMsg = '恢复';
+			valueChangeTo = 'N';
+		}
+		
+		var objectIDs = [];
+		objectIDs.push(object.ID);
+		
+		requestObject = {};
+		requestObject.value = valueChangeTo;
+		requestObject.objectIDs = objectIDs;
+		
+		$scope.hideSheet = $ionicActionSheet.show({
+			buttons: [{
+				text: '<b>'+actionMsg+'</b>'
+			}],
+			titleText: '请确认是否'+ actionMsg,
+			cancelText: '取消',
+			buttonClicked: function(index) {
+				configService.postToController('/O/setIsArchived', requestObject)
+				.success(function(data) {
+					object.$refresh(
+						function(obj) {
+							$scope.currentOrder = obj;
+						},
+						function(obj) {}
+					);
+				}).error(function(data) {
+					var alertPopup = $ionicPopup.alert({
+						title: '更新失败',
+						template: '请稍后再试！'
+					});
+				});
+				return true;
+			}
+		});
+	}
+	
+	$scope.changeIsDeleted = function(object) {
+		var actionMsg = '禁用';
+		var valueChangeTo = 'Y';
+		if(object.IsDeleted === 'Y'){
+			actionMsg = '启用';
+			valueChangeTo = 'N';
+		}
+		
+		var objectIDs = [];
+		objectIDs.push(object.ID);
+		
+		requestObject = {};
+		requestObject.value = valueChangeTo;
+		requestObject.objectIDs = objectIDs;
+		
+		$scope.hideSheet = $ionicActionSheet.show({
+			buttons: [{
+				text: '<b>'+actionMsg+'</b>'
+			}],
+			titleText: '请确认是否'+ actionMsg,
+			cancelText: '取消',
+			buttonClicked: function(index) {
+				configService.postToController('/O/setIsDeleted', requestObject)
+				.success(function(data) {
+					object.$refresh(
+						function(obj) {
+							$scope.currentOrder = obj;
+						},
+						function(obj) {}
+					);
+				}).error(function(data) {
+					var alertPopup = $ionicPopup.alert({
+						title: '更新失败',
+						template: '请稍后再试！'
+					});
+				});
+				return true;
+			}
+		});
+	}
 
 	currentOrder = orderService.currentItem;
 	$scope.currentOrder = currentOrder;
@@ -307,14 +413,98 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('doctorDetailPageCtrl', function($scope, $state, doctorService, configService, accountService) {
+.controller('doctorDetailPageCtrl', function($scope, $state, doctorService, configService, accountService, $ionicActionSheet, $ionicPopup) {
 	accountService.checkCurrentUser();
 	$scope.doctor = doctorService.currentItem;
+	
+	$scope.changeIsDeleted = function(object) {
+		var actionMsg = '禁用';
+		var valueChangeTo = 'Y';
+		if(object.IsDeleted === 'Y'){
+			actionMsg = '启用';
+			valueChangeTo = 'N';
+		}
+		
+		var objectIDs = [];
+		objectIDs.push(object.ID);
+		
+		requestObject = {};
+		requestObject.value = valueChangeTo;
+		requestObject.objectIDs = objectIDs;
+		
+		$scope.hideSheet = $ionicActionSheet.show({
+			buttons: [{
+				text: '<b>'+actionMsg+'</b>'
+			}],
+			titleText: '请确认是否'+ actionMsg,
+			cancelText: '取消',
+			buttonClicked: function(index) {
+				configService.postToController('/D/setIsDeleted', requestObject)
+				.success(function(data) {
+					object.$refresh(
+						function(obj) {
+							$scope.doctor = obj;
+						},
+						function(obj) {}
+					);
+				}).error(function(data) {
+					var alertPopup = $ionicPopup.alert({
+						title: '更新失败',
+						template: '请稍后再试！'
+					});
+				});
+				return true;
+			}
+		});
+	}
 })
 
-.controller('patientDetailPageCtrl', function($scope, $state, patientService, configService, accountService) {
+.controller('patientDetailPageCtrl', function($scope, $state, patientService, configService, accountService, $ionicActionSheet, $ionicPopup) {
 	accountService.checkCurrentUser();
 	$scope.patient = patientService.currentItem;
+	
+	$scope.changeIsDeleted = function(object) {
+		var actionMsg = '禁用';
+		var valueChangeTo = 'Y';
+		if(object.IsDeleted === 'Y'){
+			actionMsg = '启用';
+			valueChangeTo = 'N';
+		}
+		
+		var objectIDs = [];
+		objectIDs.push(object.ID);
+		
+		requestObject = {};
+		requestObject.value = valueChangeTo;
+		requestObject.objectIDs = objectIDs;
+		
+		$scope.hideSheet = $ionicActionSheet.show({
+			buttons: [{
+				text: '<b>'+actionMsg+'</b>'
+			}],
+			titleText: '请确认是否'+ actionMsg,
+			cancelText: '取消',
+			buttonClicked: function(index) {
+				configService.postToController('/P/setIsDeleted', requestObject)
+				.success(function(data) {
+					object.$refresh(
+						function(obj) {
+							$scope.patient = obj;
+						},
+						function(obj) {}
+					);
+				}).error(function(data) {
+					var alertPopup = $ionicPopup.alert({
+						title: '更新失败',
+						template: '请稍后再试！'
+					});
+				});
+				return true;
+			}
+		});
+	}
+	
+	
 })
 
 .controller('orderConvsPageCtrl', function($scope, $ionicModal, uploadService, $rootScope, $state, $stateParams, $ionicActionSheet,	$ionicPopup, $ionicScrollDelegate, $timeout, $interval, orderService, ODATA_SERVICE_URL, $odataresource, accountService) {
@@ -323,7 +513,7 @@ angular.module('app.controllers', [])
 	
 	currentOrder = orderService.currentItem;
 
-	OrderConv = $odataresource(ODATA_SERVICE_URL + 'Orders(' + currentOrder.ID + ')/OrderConvs', 'id');
+	OrderConv = $odataresource(ODATA_SERVICE_URL + 'Orders(' + currentOrder.ID + ')/OrderConvs', 'ID');
 	orderConvs = OrderConv.odata().query();
 
 	page = {};
@@ -365,12 +555,6 @@ angular.module('app.controllers', [])
 		console.log('UserMessages $ionicView.enter');
 
 		getMessages();
-
-		$timeout(function() {
-			footerBar = document.body.querySelector('#userMessagesView .bar-footer');
-			scroller = document.body.querySelector('#userMessagesView .scroll-content');
-			txtInput = angular.element(footerBar.querySelector('textarea'));
-		}, 0);
 
 		messageCheckTimer = $interval(function() {
 			// here you could check for new messages if your app doesn't use push notifications or user disabled them

@@ -42,4 +42,8 @@ public interface OverallService {
 
 	boolean checkLogin(String loginType, String login);
 
+	boolean setIsDeleted(String objType, String value, Long[] objectIDs);
+
+	boolean setIsArchived(String objType, String value, Long[] objectIDs);
+
 }

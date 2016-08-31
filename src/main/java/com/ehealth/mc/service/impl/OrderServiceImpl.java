@@ -290,4 +290,54 @@ public class OrderServiceImpl implements OrderService {
 		return resultList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = RuntimeException.class)
+	public boolean updateIsDeleted(String value, Long[] objIDs)
+			throws RuntimeException {
+		for (Long id : objIDs) {
+			if (id == null) {
+				throw new RuntimeException("Some id is empty!");
+			}
+			OrderHeader obj = orderHeaderDAO.findOne(id);
+			if (obj == null) {
+				throw new RuntimeException("Can not find the object with ID:"
+						+ id);
+			}
+			obj.setIsDeleted(value);
+
+			try {
+				orderHeaderDAO.save(obj);
+			} catch (Exception e) {
+				throw new RuntimeException("Can't update the object with ID:"
+						+ id);
+			}
+		}
+		return true;
+	}
+
+	@Override
+	@Transactional(rollbackFor = RuntimeException.class)
+	public boolean updateIsArchived(String value, Long[] objIDs)
+			throws RuntimeException {
+		for (Long id : objIDs) {
+			if (id == null) {
+				throw new RuntimeException("Some id is empty!");
+			}
+			OrderHeader obj = orderHeaderDAO.findOne(id);
+			if (obj == null) {
+				throw new RuntimeException("Can not find the object with ID:"
+						+ id);
+			}
+			obj.setIsArchived(value);
+
+			try {
+				orderHeaderDAO.save(obj);
+			} catch (Exception e) {
+				throw new RuntimeException("Can't update the object with ID:"
+						+ id);
+			}
+		}
+		return true;
+	}
+
 }

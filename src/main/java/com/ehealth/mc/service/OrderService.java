@@ -17,6 +17,12 @@ public interface OrderService {
 
 	OrderHeader update(Entity e);
 
+	boolean updateIsDeleted(String value, Long[] objIDs)
+			throws RuntimeException;
+
+	boolean updateIsArchived(String value, Long[] objIDs)
+			throws RuntimeException;
+
 	List<OrderHeader> findByPatientID(Long id);
 
 	List<OrderHeader> findByDoctorID(Long id);

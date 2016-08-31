@@ -102,7 +102,7 @@ public class OverallServiceImpl implements OverallService {
 			} else {
 				queryResult = patientService.findAll();
 			}
-			
+
 			entityList.addAll(EntityConvertUtil
 					.getPatientEntityList(queryResult));
 			return entityCollection;
@@ -557,5 +557,48 @@ public class OverallServiceImpl implements OverallService {
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public boolean setIsDeleted(String objType, String value, Long[] objectIDs) {
+		if ("Patient".equals(objType)) {
+			try {
+				boolean result = patientService.updateIsDeleted(value,
+						objectIDs);
+				return result;
+			} catch (RuntimeException e) {
+				return false;
+			}
+		} else if ("Doctor".equals(objType)) {
+			try {
+				boolean result = doctorService
+						.updateIsDeleted(value, objectIDs);
+				return result;
+			} catch (RuntimeException e) {
+				return false;
+			}
+		} else if ("Order".equals(objType)) {
+			try {
+				boolean result = orderService.updateIsDeleted(value, objectIDs);
+				return result;
+			} catch (RuntimeException e) {
+				return false;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean setIsArchived(String objType, String value, Long[] objectIDs) {
+		if ("Order".equals(objType)) {
+			try {
+				boolean result = orderService
+						.updateIsArchived(value, objectIDs);
+				return result;
+			} catch (RuntimeException e) {
+				return false;
+			}
+		}
+		return false;
 	}
 }

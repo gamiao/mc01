@@ -50,4 +50,17 @@
 			</div>
         </div>
     </ion-content>
+	
+	<ion-footer-bar>
+		<div class="tabs tabs-icon-top tabs-color-dark">
+		  <a ng-if="doctor.IsDeleted === 'N'" ng-click="changeIsDeleted(doctor)" class="tab-item">
+			<i class="icon ion-locked"></i>
+			停用
+		  </a>
+		  <a ng-if="doctor.IsDeleted === 'Y'" ng-click="changeIsDeleted(doctor)" class="tab-item">
+			<i class="icon ion-unlocked"></i>
+			启用
+		  </a>
+		</div>
+	</ion-footer-bar>
 </ion-view>

@@ -14,6 +14,9 @@ public interface DoctorService {
 
 	Doctor upsertBasicInfo(Entity e);
 
+	boolean updateIsDeleted(String value, Long[] objIDs)
+			throws RuntimeException;
+
 	Doctor updateAvatar(String avatar, Long id);
 
 	Doctor updatePassword(String newPassword, Long id, String oldPassword);
@@ -23,7 +26,7 @@ public interface DoctorService {
 	Doctor findOneByLoginAndPassword(String login, String password);
 
 	Doctor findOneByLogin(String login);
-	
+
 	List<Doctor> findByFilterString(String filterString);
 
 }

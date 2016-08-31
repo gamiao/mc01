@@ -138,6 +138,8 @@ public class EntityConvertUtil {
 					.getAvatar()));
 			e.addProperty(new Property(null, "Address", ValueType.PRIMITIVE, d
 					.getAddress()));
+			e.addProperty(new Property(null, "IsDeleted", ValueType.PRIMITIVE,
+					d.getIsDeleted()));
 			e.addProperty(new Property(null, "Mobile", ValueType.PRIMITIVE, d
 					.getMobile()));
 			e.addProperty(new Property(null, "Mail", ValueType.PRIMITIVE, d
@@ -171,6 +173,8 @@ public class EntityConvertUtil {
 					.getAvatar()));
 			e.addProperty(new Property(null, "Address", ValueType.PRIMITIVE, d
 					.getAddress()));
+			e.addProperty(new Property(null, "IsDeleted", ValueType.PRIMITIVE,
+					d.getIsDeleted()));
 			e.addProperty(new Property(null, "Mobile", ValueType.PRIMITIVE, d
 					.getMobile()));
 			e.addProperty(new Property(null, "Mail", ValueType.PRIMITIVE, d

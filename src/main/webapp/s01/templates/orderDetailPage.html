@@ -27,8 +27,8 @@
 		
             <p><strong>创建时间：</strong>{{currentOrder.CreateTime}}</p>
 		
-            <p><strong>是否生效：</strong>{{currentOrder.IsDeleted, select,
-					    Y {未生效}
+            <p><strong>是否可见：</strong>{{currentOrder.IsDeleted, select,
+					    Y {停用}
 						other {正常}
 				}}</p>
 		
@@ -148,4 +148,25 @@
 			</div>
 		</div>
     </ion-content>
+	
+	<ion-footer-bar>
+		<div class="tabs tabs-icon-top tabs-color-dark">
+		  <a ng-if="currentOrder.IsDeleted === 'N'" ng-click="changeIsDeleted(currentOrder)" class="tab-item">
+			<i class="icon ion-locked"></i>
+			停用
+		  </a>
+		  <a ng-if="currentOrder.IsDeleted === 'Y'" ng-click="changeIsDeleted(currentOrder)" class="tab-item">
+			<i class="icon ion-unlocked"></i>
+			启用
+		  </a>
+		  <a ng-if="currentOrder.IsArchived === 'N'" ng-click="changeIsArchived(currentOrder)" class="tab-item">
+			<i class="icon ion-archive"></i>
+			存档
+		  </a>
+		  <a ng-if="currentOrder.IsArchived === 'Y'" ng-click="changeIsArchived(currentOrder)" class="tab-item">
+			<i class="icon ion-share"></i>
+			恢复
+		  </a>
+		</div>
+	</ion-footer-bar>
 </ion-view>

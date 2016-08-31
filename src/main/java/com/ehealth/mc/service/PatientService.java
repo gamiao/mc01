@@ -14,6 +14,9 @@ public interface PatientService {
 
 	Patient upsertBasicInfo(Entity e);
 
+	boolean updateIsDeleted(String value, Long[] objIDs)
+			throws RuntimeException;
+
 	Patient updateAvatar(String avatar, Long id);
 
 	Patient updatePassword(String newPassword, Long id, String oldPassword);

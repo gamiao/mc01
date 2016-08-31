@@ -44,4 +44,18 @@
 			</div>
         </div>
     </ion-content>
+	
+	<ion-footer-bar>
+		<div class="tabs tabs-icon-top tabs-color-dark">
+		  <a ng-if="patient.IsDeleted === 'N'" ng-click="changeIsDeleted(patient)" class="tab-item">
+			<i class="icon ion-locked"></i>
+			停用
+		  </a>
+		  <a ng-if="patient.IsDeleted === 'Y'" ng-click="changeIsDeleted(patient)" class="tab-item">
+			<i class="icon ion-unlocked"></i>
+			启用
+		  </a>
+		</div>
+	</ion-footer-bar>
+	
 </ion-view>

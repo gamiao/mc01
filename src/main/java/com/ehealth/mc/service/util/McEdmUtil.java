@@ -166,6 +166,9 @@ public class McEdmUtil {
 					EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty price = new CsdlProperty().setName("Price").setType(
 					EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
+			CsdlProperty isDeleted = new CsdlProperty()
+					.setName("IsDeleted")
+					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 
 			// create CsdlPropertyRef for Key element
 			CsdlPropertyRef propertyRef = new CsdlPropertyRef();
@@ -176,7 +179,7 @@ public class McEdmUtil {
 			entityType.setName(ES_DOCTORS_NAME);
 			entityType.setProperties(Arrays.asList(id, login, password, name,
 					createTime, gender, avatar, mail, address, mobile,
-					birthday, price, medicalLevel));
+					birthday, price, medicalLevel, isDeleted));
 			entityType.setKey(Collections.singletonList(propertyRef));
 
 			return entityType;
@@ -205,6 +208,9 @@ public class McEdmUtil {
 					EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty birthday = new CsdlProperty().setName("Birthday")
 					.setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
+			CsdlProperty isDeleted = new CsdlProperty()
+					.setName("IsDeleted")
+					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 
 			// create CsdlPropertyRef for Key element
 			CsdlPropertyRef propertyRef = new CsdlPropertyRef();
@@ -213,9 +219,9 @@ public class McEdmUtil {
 			// configure EntityType
 			CsdlEntityType entityType = new CsdlEntityType();
 			entityType.setName(ES_PATIENTS_NAME);
-			entityType.setProperties(Arrays
-					.asList(id, login, password, name, createTime, gender,
-							avatar, mail, address, mobile, birthday));
+			entityType.setProperties(Arrays.asList(id, login, password, name,
+					createTime, gender, avatar, mail, address, mobile,
+					birthday, isDeleted));
 			entityType.setKey(Collections.singletonList(propertyRef));
 
 			return entityType;

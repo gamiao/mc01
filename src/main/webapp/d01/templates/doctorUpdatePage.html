@@ -42,7 +42,12 @@
             </label>
             <label class="item item-input " id="form-MedicalLevel">
                 <span class="input-label">医师级别</span>
-                <input type="text" value="{{doctor.MedicalLevel}}" ng-model="doctor.MedicalLevel">
+                <select ng-model="doctor.MedicalLevel">
+                    <option value="住院医生">住院医师</option>
+                    <option value="主治医生">主治医师</option>
+                    <option value="副主任医师">副主任医师</option>
+                    <option value="主任医师">主任医师</option>
+                </select>
             </label>
             <label class="item item-input " id="form-Price">
                 <span class="input-label">咨询价格</span>

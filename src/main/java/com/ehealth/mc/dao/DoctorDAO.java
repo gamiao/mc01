@@ -20,7 +20,6 @@ public interface DoctorDAO extends CrudRepository<Doctor, Long>,
 	@Query("update Doctor d set d.avatar = ?1 where d.id = ?2")
 	int setAvatar(String avatar, Long id);
 
-	
 	@Modifying
 	@Query("update Doctor d set d.password = ?1 where d.id = ?2 and d.password = ?3")
 	int updatePassword(String newPassword, Long id, String oldPassword);

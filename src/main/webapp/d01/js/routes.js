@@ -47,6 +47,7 @@ angular.module('app.routes', [])
 	.state('d-sm', {
 		url: '/d-sm',
 		templateUrl: 'templates/d-sm.html',
+		controller: 'sidemenuCtrl',
 		abstract: true
 	})
 

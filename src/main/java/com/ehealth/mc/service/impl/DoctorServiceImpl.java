@@ -1,7 +1,5 @@
 package com.ehealth.mc.service.impl;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.olingo.commons.api.data.Entity;
@@ -14,6 +12,7 @@ import com.ehealth.mc.dao.DoctorDAO;
 import com.ehealth.mc.service.DoctorService;
 import com.ehealth.mc.service.util.EntityConvertUtil;
 import com.ehealth.mc.service.util.QueryExpressionUtil;
+import com.google.common.collect.Lists;
 import com.querydsl.core.types.Predicate;
 
 @Service("doctorService")
@@ -25,19 +24,7 @@ public class DoctorServiceImpl implements DoctorService {
 
 	@Override
 	public List<Doctor> findAll() {
-		List<Doctor> eList = new ArrayList<Doctor>();
-		if (doctorDAO != null) {
-
-			Iterable<Doctor> result = doctorDAO.findAll();
-			if (result != null) {
-				Iterator<Doctor> i = result.iterator();
-				while (i.hasNext()) {
-					eList.add(i.next());
-				}
-				return eList;
-			}
-		}
-		return null;
+		return Lists.newArrayList(doctorDAO.findAll());
 	}
 
 	@Override
@@ -104,17 +91,8 @@ public class DoctorServiceImpl implements DoctorService {
 		Predicate querys = QueryExpressionUtil
 				.getDoctorWhereClausesByFilterString(filterString);
 		if (querys != null) {
-			Iterable<Doctor> result = doctorDAO.findAll(querys);
-			if (result != null) {
-				List<Doctor> eList = new ArrayList<Doctor>();
-				Iterator<Doctor> i = result.iterator();
-				while (i.hasNext()) {
-					eList.add(i.next());
-				}
-				return eList;
-			}
+			return Lists.newArrayList(doctorDAO.findAll(querys));
 		}
-
 		return null;
 	}
 

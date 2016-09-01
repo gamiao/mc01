@@ -27,4 +27,6 @@ public interface PatientService {
 
 	List<Patient> findByFilterString(String filterString);
 
+	List<Patient> findByIsDeleted(String isDeleted);
+
 }

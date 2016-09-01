@@ -1,7 +1,5 @@
 package com.ehealth.mc.service.impl;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -17,6 +15,7 @@ import com.ehealth.mc.dao.PatientDAO;
 import com.ehealth.mc.service.PatientService;
 import com.ehealth.mc.service.util.EntityConvertUtil;
 import com.ehealth.mc.service.util.QueryExpressionUtil;
+import com.google.common.collect.Lists;
 import com.querydsl.core.types.Predicate;
 
 @Service("patientService")
@@ -88,34 +87,14 @@ public class PatientServiceImpl implements PatientService {
 		Predicate querys = QueryExpressionUtil
 				.getPatientWhereClausesByFilterString(filterString);
 		if (querys != null) {
-			Iterable<Patient> result = patientDAO.findAll(querys);
-			if (result != null) {
-				List<Patient> eList = new ArrayList<Patient>();
-				Iterator<Patient> i = result.iterator();
-				while (i.hasNext()) {
-					eList.add(i.next());
-				}
-				return eList;
-			}
+			return Lists.newArrayList(patientDAO.findAll(querys));
 		}
 		return null;
 	}
 
 	@Override
 	public List<Patient> findAll() {
-		List<Patient> eList = new ArrayList<Patient>();
-		if (patientDAO != null) {
-
-			Iterable<Patient> result = patientDAO.findAll();
-			if (result != null) {
-				Iterator<Patient> i = result.iterator();
-				while (i.hasNext()) {
-					eList.add(i.next());
-				}
-				return eList;
-			}
-		}
-		return null;
+		return Lists.newArrayList(patientDAO.findAll());
 	}
 
 	@Override
@@ -141,6 +120,11 @@ public class PatientServiceImpl implements PatientService {
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public List<Patient> findByIsDeleted(String isDeleted) {
+		return patientDAO.findByIsDeleted(isDeleted);
 	}
 
 }

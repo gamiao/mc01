@@ -37,6 +37,7 @@ angular.module('app.routes', [])
 	.state('p-sm', {
 		url: '/p-sm',
 		templateUrl: 'templates/p-sm.html',
+		controller: 'sidemenuCtrl',
 		abstract: true
 	})
 

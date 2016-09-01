@@ -23,28 +23,22 @@ public interface OrderService {
 	boolean updateIsArchived(String value, Long[] objIDs)
 			throws RuntimeException;
 
-	List<OrderHeader> findByPatientID(Long id);
-
-	List<OrderHeader> findByDoctorID(Long id);
-
-	List<OrderHeader> findByDoctorIDForPickUp(Long id);
-
-	List<OrderHeader> findByPatientIDArchived(Long id);
-
-	List<OrderHeader> findByDoctorIDArchived(Long id);
-
-	List<OrderHeader> findByPatientIDNotArchived(Long id);
-
-	List<OrderHeader> findByDoctorIDNotArchived(Long id);
-
-	List<OrderHeader> findByPatientIDAndStatus(Long id, String status);
-
-	List<OrderHeader> findByDoctorIDAndStatus(Long id, String status);
-
 	OrderConversation createOrderConversaction(Entity newEntity,
 			Entity parentEntity);
 
 	OrderConversation createImageOrderConversaction(String fileName,
 			Long orderHeaderID, String owner);
+
+	List<OrderHeader> findByPatientID(Long patientID);
+
+	List<OrderHeader> findByDoctorID(Long doctorID);
+
+	List<OrderHeader> findByDoctorIDForPickUp(Long doctorID);
+
+	List<OrderHeader> findByDoctorIDAndIsArchived(Long doctorID,
+			String isArchivedStr);
+
+	List<OrderHeader> findByPatientIDAndIsArchived(Long patientID,
+			String isArchivedStr);
 
 }

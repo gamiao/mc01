@@ -1,24 +1,36 @@
-<ion-view title="瑞金足踝医师首页（已登录）" id="indexPage" class=" ">
+<ion-view title="瑞金足踝医师首页（{{user.Name}}）" id="indexPage" class=" ">
     <ion-content padding="true" class="has-header">
         <div class="">
             <img ng-src="img/doctor_index01.jpg" width="100%" height="auto" style="display: block; margin-left: auto; margin-right: auto;">
         </div>
         <ion-list id="indexPage-list1" class=" ">
-            <ion-item class="item-thumbnail-left" ui-sref="d-sm.pickupOrderPage">
+            <ion-item ng-if="user.IsDeleted === 'N'" class="item-thumbnail-left" ui-sref="d-sm.pickupOrderPage">
                 <img ng-src="img/pickup01.png">
                 <h2>待接单</h2>
                 <p>查看患者新建的咨询并接单</p>
             </ion-item>
-            <ion-item class="item-thumbnail-left" ui-sref="d-sm.openOrderPage">
+            <ion-item ng-if="user.IsDeleted === 'N'" class="item-thumbnail-left" ui-sref="d-sm.openOrderPage">
                 <img ng-src="img/order01.png">
                 <h2>进行中咨询</h2>
                 <p>查看咨询详情，并与患者互动</p>
             </ion-item>
-            <ion-item class="item-thumbnail-left" ui-sref="d-sm.historyOrderPage">
+            <ion-item ng-if="user.IsDeleted === 'N'" class="item-thumbnail-left" ui-sref="d-sm.historyOrderPage">
                 <img ng-src="img/history01.png">
                 <h2>历史咨询</h2>
                 <p>查看咨询历史和互动历史</p>
             </ion-item>
+			
+			<ion-item ng-if="user.IsDeleted === 'Y'" style="height:100px;line-height:100px;text-align:center; vertical-align:middle;">
+				<h2><strong>您的账户为锁定状态</strong><h2>
+				<p><strong>如需解锁,请联系管理员</strong></p>
+			</ion-item>
         </ion-list>
     </ion-content>
+	
+	
+		
+		<div ng-if="user.IsDeleted === 'Y'" style="height:200px;line-height:200px;text-align:center; vertical-align:middle;">
+			<strong>您的账户为锁定状态</strong>
+			<strong>如需解锁,请联系管理员</strong>
+		</div>
 </ion-view>

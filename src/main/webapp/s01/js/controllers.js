@@ -369,6 +369,9 @@ angular.module('app.controllers', [])
 	} else if (currentOrder && currentOrder.Status === 'unpaid') {
 		page.title = '待付款';
 		page.orderType = 'unpaid';
+	} else if (currentOrder && currentOrder.Status === 'complete') {
+		page.title = '已完结';
+		page.orderType = 'complete';
 	}
 
 	$scope.page = page;
@@ -527,6 +530,10 @@ angular.module('app.controllers', [])
 	} else if (currentOrder && currentOrder.Status === 'new') {
 		page.enableNewMessage = false;
 		page.newMessageHolder = '待病人付款后互动';
+	} else if (currentOrder && currentOrder.Status === 'complete') {
+		page.title = '互动已完结';
+		page.enableNewMessage = false;
+		page.newMessageHolder = '已停止互动';
 	}
 	$scope.page = page;
 

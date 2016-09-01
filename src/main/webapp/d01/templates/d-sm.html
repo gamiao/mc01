@@ -14,9 +14,9 @@
         </ion-header-bar>
         <ion-content padding="false" class="side-menu-left has-header">
             <a ui-sref="d-sm.indexPage" menu-close="" id="d-sm-button1" class=" button button-positive  button-block ">首页</a>
-            <a ui-sref="d-sm.pickupOrderPage" menu-close="" id="d-sm-button2" class=" button button-positive  button-block ">待接单</a>
-            <a ui-sref="d-sm.openOrderPage" menu-close="" id="d-sm-button2" class=" button button-positive  button-block ">进行中咨询</a>
-            <a ui-sref="d-sm.historyOrderPage" menu-close="" id="d-sm-button3" class=" button button-positive  button-block ">历史咨询</a>
+            <a ng-if="user.IsDeleted === 'N'" ui-sref="d-sm.pickupOrderPage" menu-close="" id="d-sm-button2" class=" button button-positive  button-block ">待接单</a>
+            <a ng-if="user.IsDeleted === 'N'" ui-sref="d-sm.openOrderPage" menu-close="" id="d-sm-button2" class=" button button-positive  button-block ">进行中咨询</a>
+            <a ng-if="user.IsDeleted === 'N'" ui-sref="d-sm.historyOrderPage" menu-close="" id="d-sm-button3" class=" button button-positive  button-block ">历史咨询</a>
             <a ui-sref="d-sm.doctorInfoPage" menu-close="" id="d-sm-button4" class=" button button-positive  button-block ">医师资料</a>
             <button ui-sref="login"  class=" button button-dark  button-block ">退出登录</button>
         </ion-content>

@@ -82,12 +82,16 @@ public class OverallServiceImpl implements OverallService {
 		if (McEdmUtil.ES_DOCTORS_NAME.equals(edmEntitySet.getName())) {
 			List<Entity> entityList = entityCollection.getEntities();
 			String filterString = FormatUtil.getCommonFilterString(filterStr);
+			String isDeletedString = FormatUtil
+					.getCommonFilterIsDeleted(filterStr);
 			List<Doctor> queryResult = null;
 
 			if (filterString != null && !filterString.isEmpty()) {
 				queryResult = doctorService.findByFilterString(filterString);
+			} else if (isDeletedString != null && !isDeletedString.isEmpty()) {
+				queryResult = doctorService.findByIsDeleted(isDeletedString);
 			} else {
-				queryResult = doctorService.findByIsDeleted("N");
+				queryResult = doctorService.findAll();
 			}
 			entityList.addAll(EntityConvertUtil
 					.getDoctorEntityList(queryResult));
@@ -95,10 +99,14 @@ public class OverallServiceImpl implements OverallService {
 		} else if (McEdmUtil.ES_PATIENTS_NAME.equals(edmEntitySet.getName())) {
 			List<Entity> entityList = entityCollection.getEntities();
 			String filterString = FormatUtil.getCommonFilterString(filterStr);
+			String isDeletedString = FormatUtil
+					.getCommonFilterIsDeleted(filterStr);
 			List<Patient> queryResult = null;
 
 			if (filterString != null && !filterString.isEmpty()) {
 				queryResult = patientService.findByFilterString(filterString);
+			} else if (isDeletedString != null && !isDeletedString.isEmpty()) {
+				queryResult = patientService.findByIsDeleted(isDeletedString);
 			} else {
 				queryResult = patientService.findAll();
 			}
@@ -118,14 +126,10 @@ public class OverallServiceImpl implements OverallService {
 						.getOrderFilterIsArchived(filterStr);
 				String status = FormatUtil.getOrderFilterStatus(filterStr);
 				if (patientID != null) {
-					if (isArchivedStr != null) {
-						if ("Y".endsWith(isArchivedStr)) {
-							queryResult = orderService
-									.findByPatientIDArchived(patientID);
-						} else {
-							queryResult = orderService
-									.findByPatientIDNotArchived(patientID);
-						}
+					if ("Y".equals(isArchivedStr) || "N".equals(isArchivedStr)) {
+						queryResult = orderService
+								.findByPatientIDAndIsArchived(patientID,
+										isArchivedStr);
 					} else {
 						queryResult = orderService.findByPatientID(patientID);
 					}
@@ -133,14 +137,10 @@ public class OverallServiceImpl implements OverallService {
 					if ("pickup".equals(status)) {
 						queryResult = orderService
 								.findByDoctorIDForPickUp(doctorID);
-					} else if (isArchivedStr != null) {
-						if ("Y".endsWith(isArchivedStr)) {
-							queryResult = orderService
-									.findByDoctorIDArchived(doctorID);
-						} else {
-							queryResult = orderService
-									.findByDoctorIDNotArchived(doctorID);
-						}
+					} else if ("Y".equals(isArchivedStr)
+							|| "N".equals(isArchivedStr)) {
+						queryResult = orderService.findByDoctorIDAndIsArchived(
+								doctorID, isArchivedStr);
 					} else {
 						queryResult = orderService.findByDoctorID(doctorID);
 					}

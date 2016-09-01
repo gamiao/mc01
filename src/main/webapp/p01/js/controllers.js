@@ -261,8 +261,13 @@ angular.module('app.controllers', [])
     }
 })
 
-.controller('indexPageCtrl', function($scope, $state, $ionicActionSheet, orderService, accountService) {
+.controller('sidemenuCtrl', function($scope, configService) {
+	$scope.user = configService.currentUser;
+})
+
+.controller('indexPageCtrl', function($scope, $state, $ionicActionSheet, orderService, accountService, configService) {
 	accountService.checkCurrentUser();
+	$scope.user = configService.currentUser;
 
 	$scope.createOrder = function() {
 		$scope.hideSheet = $ionicActionSheet.show({
@@ -342,6 +347,9 @@ angular.module('app.controllers', [])
 	} else if (orderService.currentOrder && orderService.currentOrder.Status === 'unpaid') {
 		page.title = '待付款';
 		page.orderType = 'unpaid';
+	} else if (orderService.currentOrder && orderService.currentOrder.Status === 'complete') {
+		page.title = '已结束';
+		page.orderType = 'complete';
 	}
 
 	$scope.page = page;
@@ -647,7 +655,7 @@ angular.module('app.controllers', [])
 		allDoctors =
 			$odataresource(ODATA_SERVICE_URL + "Doctors")
 			.odata()
-			.filter("Address", "男 已删除")
+			.filter("IsDeleted", "N")
 			.query();
 
 		$ionicModal.fromTemplateUrl('templates/doctorSelectionPage.html', {
@@ -712,6 +720,10 @@ angular.module('app.controllers', [])
 	} else if (orderService.currentOrder && orderService.currentOrder.Status === 'new') {
 		page.enableNewMessage = false;
 		page.newMessageHolder = '待病人付款后互动';
+	} else if (orderService.currentOrder && orderService.currentOrder.Status === 'complete') {
+		page.title = '互动已结束';
+		page.enableNewMessage = false;
+		page.newMessageHolder = '已停止互动';
 	}
 	$scope.page = page;
 

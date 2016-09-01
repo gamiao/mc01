@@ -1,5 +1,7 @@
 package com.ehealth.mc.dao;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QueryDslPredicateExecutor;
@@ -25,5 +27,7 @@ public interface PatientDAO extends CrudRepository<Patient, Long>,
 	Patient findOneByLoginAndPassword(String login, String password);
 
 	Patient findOneByLogin(String login);
+
+	List<Patient> findByIsDeleted(String isDeleted);
 
 }

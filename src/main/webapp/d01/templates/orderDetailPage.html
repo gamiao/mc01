@@ -4,6 +4,12 @@
             <ion-item ng-if="page.orderType === 'archived'"  class="item-avatar item-icon-right" id="100345-list-item6" ng-click="getConvs(currentOrder)" >
                 <img ng-src="../uploadedImg/{{currentOrder.CTPatient.Avatar}}">
                 <h2>患者：{{currentOrder.CTPatient.Name}}（价格：{{currentOrder.CTDoctor.Price}}元）</h2>
+                <p><strong>咨询已存档，点击查看历史</strong></p>
+                <i class="icon ion-locked "></i>
+            </ion-item>
+            <ion-item ng-if="page.orderType === 'complete'"  class="item-avatar item-icon-right" id="100345-list-item6" ng-click="getConvs(currentOrder)" >
+                <img ng-src="../uploadedImg/{{currentOrder.CTPatient.Avatar}}">
+                <h2>患者：{{currentOrder.CTPatient.Name}}（价格：{{currentOrder.CTDoctor.Price}}元）</h2>
                 <p><strong>咨询已结束，点击查看历史</strong></p>
                 <i class="icon ion-locked "></i>
             </ion-item>
@@ -16,7 +22,7 @@
             <ion-item ng-if="page.orderType === 'new'" class="item-avatar item-icon-right" id="100345-list-item6" ng-click="pickup(currentOrder)" >
                 <img ng-src="../uploadedImg/{{currentOrder.CTPatient.Avatar}}">
                 <h2>患者：{{currentOrder.CTPatient.Name}}</h2>
-                <h2><strong>新建订单，点击接单</strong></h2>
+                <h2><strong>新建咨询，点击接单</strong></h2>
                 <i class="icon ion-checkmark "></i>
             </ion-item>
         </ion-list>

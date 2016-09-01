@@ -206,10 +206,13 @@ angular.module('app.controllers', [])
     }
 })
 
+.controller('sidemenuCtrl', function($scope, configService) {
+	$scope.user = configService.currentUser;
+})
 
-.controller('indexPageCtrl', function($scope, $state, accountService) {
+.controller('indexPageCtrl', function($scope, $state, accountService, configService) {
 	accountService.checkCurrentUser();
-
+	$scope.user = configService.currentUser;
 })
 
 .controller('loginPageCtrl', function($scope, accountService, $ionicPopup, $state) {
@@ -495,6 +498,9 @@ angular.module('app.controllers', [])
 	} else if (orderService.currentOrder && orderService.currentOrder.Status === 'new') {
 		page.title = '待接单';
 		page.orderType = 'new';
+	} else if (orderService.currentOrder && orderService.currentOrder.Status === 'complete') {
+		page.title = '已结束';
+		page.orderType = 'complete';
 	}
 	$scope.page = page;
 	$scope.getConvs = function(ObjectData) {
@@ -646,6 +652,10 @@ angular.module('app.controllers', [])
 	} else if (orderService.currentOrder && orderService.currentOrder.Status === 'new') {
 		page.enableNewMessage = false;
 		page.newMessageHolder = '待病人付款后互动';
+	} else if (orderService.currentOrder && orderService.currentOrder.Status === 'complete') {
+		page.title = '互动已结束';
+		page.enableNewMessage = false;
+		page.newMessageHolder = '已停止互动';
 	}
 	$scope.page = page;
 	$scope.imageSrc = "jiaohuai1.jpg";

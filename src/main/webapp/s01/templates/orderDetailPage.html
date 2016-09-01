@@ -153,19 +153,19 @@
 		<div class="tabs tabs-icon-top tabs-color-dark">
 		  <a ng-if="currentOrder.IsDeleted === 'N'" ng-click="changeIsDeleted(currentOrder)" class="tab-item">
 			<i class="icon ion-locked"></i>
-			停用
+			<strong>停用</strong>
 		  </a>
 		  <a ng-if="currentOrder.IsDeleted === 'Y'" ng-click="changeIsDeleted(currentOrder)" class="tab-item">
 			<i class="icon ion-unlocked"></i>
-			启用
+			<strong>启用</strong>
 		  </a>
 		  <a ng-if="currentOrder.IsArchived === 'N'" ng-click="changeIsArchived(currentOrder)" class="tab-item">
 			<i class="icon ion-archive"></i>
-			存档
+			<strong>存档</strong>
 		  </a>
 		  <a ng-if="currentOrder.IsArchived === 'Y'" ng-click="changeIsArchived(currentOrder)" class="tab-item">
 			<i class="icon ion-share"></i>
-			恢复
+			<strong>恢复</strong>
 		  </a>
 		</div>
 	</ion-footer-bar>

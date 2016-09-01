@@ -1,8 +1,6 @@
 package com.ehealth.mc.service.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.olingo.commons.api.data.ComplexValue;
@@ -16,6 +14,7 @@ import com.ehealth.mc.bo.OrderConversation;
 import com.ehealth.mc.bo.OrderDetail;
 import com.ehealth.mc.bo.OrderHeader;
 import com.ehealth.mc.bo.Patient;
+import com.ehealth.mc.bo.QOrderHeader;
 import com.ehealth.mc.dao.OrderConversationDAO;
 import com.ehealth.mc.dao.OrderDetailDAO;
 import com.ehealth.mc.dao.OrderHeaderDAO;
@@ -23,6 +22,8 @@ import com.ehealth.mc.service.DoctorService;
 import com.ehealth.mc.service.OrderService;
 import com.ehealth.mc.service.PatientService;
 import com.ehealth.mc.service.util.EntityConvertUtil;
+import com.google.common.collect.Lists;
+import com.querydsl.core.types.dsl.BooleanExpression;
 
 @Service("orderService")
 @Transactional(readOnly = true)
@@ -45,20 +46,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public List<OrderHeader> findAll() {
-
-		List<OrderHeader> eList = new ArrayList<OrderHeader>();
-		if (orderHeaderDAO != null) {
-
-			Iterable<OrderHeader> result = orderHeaderDAO.findAll();
-			if (result != null) {
-				Iterator<OrderHeader> i = result.iterator();
-				while (i.hasNext()) {
-					eList.add(i.next());
-				}
-				return eList;
-			}
-		}
-		return null;
+		return Lists.newArrayList(orderHeaderDAO.findAll());
 	}
 
 	@Override
@@ -67,7 +55,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(rollbackFor = RuntimeException.class)
 	public OrderHeader create(Entity e) {
 		Patient patient = null;
 		Doctor doctor = null;
@@ -90,16 +78,14 @@ public class OrderServiceImpl implements OrderService {
 
 		orderDetail = createOrderDetail(odToSave);
 		if (orderDetail == null) {
-			// TODO rollback
-			return null;
+			throw new RuntimeException("Can't create orderDetail object.");
 		}
 
 		OrderHeader orderHeader = createOrderHeader(e, patient, doctor,
 				orderDetail);
 
 		if (orderHeader == null) {
-			// TODO rollback
-			return null;
+			throw new RuntimeException("Can't create orderHeader object.");
 		}
 
 		return orderHeader;
@@ -141,7 +127,6 @@ public class OrderServiceImpl implements OrderService {
 			return null;// OrderDetail does not exist
 		} else {
 			orderHeader = orderHeaderDAO.findOne(orderHeaderID);
-
 			if (orderHeader == null) {
 				return null;
 			}
@@ -192,46 +177,6 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public List<OrderHeader> findByPatientIDAndStatus(Long id, String status) {
-		return orderHeaderDAO.findByPatientIDAndStatus(id, status);
-	}
-
-	@Override
-	public List<OrderHeader> findByDoctorIDAndStatus(Long id, String status) {
-		return orderHeaderDAO.findByDoctorIDAndStatus(id, status);
-	}
-
-	@Override
-	public List<OrderHeader> findByPatientID(Long id) {
-		return orderHeaderDAO.findByPatientID(id);
-	}
-
-	@Override
-	public List<OrderHeader> findByDoctorID(Long id) {
-		return orderHeaderDAO.findByDoctorID(id);
-	}
-
-	@Override
-	public List<OrderHeader> findByPatientIDArchived(Long id) {
-		return orderHeaderDAO.findByPatientIDArchived(id);
-	}
-
-	@Override
-	public List<OrderHeader> findByDoctorIDArchived(Long id) {
-		return orderHeaderDAO.findByDoctorIDArchived(id);
-	}
-
-	@Override
-	public List<OrderHeader> findByPatientIDNotArchived(Long id) {
-		return orderHeaderDAO.findByPatientIDNotArchived(id);
-	}
-
-	@Override
-	public List<OrderHeader> findByDoctorIDNotArchived(Long id) {
-		return orderHeaderDAO.findByDoctorIDNotArchived(id);
-	}
-
-	@Override
 	@Transactional
 	public OrderConversation createOrderConversaction(Entity newEntity,
 			Entity parentEntity) {
@@ -244,6 +189,20 @@ public class OrderServiceImpl implements OrderService {
 					.getOrderConversation(newEntity);
 			oc.setOrderHeader(orderHeader);
 			orderConversationDAO.save(oc);
+
+			List<OrderConversation> convs = orderHeader.getOrderConversations();
+			int doctorTextConvNumber = 0;
+			for (OrderConversation conv : convs) {
+				if (conv != null && "D".equals(conv.getOwner())
+						&& "TEXT".equals(conv.getType())) {
+					doctorTextConvNumber += 1;
+				}
+			}
+
+			if (doctorTextConvNumber >= 3) {
+				orderHeader.setStatus("complete");
+				orderHeaderDAO.save(orderHeader);
+			}
 
 			return oc;
 		}
@@ -268,26 +227,6 @@ public class OrderServiceImpl implements OrderService {
 			return oc;
 		}
 		return null;
-	}
-
-	@Override
-	public List<OrderHeader> findByDoctorIDForPickUp(Long id) {
-		List<OrderHeader> orderToBeConfirmed = orderHeaderDAO
-				.findByDoctorIDAndStatus(id, "new");
-		List<OrderHeader> orderToPickUp = orderHeaderDAO
-				.findByNoDoctorAndStatus("new");
-		if (null == orderToBeConfirmed && null == orderToPickUp) {
-			return null;
-		}
-
-		List<OrderHeader> resultList = new ArrayList<OrderHeader>();
-		if (orderToBeConfirmed != null && orderToBeConfirmed.size() > 0) {
-			resultList.addAll(orderToBeConfirmed);
-		}
-		if (orderToPickUp != null && orderToPickUp.size() > 0) {
-			resultList.addAll(orderToPickUp);
-		}
-		return resultList;
 	}
 
 	@Override
@@ -338,6 +277,58 @@ public class OrderServiceImpl implements OrderService {
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public List<OrderHeader> findByPatientID(Long patientID) {
+		QOrderHeader orderHeader = QOrderHeader.orderHeader;
+		BooleanExpression exp1 = orderHeader.patient.id.eq(patientID);
+		BooleanExpression exp2 = orderHeader.isDeleted.eq("N");
+		return Lists.newArrayList(orderHeaderDAO.findAll(exp1.and(exp2)));
+	}
+
+	@Override
+	public List<OrderHeader> findByDoctorID(Long doctorID) {
+		QOrderHeader orderHeader = QOrderHeader.orderHeader;
+		BooleanExpression exp1 = orderHeader.doctor.id.eq(doctorID);
+		BooleanExpression exp2 = orderHeader.isDeleted.eq("N");
+		return Lists.newArrayList(orderHeaderDAO.findAll(exp1.and(exp2)));
+	}
+
+	@Override
+	public List<OrderHeader> findByDoctorIDAndIsArchived(Long doctorID,
+			String isArchivedStr) {
+		QOrderHeader orderHeader = QOrderHeader.orderHeader;
+		BooleanExpression exp1 = orderHeader.doctor.id.eq(doctorID);
+		BooleanExpression exp2 = orderHeader.isDeleted.eq("N");
+		BooleanExpression exp3 = orderHeader.isArchived.eq(isArchivedStr);
+		BooleanExpression exp4 = orderHeader.status.ne("new");
+		return Lists.newArrayList(orderHeaderDAO.findAll(exp1.and(exp2)
+				.and(exp3).and(exp4)));
+	}
+
+	@Override
+	public List<OrderHeader> findByPatientIDAndIsArchived(Long patientID,
+			String isArchivedStr) {
+		QOrderHeader orderHeader = QOrderHeader.orderHeader;
+		BooleanExpression exp1 = orderHeader.patient.id.eq(patientID);
+		BooleanExpression exp2 = orderHeader.isDeleted.eq("N");
+		BooleanExpression exp3 = orderHeader.isArchived.eq(isArchivedStr);
+		return Lists.newArrayList(orderHeaderDAO.findAll(exp1.and(exp2).and(
+				exp3)));
+	}
+
+	@Override
+	public List<OrderHeader> findByDoctorIDForPickUp(Long doctorID) {
+		QOrderHeader orderHeader = QOrderHeader.orderHeader;
+		BooleanExpression exp1 = orderHeader.isDeleted.eq("N");
+		BooleanExpression exp2 = orderHeader.isArchived.eq("N");
+		BooleanExpression exp3 = orderHeader.status.eq("new");
+
+		BooleanExpression exp4 = orderHeader.doctor.id.eq(doctorID);
+		BooleanExpression exp5 = orderHeader.doctor.isNull();
+		return Lists.newArrayList(orderHeaderDAO.findAll(exp1.and(exp2)
+				.and(exp3).and(exp4.or(exp5))));
 	}
 
 }

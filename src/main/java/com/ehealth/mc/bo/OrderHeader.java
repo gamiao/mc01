@@ -23,6 +23,8 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.springframework.data.domain.Persistable;
 
+import com.google.gson.annotations.Expose;
+
 @Entity
 @Table(name = "order_header")
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
@@ -51,12 +53,13 @@ public class OrderHeader implements Serializable, Persistable<Long> {
 	@Fetch(FetchMode.JOIN)
 	private OrderDetail orderDetail;
 
+	@Expose(serialize = false)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "orderHeader", fetch = FetchType.LAZY)
 	private List<OrderConversation> orderConversations;
 
 	@Column(name = "status")
 	private String status;
-	
+
 	@Column(name = "create_time")
 	private Date createTime;
 

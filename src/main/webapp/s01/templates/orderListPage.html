@@ -12,7 +12,7 @@
 
     <ion-list>
        <ion-list id="historyOrderPage-list3" class=" " ng-repeat="order in items">
-            <ion-item class="item-icon-right" ng-click="showItem(order)" >
+            <ion-item class="" ng-click="showItem(order)" >
                 <p>咨询号：{{order.ID}} -- {{order.CreateTime}} （<strong>{{order.Status, select,
 						ongoing {进行中}
 						unpaid {待付款}
@@ -25,7 +25,6 @@
 									F {女}
 									M {男}
 									other {}}}，病情：{{order.CTDetail.Description}}</h2>
-                <i class="icon ion-android-radio-button-off "></i>
             </ion-item>
         </ion-list>
     </ion-list>

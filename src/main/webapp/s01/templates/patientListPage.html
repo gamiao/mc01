@@ -12,7 +12,7 @@
 
     <ion-list>
        <ion-list id="historyOrderPage-list3" class=" " ng-repeat="patient in items">
-            <ion-item class="item-thumbnail-left item-icon-right " ng-click="showItem(patient)" >
+            <ion-item class="item-thumbnail-left  " ng-click="showItem(patient)" >
                 <img ng-src="../uploadedImg/{{patient.Avatar}}">
                 <p>患者编号:{{patient.ID}}， 注册时间：{{patient.CreateTime}}</p>
 				<h2><strong>{{patient.Name}},{{patient.Gender, select,
@@ -21,7 +21,6 @@
 									other {}}}, 手机号码:{{patient.Mobile}}</strong></h2>
                 <p>家庭住址： {{patient.Address}}</p>
                 <p>邮箱地址： {{patient.Mail}}</p>
-                <i class="icon ion-android-radio-button-off "  ng-click="onIconClick(patient)"></i>
             </ion-item>
         </ion-list>
     </ion-list>

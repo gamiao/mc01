@@ -377,7 +377,9 @@ angular.module('app.controllers', [])
 	$scope.page = page;
 	$scope.getConvs = function(ObjectData) {
 		currentOrder = ObjectData;
-		$state.go('s-sm.orderConvsPage');
+		if(currentOrder.CTDoctor){
+			$state.go('s-sm.orderConvsPage');
+		}
 	}
 
 	$ionicModal.fromTemplateUrl('templates/fullScreenImage.html', {

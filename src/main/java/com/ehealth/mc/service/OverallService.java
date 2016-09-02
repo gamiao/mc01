@@ -35,7 +35,8 @@ public interface OverallService {
 			EdmEntitySet edmEntitySet, Entity requestEntity, OData odata,
 			ServiceMetadata serviceMetadata) throws ODataApplicationException;
 
-	Long getLoginUserID(String loginType, String login, String password);
+	Long getLoginUserID(String loginType, String login, String password,
+			String ip, String userAgent);
 
 	Long updatePassword(String loginType, Long id, String oldPassword,
 			String newPassword);

@@ -3,6 +3,7 @@ package com.ehealth.mc.controller;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,12 +39,15 @@ public class AccountController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/login/{loginType}")
 	public @ResponseBody String login(@PathVariable String loginType,
-			@RequestBody String requestBody) {
+			@RequestBody String requestBody, final HttpServletRequest request) {
 
 		String returnMsg = "{\"result\":\"E\"}";
 		if (isLoginTypeValid(loginType)) {
 
 			Map<String, String> requestObject = null;
+
+			String ip = request.getRemoteAddr();
+			String userAgent = request.getHeader("User-Agent");
 
 			try {
 				requestObject = gson.fromJson(requestBody,
@@ -56,7 +60,7 @@ public class AccountController {
 				String password = requestObject.get("password");
 				if (login != null && password != null) {
 					Long userID = overallService.getLoginUserID(loginType,
-							login, password);
+							login, password, ip, userAgent);
 					if (userID != null) {
 						return "{\"result\":\"S\",\"userID\":"
 								+ userID.toString() + "}";

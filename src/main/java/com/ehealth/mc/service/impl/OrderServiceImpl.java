@@ -13,27 +13,35 @@ import com.ehealth.mc.bo.Doctor;
 import com.ehealth.mc.bo.OrderConversation;
 import com.ehealth.mc.bo.OrderDetail;
 import com.ehealth.mc.bo.OrderHeader;
+import com.ehealth.mc.bo.OrderHeaderCL;
 import com.ehealth.mc.bo.Patient;
 import com.ehealth.mc.bo.QOrderHeader;
 import com.ehealth.mc.dao.OrderConversationDAO;
 import com.ehealth.mc.dao.OrderDetailDAO;
+import com.ehealth.mc.dao.OrderHeaderCLDAO;
 import com.ehealth.mc.dao.OrderHeaderDAO;
 import com.ehealth.mc.service.DoctorService;
 import com.ehealth.mc.service.OrderService;
 import com.ehealth.mc.service.PatientService;
 import com.ehealth.mc.service.util.EntityConvertUtil;
 import com.google.common.collect.Lists;
+import com.google.gson.Gson;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 @Service("orderService")
 @Transactional(readOnly = true)
 public class OrderServiceImpl implements OrderService {
 
+	private static Gson gson = new Gson();
+
 	@Autowired
 	private OrderConversationDAO orderConversationDAO;
 
 	@Autowired
 	private OrderHeaderDAO orderHeaderDAO;
+
+	@Autowired
+	private OrderHeaderCLDAO orderHeaderCLDAO;
 
 	@Autowired
 	private OrderDetailDAO orderDetailDAO;
@@ -104,7 +112,6 @@ public class OrderServiceImpl implements OrderService {
 			return null;// Patient does not exist
 		} else {
 			patient = patientService.findById(patientID);
-
 			if (patient == null) {
 				return null;
 			}
@@ -116,7 +123,6 @@ public class OrderServiceImpl implements OrderService {
 			return null;// OrderDetail does not exist
 		} else {
 			orderDetail = orderDetailDAO.findOne(orderDetailID);
-
 			if (orderDetail == null) {
 				return null;
 			}
@@ -146,9 +152,19 @@ public class OrderServiceImpl implements OrderService {
 
 	private OrderHeader updateOrderHeader(Entity e, Patient patient,
 			Doctor doctor, OrderDetail orderDetail, OrderHeader orderHeader) {
+
+		String beforeChange = gson.toJson(orderHeader);
 		EntityConvertUtil.updateOrderHeader(orderHeader, e);
 		orderHeader.setDoctor(doctor);
+		// TODO
+
 		orderHeaderDAO.save(orderHeader);
+		String afterChange = gson.toJson(orderHeader);
+		String operator = "S";
+		String operationType = "UPDATE";
+		createOrderHeaderCL(beforeChange, afterChange, orderHeader,
+				operationType, operator);
+
 		return orderHeader;
 	}
 
@@ -160,6 +176,8 @@ public class OrderServiceImpl implements OrderService {
 			orderHeader.setPatient(patient);
 			orderHeader.setOrderDetail(orderDetail);
 			OrderHeader result = orderHeaderDAO.save(orderHeader);
+			createOrderHeaderCL(null, gson.toJson(orderHeader), result,
+					"CREATE", "P");
 			return result;
 		}
 		return null;
@@ -200,8 +218,14 @@ public class OrderServiceImpl implements OrderService {
 			}
 
 			if (doctorTextConvNumber >= 3) {
+				String beforeChange = gson.toJson(orderHeader);
 				orderHeader.setStatus("complete");
+				String afterChange = gson.toJson(orderHeader);
+				String operator = "S";
+				String operationType = "UPDATE";
 				orderHeaderDAO.save(orderHeader);
+				createOrderHeaderCL(beforeChange, afterChange, orderHeader,
+						operationType, operator);
 			}
 
 			return oc;
@@ -242,10 +266,17 @@ public class OrderServiceImpl implements OrderService {
 				throw new RuntimeException("Can not find the object with ID:"
 						+ id);
 			}
+			String beforeChange = gson.toJson(obj);
 			obj.setIsDeleted(value);
+			String afterChange = gson.toJson(obj);
+
+			String operator = "S";
+			String operationType = "UPDATE";
 
 			try {
 				orderHeaderDAO.save(obj);
+				createOrderHeaderCL(beforeChange, afterChange, obj,
+						operationType, operator);
 			} catch (Exception e) {
 				throw new RuntimeException("Can't update the object with ID:"
 						+ id);
@@ -267,10 +298,17 @@ public class OrderServiceImpl implements OrderService {
 				throw new RuntimeException("Can not find the object with ID:"
 						+ id);
 			}
+			String beforeChange = gson.toJson(obj);
 			obj.setIsArchived(value);
+			String afterChange = gson.toJson(obj);
+
+			String operator = "S";
+			String operationType = "UPDATE";
 
 			try {
 				orderHeaderDAO.save(obj);
+				createOrderHeaderCL(beforeChange, afterChange, obj,
+						operationType, operator);
 			} catch (Exception e) {
 				throw new RuntimeException("Can't update the object with ID:"
 						+ id);
@@ -329,6 +367,20 @@ public class OrderServiceImpl implements OrderService {
 		BooleanExpression exp5 = orderHeader.doctor.isNull();
 		return Lists.newArrayList(orderHeaderDAO.findAll(exp1.and(exp2)
 				.and(exp3).and(exp4.or(exp5))));
+	}
+
+	private OrderHeaderCL createOrderHeaderCL(String beforeChange,
+			String afterChange, OrderHeader orderHeader, String operationType,
+			String operator) {
+		OrderHeaderCL ohChangeLog = new OrderHeaderCL();
+		ohChangeLog.setCreateTime(new Date());
+		ohChangeLog.setType(operationType);
+		ohChangeLog.setOwner(operator);
+		ohChangeLog.setIsDeleted("N");
+		ohChangeLog.setOrderHeader(orderHeader);
+		ohChangeLog.setBeforeChange(beforeChange);
+		ohChangeLog.setAfterChange(afterChange);
+		return orderHeaderCLDAO.save(ohChangeLog);
 	}
 
 }

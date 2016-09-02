@@ -1,5 +1,6 @@
 package com.ehealth.mc.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,11 +28,13 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import com.ehealth.mc.bo.Doctor;
+import com.ehealth.mc.bo.LoginLog;
 import com.ehealth.mc.bo.OrderConversation;
 import com.ehealth.mc.bo.OrderHeader;
 import com.ehealth.mc.bo.Patient;
 import com.ehealth.mc.service.AdminService;
 import com.ehealth.mc.service.DoctorService;
+import com.ehealth.mc.service.LoginLogService;
 import com.ehealth.mc.service.OrderService;
 import com.ehealth.mc.service.OverallService;
 import com.ehealth.mc.service.PatientService;
@@ -39,9 +42,12 @@ import com.ehealth.mc.service.util.EntityConvertUtil;
 import com.ehealth.mc.service.util.EntityUtil;
 import com.ehealth.mc.service.util.FormatUtil;
 import com.ehealth.mc.service.util.McEdmUtil;
+import com.google.gson.Gson;
 
 @Service("overallService")
 public class OverallServiceImpl implements OverallService {
+
+	private static Gson gson = new Gson();
 
 	@Autowired
 	private DoctorService doctorService;
@@ -54,6 +60,9 @@ public class OverallServiceImpl implements OverallService {
 
 	@Autowired
 	private OrderService orderService;
+
+	@Autowired
+	private LoginLogService loginLogService;
 
 	@Autowired
 	private MailSender mailSender;
@@ -498,26 +507,50 @@ public class OverallServiceImpl implements OverallService {
 	}
 
 	@Override
-	public Long getLoginUserID(String loginType, String login, String password) {
+	public Long getLoginUserID(String loginType, String login, String password,
+			String ip, String userAgent) {
 		if ("S".equals(loginType)) {
 			Long id = adminService.findOneByLoginAndPassword(login, password);
 			if (id != null) {
+				createLoginLog(loginType, login, password, ip, userAgent, "S",
+						gson.toJson(id));
 				return id;
 			}
 		} else if ("D".equals(loginType)) {
 			Doctor user = doctorService.findOneByLoginAndPassword(login,
 					password);
 			if (user != null) {
+				createLoginLog(loginType, login, password, ip, userAgent, "S",
+						gson.toJson(user));
 				return user.getId();
 			}
 		} else if ("P".equals(loginType)) {
 			Patient user = patientService.findOneByLoginAndPassword(login,
 					password);
 			if (user != null) {
+				createLoginLog(loginType, login, password, ip, userAgent, "S",
+						gson.toJson(user));
 				return user.getId();
 			}
 		}
+
+		createLoginLog(loginType, login, password, ip, userAgent, "E", null);
 		return null;
+	}
+
+	private LoginLog createLoginLog(String loginType, String login,
+			String password, String ip, String userAgent, String result,
+			String resultContent) {
+		LoginLog loginLog = new LoginLog();
+		loginLog.setCreateTime(new Date());
+		loginLog.setIp(ip);
+		loginLog.setLogin(login);
+		loginLog.setPassword(password);
+		loginLog.setResult(result);
+		loginLog.setResultContent(resultContent);
+		loginLog.setUa(userAgent);
+		loginLog.setType(loginType);
+		return loginLogService.create(loginLog);
 	}
 
 	@Override

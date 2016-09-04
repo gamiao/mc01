@@ -6,7 +6,6 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,46 +21,43 @@ import org.hibernate.annotations.FetchMode;
 import org.springframework.data.domain.Persistable;
 
 @Entity
-@Table(name = "order_header_cl")
+@Table(name = "patient_notification")
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-public class OrderHeaderCL implements Serializable, Persistable<Long> {
+public class PatientNotification implements Serializable, Persistable<Long> {
 
-	private static final long serialVersionUID = 4468871930096946529L;
+	private static final long serialVersionUID = -6950521426351107045L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE, generator = "order_header_cl_gen")
-	@SequenceGenerator(name = "order_header_cl_gen", sequenceName = "order_header_cl_gen", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "patient_notification_gen")
+	@SequenceGenerator(name = "patient_notification_gen", sequenceName = "patient_notification_gen", allocationSize = 1)
 	@Column(name = "id")
 	private Long id;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "oh_id")
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "p_id")
 	@Fetch(FetchMode.JOIN)
-	private OrderHeader orderHeader;
+	private Patient patient;
+
+	@Column(name = "patient_detail", length = 1000)
+	private String patientDetail;
 
 	@Column(name = "type")
 	private String type;
 
-	@Column(name = "owner")
-	private String owner;
+	@Column(name = "create_time")
+	private Date createTime;
 
 	@Column(name = "is_deleted")
 	private String isDeleted;
+
+	@Column(name = "mail_result")
+	private String mailResult;
 
 	@Column(name = "title")
 	private String title;
 
 	@Column(name = "description", length = 1000)
 	private String description;
-
-	@Column(name = "before_change", length = 1000)
-	private String beforeChange;
-
-	@Column(name = "after_change", length = 1000)
-	private String afterChange;
-
-	@Column(name = "create_time")
-	private Date createTime;
 
 	@Override
 	public Long getId() {
@@ -77,12 +73,12 @@ public class OrderHeaderCL implements Serializable, Persistable<Long> {
 		return id == null;
 	}
 
-	public OrderHeader getOrderHeader() {
-		return orderHeader;
+	public Patient getPatient() {
+		return patient;
 	}
 
-	public void setOrderHeader(OrderHeader orderHeader) {
-		this.orderHeader = orderHeader;
+	public void setPatient(Patient patient) {
+		this.patient = patient;
 	}
 
 	public String getType() {
@@ -93,12 +89,12 @@ public class OrderHeaderCL implements Serializable, Persistable<Long> {
 		this.type = type;
 	}
 
-	public String getOwner() {
-		return owner;
+	public Date getCreateTime() {
+		return createTime;
 	}
 
-	public void setOwner(String owner) {
-		this.owner = owner;
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 	public String getIsDeleted() {
@@ -125,28 +121,20 @@ public class OrderHeaderCL implements Serializable, Persistable<Long> {
 		this.description = description;
 	}
 
-	public Date getCreateTime() {
-		return createTime;
+	public String getPatientDetail() {
+		return patientDetail;
 	}
 
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
+	public void setPatientDetail(String patientDetail) {
+		this.patientDetail = patientDetail;
 	}
 
-	public String getBeforeChange() {
-		return beforeChange;
+	public String getMailResult() {
+		return mailResult;
 	}
 
-	public void setBeforeChange(String beforeChange) {
-		this.beforeChange = beforeChange;
-	}
-
-	public String getAfterChange() {
-		return afterChange;
-	}
-
-	public void setAfterChange(String afterChange) {
-		this.afterChange = afterChange;
+	public void setMailResult(String mailResult) {
+		this.mailResult = mailResult;
 	}
 
 }

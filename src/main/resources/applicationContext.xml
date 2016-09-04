@@ -27,17 +27,16 @@
 	<!-- Production implementation of the JavaMailSender interface, supporting 
 		both JavaMail MimeMessages and Spring SimpleMailMessages -->
 	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-		<property name="host" value="smtp.aliyun.com" />
-		<property name="port" value="25" />
-		<property name="username" value="ehealth.mc" />
-		<property name="password" value="Sybase123" />
+		<property name="host" value="${mc.mail.host}" />
+		<property name="port" value="${mc.mail.port}" />
+		<property name="username" value="${mc.mail.username}" />
+		<property name="password" value="${mc.mail.password}" />
 
 		<!-- The name of the property, following JavaBean naming conventions -->
 		<property name="javaMailProperties">
 			<props>
 				<prop key="mail.transport.protocol">smtp</prop>
 				<prop key="mail.smtp.auth">true</prop>
-				<prop key="mail.smtp.starttls.enable">true</prop>
 				<prop key="mail.debug">true</prop>
 			</props>
 		</property>

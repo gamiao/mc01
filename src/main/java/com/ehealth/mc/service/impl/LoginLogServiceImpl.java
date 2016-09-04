@@ -9,14 +9,13 @@ import com.ehealth.mc.dao.LoginLogDAO;
 import com.ehealth.mc.service.LoginLogService;
 
 @Service("loginLogService")
-@Transactional(readOnly = true)
+@Transactional
 public class LoginLogServiceImpl implements LoginLogService {
 
 	@Autowired
 	LoginLogDAO loginLogDAO;
 
 	@Override
-	@Transactional
 	public LoginLog create(LoginLog loginLog) {
 		return loginLogDAO.save(loginLog);
 	}

@@ -23,8 +23,6 @@ import org.apache.olingo.server.api.uri.UriParameter;
 import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 import org.apache.olingo.server.api.uri.queryoption.FilterOption;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import com.ehealth.mc.bo.Doctor;
@@ -35,6 +33,7 @@ import com.ehealth.mc.bo.Patient;
 import com.ehealth.mc.service.AdminService;
 import com.ehealth.mc.service.DoctorService;
 import com.ehealth.mc.service.LoginLogService;
+import com.ehealth.mc.service.MailingService;
 import com.ehealth.mc.service.OrderService;
 import com.ehealth.mc.service.OverallService;
 import com.ehealth.mc.service.PatientService;
@@ -65,23 +64,16 @@ public class OverallServiceImpl implements OverallService {
 	private LoginLogService loginLogService;
 
 	@Autowired
-	private MailSender mailSender;
-
-	private void sendMailTest() {
-
-		SimpleMailMessage msg = new SimpleMailMessage();
-		msg.setFrom("ehealth.mc@gmail.com");
-		msg.setTo("pattonlee@gmail.com");
-		msg.setSubject("Patton test");
-		msg.setText("Just a test");
-		mailSender.send(msg);
-	}
+	private MailingService mailingService;
 
 	@Override
 	public EntityCollection findAll(EdmEntitySet edmEntitySet, UriInfo uriInfo) {
 		EntityCollection entityCollection = new EntityCollection();
 
 		String filterStr = null;
+
+		mailingService.sendMail("gamiao@caokebao.com", "gamiao@caokebao.com",
+				new Long(9999), "T", "Test", "Gamiao");
 
 		if (uriInfo != null && uriInfo.getFilterOption() != null) {
 			FilterOption filterOption = uriInfo.getFilterOption();

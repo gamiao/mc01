@@ -10,12 +10,22 @@ public class FormatUtil {
 
 	public static String FILE_SUFFIX_TIME_FORMATE = "_yyyyMMdd_HHmmss_SSS";
 
+	public static String MAIL_CONTENT_TIME_FORMATE = "yyyy/MM/dd HH:mm:ss";
+
+	public static SimpleDateFormat mailContentFormater = new SimpleDateFormat(
+			MAIL_CONTENT_TIME_FORMATE, Locale.getDefault());
+
 	public static SimpleDateFormat fileSuffixFormater = new SimpleDateFormat(
 			FILE_SUFFIX_TIME_FORMATE, Locale.getDefault());
 
 	public static String getFileSuffix() {
 		Date date = new Date();
 		return fileSuffixFormater.format(date);
+	}
+
+	public static String getMailContentTime() {
+		Date date = new Date();
+		return mailContentFormater.format(date);
 	}
 
 	public static Long getOrderFilterPatientID(String filterText) {

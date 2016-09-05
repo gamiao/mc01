@@ -21,6 +21,7 @@ import com.ehealth.mc.dao.OrderDetailDAO;
 import com.ehealth.mc.dao.OrderHeaderCLDAO;
 import com.ehealth.mc.dao.OrderHeaderDAO;
 import com.ehealth.mc.service.DoctorService;
+import com.ehealth.mc.service.NotificationService;
 import com.ehealth.mc.service.OrderService;
 import com.ehealth.mc.service.PatientService;
 import com.ehealth.mc.service.util.EntityConvertUtil;
@@ -51,6 +52,9 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	private PatientService patientService;
+
+	@Autowired
+	private NotificationService notificationService;
 
 	@Override
 	public List<OrderHeader> findAll() {
@@ -96,6 +100,9 @@ public class OrderServiceImpl implements OrderService {
 			throw new RuntimeException("Can't create orderHeader object.");
 		}
 
+		String nTitle = "新咨询(编号：" + orderHeader.getId() + ")已经建立";
+		String nDescription = "新资讯已经成功创建，请登录咨询平台并查看详情。";
+		notificationService.notifyForOrder(orderHeader, nTitle, nDescription);
 		return orderHeader;
 	}
 
@@ -156,7 +163,7 @@ public class OrderServiceImpl implements OrderService {
 		String beforeChange = gson.toJson(orderHeader);
 		EntityConvertUtil.updateOrderHeader(orderHeader, e);
 		orderHeader.setDoctor(doctor);
-		// TODO
+		// TODO need to know who make this change.
 
 		orderHeaderDAO.save(orderHeader);
 		String afterChange = gson.toJson(orderHeader);
@@ -164,6 +171,10 @@ public class OrderServiceImpl implements OrderService {
 		String operationType = "UPDATE";
 		createOrderHeaderCL(beforeChange, afterChange, orderHeader,
 				operationType, operator);
+
+		String nTitle = "咨询(编号：" + orderHeader.getId() + ")的状态有更新";
+		String nDescription = "咨询已经有新的变动，请登录咨询平台并查看详情。";
+		notificationService.notifyForOrder(orderHeader, nTitle, nDescription);
 
 		return orderHeader;
 	}
@@ -208,6 +219,18 @@ public class OrderServiceImpl implements OrderService {
 			oc.setOrderHeader(orderHeader);
 			orderConversationDAO.save(oc);
 
+			if (oc.getOwner().equals("D")) {
+				String nTitle = "咨询(编号：" + orderHeader.getId() + ")有新的留言";
+				String nDescription = "咨询已经有新的变动，请登录咨询平台并查看详情。";
+				notificationService.notifyPatient(orderHeader.getPatient(),
+						nTitle, nDescription);
+			} else if (oc.getOwner().equals("P")) {
+				String nTitle = "咨询(编号：" + orderHeader.getId() + ")有新的留言";
+				String nDescription = "咨询已经有新的变动，请登录咨询平台并查看详情。";
+				notificationService.notifyDoctor(orderHeader.getDoctor(),
+						nTitle, nDescription);
+			}
+
 			List<OrderConversation> convs = orderHeader.getOrderConversations();
 			int doctorTextConvNumber = 0;
 			for (OrderConversation conv : convs) {
@@ -226,6 +249,12 @@ public class OrderServiceImpl implements OrderService {
 				orderHeaderDAO.save(orderHeader);
 				createOrderHeaderCL(beforeChange, afterChange, orderHeader,
 						operationType, operator);
+
+				String nTitle = "咨询(编号：" + orderHeader.getId() + ")的已经完结";
+				String nDescription = "医师已经答复三次，咨询平台自动完结本资讯，请登录咨询平台并查看详情。";
+				notificationService.notifyForOrder(orderHeader, nTitle,
+						nDescription);
+
 			}
 
 			return oc;
@@ -248,6 +277,18 @@ public class OrderServiceImpl implements OrderService {
 			oc.setOrderHeader(orderHeader);
 			oc.setPictures(fileName);
 			orderConversationDAO.save(oc);
+
+			if (oc.getOwner().equals("D")) {
+				String nTitle = "咨询(编号：" + orderHeader.getId() + ")有新的图片消息";
+				String nDescription = "咨询已经有新的变动，请登录咨询平台并查看详情。";
+				notificationService.notifyPatient(orderHeader.getPatient(),
+						nTitle, nDescription);
+			} else if (oc.getOwner().equals("P")) {
+				String nTitle = "咨询(编号：" + orderHeader.getId() + ")有新的图片消息";
+				String nDescription = "咨询已经有新的变动，请登录咨询平台并查看详情。";
+				notificationService.notifyDoctor(orderHeader.getDoctor(),
+						nTitle, nDescription);
+			}
 			return oc;
 		}
 		return null;
@@ -277,6 +318,18 @@ public class OrderServiceImpl implements OrderService {
 				orderHeaderDAO.save(obj);
 				createOrderHeaderCL(beforeChange, afterChange, obj,
 						operationType, operator);
+				String nTitle = "咨询(编号：" + obj.getId() + ")的状态有更新";
+				String nDescription = null;
+
+				if ("Y".equals(value)) {
+					nDescription = "咨询已被删除，请登录咨询平台并查看详情。";
+				} else if ("N".equals(value)) {
+					nDescription = "咨询已经回复为正常咨询，请登录咨询平台并查看详情。";
+				}
+				if (nDescription != null) {
+					notificationService.notifyForOrder(obj, nTitle,
+							nDescription);
+				}
 			} catch (Exception e) {
 				throw new RuntimeException("Can't update the object with ID:"
 						+ id);
@@ -309,6 +362,20 @@ public class OrderServiceImpl implements OrderService {
 				orderHeaderDAO.save(obj);
 				createOrderHeaderCL(beforeChange, afterChange, obj,
 						operationType, operator);
+
+				String nTitle = "咨询(编号：" + obj.getId() + ")的状态有更新";
+				String nDescription = null;
+
+				if ("Y".equals(value)) {
+					nDescription = "咨询已经转为历史咨询，请登录咨询平台并查看详情。";
+				} else if ("N".equals(value)) {
+					nDescription = "咨询已经回复为正常咨询，请登录咨询平台并查看详情。";
+				}
+				if (nDescription != null) {
+					notificationService.notifyForOrder(obj, nTitle,
+							nDescription);
+				}
+
 			} catch (Exception e) {
 				throw new RuntimeException("Can't update the object with ID:"
 						+ id);

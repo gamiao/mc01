@@ -71,6 +71,7 @@ public class MailingServiceImpl implements MailingService {
 				} else {
 					notification.setIsDeleted("Y");
 					notification.setMailResult(mailResult);
+					notificationService.updatePatientNotification(notification);
 				}
 			}
 		}
@@ -114,6 +115,7 @@ public class MailingServiceImpl implements MailingService {
 				} else {
 					notification.setIsDeleted("Y");
 					notification.setMailResult(mailResult);
+					notificationService.updateDoctorNotification(notification);
 				}
 			}
 		}

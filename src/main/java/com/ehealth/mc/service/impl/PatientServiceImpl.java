@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ehealth.mc.bo.Patient;
 import com.ehealth.mc.dao.PatientDAO;
+import com.ehealth.mc.service.NotificationService;
 import com.ehealth.mc.service.PatientService;
 import com.ehealth.mc.service.util.EntityConvertUtil;
 import com.ehealth.mc.service.util.QueryExpressionUtil;
@@ -26,7 +27,10 @@ public class PatientServiceImpl implements PatientService {
 	private EntityManager em;
 
 	@Autowired
-	PatientDAO patientDAO;
+	private PatientDAO patientDAO;
+
+	@Autowired
+	private NotificationService notificationService;
 
 	@Override
 	public Patient findById(Long id) {
@@ -66,6 +70,10 @@ public class PatientServiceImpl implements PatientService {
 		int updatedCount = patientDAO.updatePassword(newPassword, id,
 				oldPassword);
 		if (updatedCount > 0) {
+			String nTitle = "账户密码修改成功";
+			String nDescription = "您的账户密码修改成功！";
+			notificationService.notifyPatient(findById(id), nTitle,
+					nDescription);
 			return findById(id);
 		}
 		return null;
@@ -117,6 +125,18 @@ public class PatientServiceImpl implements PatientService {
 			} catch (Exception e) {
 				throw new RuntimeException("Can't update the object with ID:"
 						+ id);
+			}
+
+			String nTitle = "账户状态通知";
+			String nDescription = null;
+			if ("Y".equals(value)) {
+				nDescription = "您的账户已经被管理员禁用，更多详情请联系管理员。";
+			} else if ("N".equals(value)) {
+				nDescription = "您的账户已经被管理员启用，更多详情请联系管理员。";
+			}
+
+			if (nDescription != null) {
+				notificationService.notifyPatient(obj, nTitle, nDescription);
 			}
 		}
 		return true;

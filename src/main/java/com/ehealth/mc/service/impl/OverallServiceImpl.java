@@ -34,6 +34,7 @@ import com.ehealth.mc.service.AdminService;
 import com.ehealth.mc.service.DoctorService;
 import com.ehealth.mc.service.LoginLogService;
 import com.ehealth.mc.service.MailingService;
+import com.ehealth.mc.service.NotificationService;
 import com.ehealth.mc.service.OrderService;
 import com.ehealth.mc.service.OverallService;
 import com.ehealth.mc.service.PatientService;
@@ -64,16 +65,13 @@ public class OverallServiceImpl implements OverallService {
 	private LoginLogService loginLogService;
 
 	@Autowired
-	private MailingService mailingService;
+	private NotificationService notificationService;
 
 	@Override
 	public EntityCollection findAll(EdmEntitySet edmEntitySet, UriInfo uriInfo) {
 		EntityCollection entityCollection = new EntityCollection();
 
 		String filterStr = null;
-
-		mailingService.sendMail("gamiao@caokebao.com", "gamiao@caokebao.com",
-				new Long(9999), "T", "Test", "Gamiao");
 
 		if (uriInfo != null && uriInfo.getFilterOption() != null) {
 			FilterOption filterOption = uriInfo.getFilterOption();

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ehealth.mc.bo.Doctor;
 import com.ehealth.mc.dao.DoctorDAO;
 import com.ehealth.mc.service.DoctorService;
+import com.ehealth.mc.service.NotificationService;
 import com.ehealth.mc.service.util.EntityConvertUtil;
 import com.ehealth.mc.service.util.QueryExpressionUtil;
 import com.google.common.collect.Lists;
@@ -21,6 +22,9 @@ public class DoctorServiceImpl implements DoctorService {
 
 	@Autowired
 	DoctorDAO doctorDAO;
+
+	@Autowired
+	private NotificationService notificationService;
 
 	@Override
 	public List<Doctor> findAll() {
@@ -66,6 +70,10 @@ public class DoctorServiceImpl implements DoctorService {
 		int updatedCount = doctorDAO.updatePassword(newPassword, id,
 				oldPassword);
 		if (updatedCount > 0) {
+			String nTitle = "账户密码修改成功";
+			String nDescription = "您的账户密码修改成功！";
+			notificationService
+					.notifyDoctor(findById(id), nTitle, nDescription);
 			return findById(id);
 		}
 		return null;
@@ -113,6 +121,18 @@ public class DoctorServiceImpl implements DoctorService {
 
 			try {
 				doctorDAO.save(obj);
+
+				String nTitle = "账户状态通知";
+				String nDescription = null;
+				if ("Y".equals(value)) {
+					nDescription = "您的账户已经被管理员禁用，更多详情请联系管理员。";
+				} else if ("N".equals(value)) {
+					nDescription = "您的账户已经被管理员启用，更多详情请联系管理员。";
+				}
+
+				if (nDescription != null) {
+					notificationService.notifyDoctor(obj, nTitle, nDescription);
+				}
 			} catch (Exception e) {
 				throw new RuntimeException("Can't update the object with ID:"
 						+ id);

@@ -19,7 +19,6 @@
 		<param-value>/WEB-INF/classes/applicationContext.xml</param-value>
 	</context-param>
 
-	<!-- Register the HttpServlet implementation -->
 	<servlet>
 		<servlet-name>McServlet</servlet-name>
 		<servlet-class>com.ehealth.mc.web.EntryServlet</servlet-class>

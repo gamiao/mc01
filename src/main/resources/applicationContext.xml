@@ -57,6 +57,7 @@
 		<property name="packagesToScan" value="com.ehealth.mc.bo" />
 		<property name="jpaProperties">
 			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
 				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
 				<prop key="hibernate.generate_statistics">${hibernate.generate_statistics}</prop>
 				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
@@ -101,12 +102,16 @@
 		<property name="maxInMemorySize" value="6000000" /> <!-- 5MB -->
 	</bean>
 
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="${dataSource.className}" />
-		<property name="url" value="${dataSource.url}" />
-		<property name="username" value="${dataSource.username}" />
-		<property name="password" value="${dataSource.password}" />
+	<bean id="dataSource" class="org.h2.jdbcx.JdbcConnectionPool"
+		destroy-method="dispose">
+		<constructor-arg>
+			<bean class="org.h2.jdbcx.JdbcDataSource">
+				<property name="URL" value="${dataSource.url}" />
+				<property name="user" value="${dataSource.username}" />
+				<property name="password" value="${dataSource.password}" />
+			</bean>
+		</constructor-arg>
 	</bean>
+
 
 </beans>

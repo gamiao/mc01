@@ -7,7 +7,7 @@
 		temp file path -->
 
 	<!--指定二级缓存存放在磁盘上的位置 -->
-	<diskStore path="user.dir" />
+	<diskStore path="${ehcache.path}" />
 
 	<!--我们可以给每个实体类指定一个对应的缓存，如果没有匹配到该类，则使用这个默认的缓存配置 -->
 	<defaultCache maxElementsInMemory="10000" eternal="false"

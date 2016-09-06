@@ -61,8 +61,8 @@ angular.module('app.controllers', [])
 .service('accountService', function($q, $http, configService, $state) {
     return {
         checkCurrentUser: function() {
-			if(!configService.userID || !configService.currentUser) {
-				//$state.go("login");
+			if(!configService.userID) {
+				$state.go("login");
 			}
         },
 		
@@ -125,10 +125,12 @@ angular.module('app.controllers', [])
 })
 
 .controller('indexPageCtrl', function($scope, $state, $ionicActionSheet, orderService, accountService) {
+	accountService.checkCurrentUser();
 
 })
 
 .controller('doctorListPageCtrl', function($scope, $state, $odataresource, ODATA_SERVICE_URL, $ionicActionSheet, doctorService, accountService, $ionicFilterBar, $timeout) {
+	accountService.checkCurrentUser();
 	
 	Doctor = $odataresource(ODATA_SERVICE_URL + 'Doctors', 'ID');
     var filterBarInstance;
@@ -174,6 +176,7 @@ angular.module('app.controllers', [])
 })
 
 .controller('orderListPageCtrl', function($scope, $state, $odataresource, ODATA_SERVICE_URL, $ionicActionSheet, orderService, accountService, $ionicFilterBar, $timeout) {
+	accountService.checkCurrentUser();
 	
 	Order = $odataresource(ODATA_SERVICE_URL + 'Orders', 'ID');
     var filterBarInstance;
@@ -220,6 +223,7 @@ angular.module('app.controllers', [])
 })
 
 .controller('patientListPageCtrl', function($scope, $state, $odataresource, ODATA_SERVICE_URL, $ionicActionSheet, patientService, accountService, $ionicFilterBar, $timeout) {
+	accountService.checkCurrentUser();
 	
 	Patient = $odataresource(ODATA_SERVICE_URL + 'Patients', 'ID');
     var filterBarInstance;

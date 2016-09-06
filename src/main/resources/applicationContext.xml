@@ -94,14 +94,6 @@
 	<bean id="validator"
 		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
 
-	<bean id="multipartResolver"
-		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<!-- max upload size in bytes -->
-		<property name="maxUploadSize" value="6000000" /> <!-- 5MB -->
-		<!-- max size of file in memory (in bytes) -->
-		<property name="maxInMemorySize" value="6000000" /> <!-- 5MB -->
-	</bean>
-
 	<bean id="dataSource" class="org.h2.jdbcx.JdbcConnectionPool"
 		destroy-method="dispose">
 		<constructor-arg>

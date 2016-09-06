@@ -22,11 +22,11 @@ import com.ehealth.mc.odata.processor.McEntityCollectionProcessor;
 import com.ehealth.mc.odata.processor.McEntityProcessor;
 import com.ehealth.mc.service.OverallService;
 
-public class EntryServlet extends HttpServlet {
+public class McOdataServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory
-			.getLogger(EntryServlet.class);
+			.getLogger(McOdataServlet.class);
 
 	@Override
 	protected void service(final HttpServletRequest req,

@@ -1,4 +1,4 @@
-package com.ehealth.mc.controller;
+package com.ehealth.mc.timer;
 
 import java.util.Date;
 
@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.ehealth.mc.controller.FileUploadController;
 import com.ehealth.mc.service.MailingService;
 import com.google.gson.Gson;
 

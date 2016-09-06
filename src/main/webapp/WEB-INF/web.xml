@@ -19,14 +19,18 @@
 		<param-value>/WEB-INF/classes/applicationContext.xml</param-value>
 	</context-param>
 
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
 	<servlet>
-		<servlet-name>McServlet</servlet-name>
-		<servlet-class>com.ehealth.mc.web.EntryServlet</servlet-class>
+		<servlet-name>McOdataServlet</servlet-name>
+		<servlet-class>com.ehealth.mc.web.McOdataServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>McServlet</servlet-name>
+		<servlet-name>McOdataServlet</servlet-name>
 		<url-pattern>/McService.svc/*</url-pattern>
 	</servlet-mapping>
 
@@ -53,19 +57,19 @@
 		<url-pattern>/H2Console/*</url-pattern>
 	</servlet-mapping>
 
+
 	<servlet>
-		<servlet-name>springServlet</servlet-name>
+		<servlet-name>McSpringServlet</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
-			<param-value>/WEB-INF/classes/applicationContext.xml</param-value>
+			<param-value>/WEB-INF/classes/McSpringServlet-servlet.xml</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>springServlet</servlet-name>
+		<servlet-name>McSpringServlet</servlet-name>
 		<url-pattern>/spring/*</url-pattern>
 	</servlet-mapping>
-
 
 </web-app>

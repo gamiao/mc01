@@ -10,14 +10,22 @@
     </ion-side-menu-content>
     <ion-side-menu side="left" id="s-sm">
         <ion-header-bar class="bar-stable">
-            <div class="title">菜单</div>
+            <div class="title"><strong>菜单</strong></div>
         </ion-header-bar>
         <ion-content padding="false" class="side-menu-left has-header">
-            <a ui-sref="s-sm.indexPage" menu-close="" id="s-sm-button1" class=" button button-positive  button-block ">首页</a>
-            <a ui-sref="s-sm.patientListPage" menu-close="" id="s-sm-button2" class=" button button-positive  button-block ">患者管理</a>
-            <a ui-sref="s-sm.doctorListPage" menu-close="" id="s-sm-button2" class=" button button-positive  button-block ">医师管理</a>
-            <a ui-sref="s-sm.orderListPage" menu-close="" id="s-sm-button3" class=" button button-positive  button-block ">咨询管理</a>
-            <button ui-sref="login" id="s-sm-button5" class=" button button-dark  button-block ">退出登录</button>
+			<ion-list id="side-menu21-list9">
+                <ion-item ui-sref="s-sm.indexPage" class="item-icon-left"  menu-close="" id="b1">
+                    <i class="icon ion-flag"></i><strong>首页</strong></ion-item>
+                <ion-item ui-sref="s-sm.patientListPage" menu-close="" class="item-icon-left" id="b2">
+                    <i class="icon ion-ios-people"></i><strong>患者管理</strong></ion-item>
+                <ion-item ui-sref="s-sm.doctorListPage" menu-close="" class="item-icon-left" id="b3">
+                    <i class="icon ion-ios-people-outline"></i><strong>医师管理</strong></ion-item>
+                <ion-item ui-sref="s-sm.orderListPage" menu-close="" class="item-icon-left" id="b4">
+                    <i class="icon ion-code-working"></i><strong>咨询管理</strong></ion-item>
+            </ion-list>
         </ion-content>
+		<ion-footer-bar class="bar-dark">
+			<div class="title" ui-sref="login" >退出登录</div>
+		</ion-footer-bar>
     </ion-side-menu>
 </ion-side-menus>

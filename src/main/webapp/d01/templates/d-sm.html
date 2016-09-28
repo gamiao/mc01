@@ -10,15 +10,26 @@
     </ion-side-menu-content>
     <ion-side-menu side="left" id="d-sm">
         <ion-header-bar class="bar-stable">
-            <div class="title">菜单</div>
+            <div class="title"><strong>菜单</strong></div>
         </ion-header-bar>
         <ion-content padding="false" class="side-menu-left has-header">
-            <a ui-sref="d-sm.indexPage" menu-close="" id="d-sm-button1" class=" button button-positive  button-block ">首页</a>
-            <a ng-if="user.IsDeleted === 'N'" ui-sref="d-sm.pickupOrderPage" menu-close="" id="d-sm-button2" class=" button button-positive  button-block ">待接单</a>
-            <a ng-if="user.IsDeleted === 'N'" ui-sref="d-sm.openOrderPage" menu-close="" id="d-sm-button2" class=" button button-positive  button-block ">进行中咨询</a>
-            <a ng-if="user.IsDeleted === 'N'" ui-sref="d-sm.historyOrderPage" menu-close="" id="d-sm-button3" class=" button button-positive  button-block ">历史咨询</a>
-            <a ui-sref="d-sm.doctorInfoPage" menu-close="" id="d-sm-button4" class=" button button-positive  button-block ">医师资料</a>
-            <button ui-sref="login"  class=" button button-dark  button-block ">退出登录</button>
+			
+			<ion-list id="side-menu21-list9">
+                <ion-item ui-sref="d-sm.indexPage" class="item-icon-left"  menu-close="" id="b1">
+                    <i class="icon ion-flag"></i><strong>首页</strong></ion-item>
+                <ion-item ng-if="user.IsDeleted === 'N'" ui-sref="d-sm.pickupOrderPage" menu-close="" class="item-icon-left" id="b2">
+                    <i class="icon ion-checkmark"></i><strong>待接单</strong></ion-item>
+                <ion-item ng-if="user.IsDeleted === 'N'" ui-sref="d-sm.openOrderPage" menu-close="" class="item-icon-left" id="b3">
+                    <i class="icon ion-code-working"></i><strong>进行中咨询</strong></ion-item>
+                <ion-item ng-if="user.IsDeleted === 'N'" ui-sref="d-sm.historyOrderPage" menu-close="" class="item-icon-left" id="b4">
+                    <i class="icon ion-ios-folder"></i><strong>历史咨询</strong></ion-item>
+                <ion-item ui-sref="d-sm.doctorInfoPage" class="item-icon-left" menu-close="" id="b5">
+                    <i class="icon ion-person"></i><strong>个人资料</strong></ion-item>
+            </ion-list>
+			
         </ion-content>
+		<ion-footer-bar class="bar-dark">
+			<div class="title" ui-sref="login" >退出登录</div>
+		</ion-footer-bar>
     </ion-side-menu>
 </ion-side-menus>

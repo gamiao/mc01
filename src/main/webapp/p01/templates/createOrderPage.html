@@ -11,7 +11,23 @@
             </label>
 			<ion-item>
 				<ion-label floating >病情描述</ion-label>
-				<textarea style="width:100% " rows="10" placeholder="请填写病情....." ng-model="currentOrder.CTDetail.Description">{{currentOrder.CTDetail.Description}}</textarea>
+				<textarea style="width:100% " rows="10" placeholder="请填写病情描述....." ng-model="currentOrder.CTDetail.Description">{{currentOrder.CTDetail.Description}}</textarea>
+			</ion-item>
+			<ion-item>
+				<ion-label floating >主要症状</ion-label>
+				<textarea style="width:100% " rows="6" placeholder="请填写主要症状....." ng-model="currentOrder.CTDetail.Description2">{{currentOrder.CTDetail.Description2}}</textarea>
+			</ion-item>
+			<ion-item>
+				<ion-label floating >就诊经历</ion-label>
+				<textarea style="width:100% " rows="6" placeholder="请填写就诊经历....." ng-model="currentOrder.CTDetail.Description3">{{currentOrder.CTDetail.Description3}}</textarea>
+			</ion-item>
+			<ion-item>
+				<ion-label floating >其他病史</ion-label>
+				<textarea style="width:100% " rows="6" placeholder="请填写其他病史....." ng-model="currentOrder.CTDetail.Description4">{{currentOrder.CTDetail.Description4}}</textarea>
+			</ion-item>
+			<ion-item>
+				<ion-label floating >过敏史</ion-label>
+				<textarea style="width:100% " rows="6" placeholder="请填写过敏史....." ng-model="currentOrder.CTDetail.Description5">{{currentOrder.CTDetail.Description5}}</textarea>
 			</ion-item>
         </form>
         <a id="createOrderPage-button" class=" button button-positive  button-block " ng-click="createOrder(currentOrder)" >{{buttonLabel}}</a>

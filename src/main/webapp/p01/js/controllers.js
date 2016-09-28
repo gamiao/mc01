@@ -603,7 +603,7 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('createOrderPageCtrl', function($scope, $ionicModal, $state, $odataresource, ODATA_SERVICE_URL, orderService, configService, accountService) {
+.controller('createOrderPageCtrl', function($scope, $ionicModal, $state, $odataresource, ODATA_SERVICE_URL, orderService, configService, accountService, uploadService) {
 	accountService.checkCurrentUser();
 	
 	$scope.isDoctorFixed = orderService.isDoctorFixed;
@@ -631,6 +631,10 @@ angular.module('app.controllers', [])
 		myOrder.CTPatient.ID = configService.userID;
 		myOrder.CTDetail = {};
 		myOrder.CTDetail.Description = tempOrder.CTDetail.Description;
+		myOrder.CTDetail.Description2 = tempOrder.CTDetail.Description2;
+		myOrder.CTDetail.Description3 = tempOrder.CTDetail.Description3;
+		myOrder.CTDetail.Description4 = tempOrder.CTDetail.Description4;
+		myOrder.CTDetail.Description5 = tempOrder.CTDetail.Description5;
 		if ($scope.isDoctorFixed) {
 			myOrder.CTDoctor = {};
 			myOrder.CTDoctor.ID = tempOrder.CTDoctor.ID;

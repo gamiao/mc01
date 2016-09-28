@@ -33,12 +33,24 @@ public class OrderDetail implements Serializable, Persistable<Long> {
 
 	@Column(name = "title")
 	private String title;
-	
+
 	@Column(name = "create_time")
 	private Date createTime;
 
 	@Column(name = "description")
 	private String description;
+
+	@Column(name = "description2")
+	private String description2;
+
+	@Column(name = "description3")
+	private String description3;
+
+	@Column(name = "description4")
+	private String description4;
+
+	@Column(name = "description5")
+	private String description5;
 
 	@Column(name = "pictures")
 	private String pictures;
@@ -89,6 +101,38 @@ public class OrderDetail implements Serializable, Persistable<Long> {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public String getDescription2() {
+		return description2;
+	}
+
+	public void setDescription2(String description2) {
+		this.description2 = description2;
+	}
+
+	public String getDescription3() {
+		return description3;
+	}
+
+	public void setDescription3(String description3) {
+		this.description3 = description3;
+	}
+
+	public String getDescription4() {
+		return description4;
+	}
+
+	public void setDescription4(String description4) {
+		this.description4 = description4;
+	}
+
+	public String getDescription5() {
+		return description5;
+	}
+
+	public void setDescription5(String description5) {
+		this.description5 = description5;
 	}
 
 	@Override

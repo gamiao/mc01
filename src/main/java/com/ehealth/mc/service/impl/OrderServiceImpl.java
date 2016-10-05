@@ -432,6 +432,7 @@ public class OrderServiceImpl implements OrderService {
 		return Lists.newArrayList(orderHeaderDAO.findAll(exp1.and(exp2).and(exp3).and(exp4.or(exp5))));
 	}
 
+	@Transactional
 	private OrderHeaderCL createOrderHeaderCL(String beforeChange, String afterChange, OrderHeader orderHeader,
 			String operationType, String operator) {
 		OrderHeaderCL ohChangeLog = new OrderHeaderCL();
@@ -446,6 +447,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
+	@Transactional
 	public OrderBilling createOrderBillingByOrderID(String orderID) {
 
 		Long orderHeaderID = EntityConvertUtil.getLong(orderID);

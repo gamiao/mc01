@@ -27,17 +27,18 @@ import org.springframework.stereotype.Service;
 
 import com.ehealth.mc.bo.Doctor;
 import com.ehealth.mc.bo.LoginLog;
+import com.ehealth.mc.bo.OrderBilling;
 import com.ehealth.mc.bo.OrderConversation;
 import com.ehealth.mc.bo.OrderHeader;
 import com.ehealth.mc.bo.Patient;
 import com.ehealth.mc.service.AdminService;
 import com.ehealth.mc.service.DoctorService;
 import com.ehealth.mc.service.LoginLogService;
-import com.ehealth.mc.service.MailingService;
 import com.ehealth.mc.service.NotificationService;
 import com.ehealth.mc.service.OrderService;
 import com.ehealth.mc.service.OverallService;
 import com.ehealth.mc.service.PatientService;
+import com.ehealth.mc.service.PaymentService;
 import com.ehealth.mc.service.util.EntityConvertUtil;
 import com.ehealth.mc.service.util.EntityUtil;
 import com.ehealth.mc.service.util.FormatUtil;
@@ -57,6 +58,9 @@ public class OverallServiceImpl implements OverallService {
 
 	@Autowired
 	private PatientService patientService;
+
+	@Autowired
+	private PaymentService paymentService;
 
 	@Autowired
 	private OrderService orderService;
@@ -81,8 +85,7 @@ public class OverallServiceImpl implements OverallService {
 		if (McEdmUtil.ES_DOCTORS_NAME.equals(edmEntitySet.getName())) {
 			List<Entity> entityList = entityCollection.getEntities();
 			String filterString = FormatUtil.getCommonFilterString(filterStr);
-			String isDeletedString = FormatUtil
-					.getCommonFilterIsDeleted(filterStr);
+			String isDeletedString = FormatUtil.getCommonFilterIsDeleted(filterStr);
 			List<Doctor> queryResult = null;
 
 			if (filterString != null && !filterString.isEmpty()) {
@@ -92,14 +95,12 @@ public class OverallServiceImpl implements OverallService {
 			} else {
 				queryResult = doctorService.findAll();
 			}
-			entityList.addAll(EntityConvertUtil
-					.getDoctorEntityList(queryResult));
+			entityList.addAll(EntityConvertUtil.getDoctorEntityList(queryResult));
 			return entityCollection;
 		} else if (McEdmUtil.ES_PATIENTS_NAME.equals(edmEntitySet.getName())) {
 			List<Entity> entityList = entityCollection.getEntities();
 			String filterString = FormatUtil.getCommonFilterString(filterStr);
-			String isDeletedString = FormatUtil
-					.getCommonFilterIsDeleted(filterStr);
+			String isDeletedString = FormatUtil.getCommonFilterIsDeleted(filterStr);
 			List<Patient> queryResult = null;
 
 			if (filterString != null && !filterString.isEmpty()) {
@@ -110,8 +111,7 @@ public class OverallServiceImpl implements OverallService {
 				queryResult = patientService.findAll();
 			}
 
-			entityList.addAll(EntityConvertUtil
-					.getPatientEntityList(queryResult));
+			entityList.addAll(EntityConvertUtil.getPatientEntityList(queryResult));
 			return entityCollection;
 		} else if (McEdmUtil.ES_ORDERS_NAME.equals(edmEntitySet.getName())) {
 
@@ -121,25 +121,19 @@ public class OverallServiceImpl implements OverallService {
 			if (filterStr != null && !filterStr.isEmpty()) {
 				Long patientID = FormatUtil.getOrderFilterPatientID(filterStr);
 				Long doctorID = FormatUtil.getOrderFilterDoctorID(filterStr);
-				String isArchivedStr = FormatUtil
-						.getOrderFilterIsArchived(filterStr);
+				String isArchivedStr = FormatUtil.getOrderFilterIsArchived(filterStr);
 				String status = FormatUtil.getOrderFilterStatus(filterStr);
 				if (patientID != null) {
 					if ("Y".equals(isArchivedStr) || "N".equals(isArchivedStr)) {
-						queryResult = orderService
-								.findByPatientIDAndIsArchived(patientID,
-										isArchivedStr);
+						queryResult = orderService.findByPatientIDAndIsArchived(patientID, isArchivedStr);
 					} else {
 						queryResult = orderService.findByPatientID(patientID);
 					}
 				} else if (doctorID != null) {
 					if ("pickup".equals(status)) {
-						queryResult = orderService
-								.findByDoctorIDForPickUp(doctorID);
-					} else if ("Y".equals(isArchivedStr)
-							|| "N".equals(isArchivedStr)) {
-						queryResult = orderService.findByDoctorIDAndIsArchived(
-								doctorID, isArchivedStr);
+						queryResult = orderService.findByDoctorIDForPickUp(doctorID);
+					} else if ("Y".equals(isArchivedStr) || "N".equals(isArchivedStr)) {
+						queryResult = orderService.findByDoctorIDAndIsArchived(doctorID, isArchivedStr);
 					} else {
 						queryResult = orderService.findByDoctorID(doctorID);
 					}
@@ -149,8 +143,7 @@ public class OverallServiceImpl implements OverallService {
 			}
 
 			if (queryResult != null && queryResult.size() > 0) {
-				entityList.addAll(EntityConvertUtil
-						.getOrderEntityList(queryResult));
+				entityList.addAll(EntityConvertUtil.getOrderEntityList(queryResult));
 			}
 			return entityCollection;
 		}
@@ -158,8 +151,7 @@ public class OverallServiceImpl implements OverallService {
 	}
 
 	@Override
-	public Entity createEntityData(ODataRequest request,
-			EdmEntitySet edmEntitySet, Entity requestEntity, OData odata,
+	public Entity createEntityData(ODataRequest request, EdmEntitySet edmEntitySet, Entity requestEntity, OData odata,
 			ServiceMetadata edm) throws ODataApplicationException {
 
 		EdmEntityType edmEntityType = edmEntitySet.getEntityType();
@@ -167,43 +159,35 @@ public class OverallServiceImpl implements OverallService {
 		String rawServiceUri = request.getRawBaseUri();
 
 		if (edmEntitySet.getName().equals(McEdmUtil.ES_DOCTORS_NAME)) {
-			return createEntity(edmEntitySet, edmEntityType, requestEntity,
-					rawServiceUri, odata, edm, null);
+			return createEntity(edmEntitySet, edmEntityType, requestEntity, rawServiceUri, odata, edm, null);
 		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_PATIENTS_NAME)) {
-			return createEntity(edmEntitySet, edmEntityType, requestEntity,
-					rawServiceUri, odata, edm, null);
+			return createEntity(edmEntitySet, edmEntityType, requestEntity, rawServiceUri, odata, edm, null);
 		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_ORDERS_NAME)) {
-			return createEntity(edmEntitySet, edmEntityType, requestEntity,
-					rawServiceUri, odata, edm, null);
+			return createEntity(edmEntitySet, edmEntityType, requestEntity, rawServiceUri, odata, edm, null);
 		}
 
 		return null;
 	}
 
-	public Entity createEntityData(EdmEntitySet edmEntitySet,
-			Entity entityToCreate, String rawServiceUri, OData odata,
+	public Entity createEntityData(EdmEntitySet edmEntitySet, Entity entityToCreate, String rawServiceUri, OData odata,
 			ServiceMetadata edm) throws ODataApplicationException {
 
 		EdmEntityType edmEntityType = edmEntitySet.getEntityType();
 
 		if (edmEntitySet.getName().equals(McEdmUtil.ES_DOCTORS_NAME)) {
-			return createEntity(edmEntitySet, edmEntityType, entityToCreate,
-					rawServiceUri, odata, edm, null);
+			return createEntity(edmEntitySet, edmEntityType, entityToCreate, rawServiceUri, odata, edm, null);
 		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_PATIENTS_NAME)) {
-			return createEntity(edmEntitySet, edmEntityType, entityToCreate,
-					rawServiceUri, odata, edm, null);
+			return createEntity(edmEntitySet, edmEntityType, entityToCreate, rawServiceUri, odata, edm, null);
 		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_ORDERS_NAME)) {
-			return createEntity(edmEntitySet, edmEntityType, entityToCreate,
-					rawServiceUri, odata, edm, null);
+			return createEntity(edmEntitySet, edmEntityType, entityToCreate, rawServiceUri, odata, edm, null);
 		}
 
 		return null;
 	}
 
-	public Entity createEntity(EdmEntitySet edmEntitySet,
-			EdmEntityType edmEntityType, Entity entity,
-			final String rawServiceUri, OData odata, ServiceMetadata edm,
-			Entity parentEntity) throws ODataApplicationException {
+	public Entity createEntity(EdmEntitySet edmEntitySet, EdmEntityType edmEntityType, Entity entity,
+			final String rawServiceUri, OData odata, ServiceMetadata edm, Entity parentEntity)
+					throws ODataApplicationException {
 
 		Entity createdEntity = null;
 
@@ -224,54 +208,37 @@ public class OverallServiceImpl implements OverallService {
 		}
 		// 2.1.) Apply binding links
 		for (final Link link : entity.getNavigationBindings()) {
-			final EdmNavigationProperty edmNavigationProperty = edmEntityType
-					.getNavigationProperty(link.getTitle());
-			final EdmEntitySet targetEntitySet = (EdmEntitySet) edmEntitySet
-					.getRelatedBindingTarget(link.getTitle());
+			final EdmNavigationProperty edmNavigationProperty = edmEntityType.getNavigationProperty(link.getTitle());
+			final EdmEntitySet targetEntitySet = (EdmEntitySet) edmEntitySet.getRelatedBindingTarget(link.getTitle());
 
-			if (edmNavigationProperty.isCollection()
-					&& link.getBindingLinks() != null) {
+			if (edmNavigationProperty.isCollection() && link.getBindingLinks() != null) {
 				for (final String bindingLink : link.getBindingLinks()) {
-					final Entity relatedEntity = readEntityByBindingLink(
-							bindingLink, targetEntitySet, rawServiceUri, odata,
-							edm);
-					EntityUtil.createLink(edmNavigationProperty, newEntity,
-							relatedEntity);
+					final Entity relatedEntity = readEntityByBindingLink(bindingLink, targetEntitySet, rawServiceUri,
+							odata, edm);
+					EntityUtil.createLink(edmNavigationProperty, newEntity, relatedEntity);
 				}
-			} else if (!edmNavigationProperty.isCollection()
-					&& link.getBindingLink() != null) {
-				final Entity relatedEntity = readEntityByBindingLink(
-						link.getBindingLink(), targetEntitySet, rawServiceUri,
-						odata, edm);
-				EntityUtil.createLink(edmNavigationProperty, newEntity,
-						relatedEntity);
+			} else if (!edmNavigationProperty.isCollection() && link.getBindingLink() != null) {
+				final Entity relatedEntity = readEntityByBindingLink(link.getBindingLink(), targetEntitySet,
+						rawServiceUri, odata, edm);
+				EntityUtil.createLink(edmNavigationProperty, newEntity, relatedEntity);
 			}
 		}
 
 		// 2.2.) Create nested entities
 		for (final Link link : entity.getNavigationLinks()) {
-			final EdmNavigationProperty edmNavigationProperty = edmEntityType
-					.getNavigationProperty(link.getTitle());
-			final EdmEntitySet targetEntitySet = (EdmEntitySet) edmEntitySet
-					.getRelatedBindingTarget(link.getTitle());
+			final EdmNavigationProperty edmNavigationProperty = edmEntityType.getNavigationProperty(link.getTitle());
+			final EdmEntitySet targetEntitySet = (EdmEntitySet) edmEntitySet.getRelatedBindingTarget(link.getTitle());
 
-			if (edmNavigationProperty.isCollection()
-					&& link.getInlineEntitySet() != null) {
-				for (final Entity nestedEntity : link.getInlineEntitySet()
-						.getEntities()) {
-					final Entity newNestedEntity = createEntityData(
-							targetEntitySet, nestedEntity, rawServiceUri,
-							odata, edm);
-					EntityUtil.createLink(edmNavigationProperty, newEntity,
-							newNestedEntity);
+			if (edmNavigationProperty.isCollection() && link.getInlineEntitySet() != null) {
+				for (final Entity nestedEntity : link.getInlineEntitySet().getEntities()) {
+					final Entity newNestedEntity = createEntityData(targetEntitySet, nestedEntity, rawServiceUri, odata,
+							edm);
+					EntityUtil.createLink(edmNavigationProperty, newEntity, newNestedEntity);
 				}
-			} else if (!edmNavigationProperty.isCollection()
-					&& link.getInlineEntity() != null) {
-				final Entity newNestedEntity = createEntityData(
-						targetEntitySet, link.getInlineEntity(), rawServiceUri,
+			} else if (!edmNavigationProperty.isCollection() && link.getInlineEntity() != null) {
+				final Entity newNestedEntity = createEntityData(targetEntitySet, link.getInlineEntity(), rawServiceUri,
 						odata, edm);
-				EntityUtil.createLink(edmNavigationProperty, newEntity,
-						newNestedEntity);
+				EntityUtil.createLink(edmNavigationProperty, newEntity, newNestedEntity);
 			}
 		}
 
@@ -279,112 +246,84 @@ public class OverallServiceImpl implements OverallService {
 	}
 
 	private Entity createEntity(final Entity newEntity) {
-		if (newEntity.getType().equals(
-				McEdmUtil.ET_DOCTOR_FQN.getFullQualifiedNameAsString())) {
-			return EntityConvertUtil.getEntity(doctorService
-					.upsertBasicInfo(newEntity));
-		} else if (newEntity.getType().equals(
-				McEdmUtil.ET_PATIENT_FQN.getFullQualifiedNameAsString())) {
-			return EntityConvertUtil.getEntity(patientService
-					.upsertBasicInfo(newEntity));
-		} else if (newEntity.getType().equals(
-				McEdmUtil.ET_ORDER_FQN.getFullQualifiedNameAsString())) {
+		if (newEntity.getType().equals(McEdmUtil.ET_DOCTOR_FQN.getFullQualifiedNameAsString())) {
+			return EntityConvertUtil.getEntity(doctorService.upsertBasicInfo(newEntity));
+		} else if (newEntity.getType().equals(McEdmUtil.ET_PATIENT_FQN.getFullQualifiedNameAsString())) {
+			return EntityConvertUtil.getEntity(patientService.upsertBasicInfo(newEntity));
+		} else if (newEntity.getType().equals(McEdmUtil.ET_ORDER_FQN.getFullQualifiedNameAsString())) {
 			return EntityConvertUtil.getEntity(orderService.create(newEntity));
 		}
 		return null;
 	}
 
-	private Entity createEntity(final Entity newEntity,
-			final Entity parentEntity) {
-		if (parentEntity.getType().equals(
-				McEdmUtil.ET_ORDER_FQN.getFullQualifiedNameAsString())) {
-			if (newEntity.getType().equals(
-					McEdmUtil.ET_ORDER_CONV_FQN.getFullQualifiedNameAsString())) {
-				return EntityConvertUtil.getEntity(orderService
-						.createOrderConversaction(newEntity, parentEntity));
+	private Entity createEntity(final Entity newEntity, final Entity parentEntity) {
+		if (parentEntity.getType().equals(McEdmUtil.ET_ORDER_FQN.getFullQualifiedNameAsString())) {
+			if (newEntity.getType().equals(McEdmUtil.ET_ORDER_CONV_FQN.getFullQualifiedNameAsString())) {
+				return EntityConvertUtil.getEntity(orderService.createOrderConversaction(newEntity, parentEntity));
 			}
 		}
 		return null;
 	}
 
 	private Entity updateEntity(final Entity updateEntity) {
-		if (updateEntity.getType().equals(
-				McEdmUtil.ET_DOCTOR_FQN.getFullQualifiedNameAsString())) {
-			return EntityConvertUtil.getEntity(doctorService
-					.upsertBasicInfo(updateEntity));
-		} else if (updateEntity.getType().equals(
-				McEdmUtil.ET_PATIENT_FQN.getFullQualifiedNameAsString())) {
-			return EntityConvertUtil.getEntity(patientService
-					.upsertBasicInfo(updateEntity));
-		} else if (updateEntity.getType().equals(
-				McEdmUtil.ET_ORDER_FQN.getFullQualifiedNameAsString())) {
-			return EntityConvertUtil.getEntity(orderService
-					.update(updateEntity));
+		if (updateEntity.getType().equals(McEdmUtil.ET_DOCTOR_FQN.getFullQualifiedNameAsString())) {
+			return EntityConvertUtil.getEntity(doctorService.upsertBasicInfo(updateEntity));
+		} else if (updateEntity.getType().equals(McEdmUtil.ET_PATIENT_FQN.getFullQualifiedNameAsString())) {
+			return EntityConvertUtil.getEntity(patientService.upsertBasicInfo(updateEntity));
+		} else if (updateEntity.getType().equals(McEdmUtil.ET_ORDER_FQN.getFullQualifiedNameAsString())) {
+			return EntityConvertUtil.getEntity(orderService.update(updateEntity));
 		}
 		return null;
 	}
 
-	private Entity readEntityByBindingLink(final String entityId,
-			final EdmEntitySet edmEntitySet, final String rawServiceUri,
-			OData odata, ServiceMetadata edm) throws ODataApplicationException {
+	private Entity readEntityByBindingLink(final String entityId, final EdmEntitySet edmEntitySet,
+			final String rawServiceUri, OData odata, ServiceMetadata edm) throws ODataApplicationException {
 
 		UriResourceEntitySet entitySetResource = null;
 		try {
-			entitySetResource = odata.createUriHelper().parseEntityId(
-					edm.getEdm(), entityId, rawServiceUri);
+			entitySetResource = odata.createUriHelper().parseEntityId(edm.getEdm(), entityId, rawServiceUri);
 
-			if (!entitySetResource.getEntitySet().getName()
-					.equals(edmEntitySet.getName())) {
+			if (!entitySetResource.getEntitySet().getName().equals(edmEntitySet.getName())) {
 				throw new ODataApplicationException(
-						"Execpted an entity-id for entity set "
-								+ edmEntitySet.getName()
-								+ " but found id for entity set "
-								+ entitySetResource.getEntitySet().getName(),
-						HttpStatusCode.BAD_REQUEST.getStatusCode(),
-						Locale.ENGLISH);
+						"Execpted an entity-id for entity set " + edmEntitySet.getName()
+								+ " but found id for entity set " + entitySetResource.getEntitySet().getName(),
+						HttpStatusCode.BAD_REQUEST.getStatusCode(), Locale.ENGLISH);
 			}
 		} catch (DeserializerException e) {
-			throw new ODataApplicationException(entityId
-					+ " is not a valid entity-Id",
+			throw new ODataApplicationException(entityId + " is not a valid entity-Id",
 					HttpStatusCode.BAD_REQUEST.getStatusCode(), Locale.ENGLISH);
 		}
 
-		return readEntityData(entitySetResource.getEntitySet(),
-				entitySetResource.getKeyPredicates());
+		return readEntityData(entitySetResource.getEntitySet(), entitySetResource.getKeyPredicates());
 	}
 
 	@Override
-	public Entity readEntityData(EdmEntitySet edmEntitySet,
-			List<UriParameter> keyParams) throws ODataApplicationException {
+	public Entity readEntityData(EdmEntitySet edmEntitySet, List<UriParameter> keyParams)
+			throws ODataApplicationException {
 
 		// sendMailTest();
 		if (edmEntitySet.getName().equals(McEdmUtil.ES_DOCTORS_NAME)) {
 			Long idValue = EntityUtil.getID(keyParams);
 			if (idValue != null) {
-				return EntityConvertUtil.getEntity(doctorService
-						.findById(idValue.longValue()));
+				return EntityConvertUtil.getEntity(doctorService.findById(idValue.longValue()));
 			}
 		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_PATIENTS_NAME)) {
 			Long idValue = EntityUtil.getID(keyParams);
 			if (idValue != null) {
-				return EntityConvertUtil.getEntity(patientService
-						.findById(idValue.longValue()));
+				return EntityConvertUtil.getEntity(patientService.findById(idValue.longValue()));
 			}
 		} else if (edmEntitySet.getName().equals(McEdmUtil.ES_ORDERS_NAME)) {
 			Long idValue = EntityUtil.getID(keyParams);
 			if (idValue != null) {
-				return EntityConvertUtil.getEntity(orderService
-						.findById(idValue.longValue()));
+				return EntityConvertUtil.getEntity(orderService.findById(idValue.longValue()));
 			}
 		}
 		return null;
 	}
 
 	@Override
-	public void updateEntityData(ODataRequest request,
-			List<UriParameter> keyParams, EdmEntitySet edmEntitySet,
-			Entity updateEntity, OData odata, ServiceMetadata edm)
-			throws ODataApplicationException {
+	public void updateEntityData(ODataRequest request, List<UriParameter> keyParams, EdmEntitySet edmEntitySet,
+			Entity updateEntity, OData odata, ServiceMetadata edm) throws ODataApplicationException {
 		HttpMethod httpMethod = request.getMethod();
 		if (edmEntitySet.getName().equals(McEdmUtil.ES_DOCTORS_NAME)) {
 			updateEntity(edmEntitySet, keyParams, updateEntity, httpMethod);
@@ -396,16 +335,15 @@ public class OverallServiceImpl implements OverallService {
 
 	}
 
-	private void updateEntity(EdmEntitySet edmEntitySet,
-			List<UriParameter> keyParams, Entity updateEntity,
+	private void updateEntity(EdmEntitySet edmEntitySet, List<UriParameter> keyParams, Entity updateEntity,
 			HttpMethod httpMethod) throws ODataApplicationException {
 
 		EdmEntityType edmEntityType = edmEntitySet.getEntityType();
 
 		Entity entity = readEntityData(edmEntitySet, keyParams);
 		if (entity == null) {
-			throw new ODataApplicationException("Entity not found",
-					HttpStatusCode.NOT_FOUND.getStatusCode(), Locale.ENGLISH);
+			throw new ODataApplicationException("Entity not found", HttpStatusCode.NOT_FOUND.getStatusCode(),
+					Locale.ENGLISH);
 		}
 
 		// loop over all properties and replace the values with the values of
@@ -440,38 +378,33 @@ public class OverallServiceImpl implements OverallService {
 			}
 
 			// change the value of the properties
-			existingProp.setValue(existingProp.getValueType(),
-					updateProperty.getValue());
+			existingProp.setValue(existingProp.getValueType(), updateProperty.getValue());
 		}
 
 		updateEntity(entity);
 	}
 
 	@Override
-	public String updateEntityAfterFileUploaded(String entityType,
-			String entityID, String method, String fileName) {
+	public String updateEntityAfterFileUploaded(String entityType, String entityID, String method, String fileName) {
 		Long entityLongID = EntityConvertUtil.getLong(entityID);
 		if (entityType != null && entityLongID != null) {
 
 			if (entityType.equals("Patient")) {
-				Patient targetPatient = patientService.updateAvatar(fileName,
-						entityLongID);
+				Patient targetPatient = patientService.updateAvatar(fileName, entityLongID);
 				if (targetPatient != null) {
 					return targetPatient.getAvatar();
 				}
 
 			} else if (entityType.equals("Doctor")) {
-				Doctor targetDoctor = doctorService.updateAvatar(fileName,
-						entityLongID);
+				Doctor targetDoctor = doctorService.updateAvatar(fileName, entityLongID);
 				if (targetDoctor != null) {
 					return targetDoctor.getAvatar();
 				}
 
 			} else if (entityType.equals("OrderConv")) {
 				if ("P".equals(method) || "D".equals(method)) {
-					OrderConversation orderConversation = orderService
-							.createImageOrderConversaction(fileName,
-									entityLongID, method);
+					OrderConversation orderConversation = orderService.createImageOrderConversaction(fileName,
+							entityLongID, method);
 					return orderConversation.getPictures();
 				}
 			}
@@ -482,44 +415,35 @@ public class OverallServiceImpl implements OverallService {
 	}
 
 	@Override
-	public Entity createCascatedEntityData(Entity parentEntity,
-			ODataRequest request, EdmEntitySet edmEntitySet,
-			Entity requestEntity, OData odata, ServiceMetadata edm)
-			throws ODataApplicationException {
+	public Entity createCascatedEntityData(Entity parentEntity, ODataRequest request, EdmEntitySet edmEntitySet,
+			Entity requestEntity, OData odata, ServiceMetadata edm) throws ODataApplicationException {
 
 		EdmEntityType edmEntityType = edmEntitySet.getEntityType();
 		String rawServiceUri = request.getRawBaseUri();
 		if (edmEntitySet.getName().equals(McEdmUtil.ES_ORDER_CONVS_NAME)) {
-			return createEntity(edmEntitySet, edmEntityType, requestEntity,
-					rawServiceUri, odata, edm, parentEntity);
+			return createEntity(edmEntitySet, edmEntityType, requestEntity, rawServiceUri, odata, edm, parentEntity);
 		}
 		return null;
 	}
 
 	@Override
-	public Long getLoginUserID(String loginType, String login, String password,
-			String ip, String userAgent) {
+	public Long getLoginUserID(String loginType, String login, String password, String ip, String userAgent) {
 		if ("S".equals(loginType)) {
 			Long id = adminService.findOneByLoginAndPassword(login, password);
 			if (id != null) {
-				createLoginLog(loginType, login, password, ip, userAgent, "S",
-						gson.toJson(id));
+				createLoginLog(loginType, login, password, ip, userAgent, "S", gson.toJson(id));
 				return id;
 			}
 		} else if ("D".equals(loginType)) {
-			Doctor user = doctorService.findOneByLoginAndPassword(login,
-					password);
+			Doctor user = doctorService.findOneByLoginAndPassword(login, password);
 			if (user != null) {
-				createLoginLog(loginType, login, password, ip, userAgent, "S",
-						gson.toJson(user));
+				createLoginLog(loginType, login, password, ip, userAgent, "S", gson.toJson(user));
 				return user.getId();
 			}
 		} else if ("P".equals(loginType)) {
-			Patient user = patientService.findOneByLoginAndPassword(login,
-					password);
+			Patient user = patientService.findOneByLoginAndPassword(login, password);
 			if (user != null) {
-				createLoginLog(loginType, login, password, ip, userAgent, "S",
-						gson.toJson(user));
+				createLoginLog(loginType, login, password, ip, userAgent, "S", gson.toJson(user));
 				return user.getId();
 			}
 		}
@@ -528,9 +452,8 @@ public class OverallServiceImpl implements OverallService {
 		return null;
 	}
 
-	private LoginLog createLoginLog(String loginType, String login,
-			String password, String ip, String userAgent, String result,
-			String resultContent) {
+	private LoginLog createLoginLog(String loginType, String login, String password, String ip, String userAgent,
+			String result, String resultContent) {
 		LoginLog loginLog = new LoginLog();
 		loginLog.setCreateTime(new Date());
 		loginLog.setIp(ip);
@@ -544,19 +467,16 @@ public class OverallServiceImpl implements OverallService {
 	}
 
 	@Override
-	public Long updatePassword(String loginType, Long id, String oldPassword,
-			String newPassword) {
+	public Long updatePassword(String loginType, Long id, String oldPassword, String newPassword) {
 		if ("S".equals(loginType)) {
 			// not support for admin
 		} else if ("D".equals(loginType)) {
-			Doctor user = doctorService.updatePassword(newPassword, id,
-					oldPassword);
+			Doctor user = doctorService.updatePassword(newPassword, id, oldPassword);
 			if (user != null) {
 				return user.getId();
 			}
 		} else if ("P".equals(loginType)) {
-			Patient user = patientService.updatePassword(newPassword, id,
-					oldPassword);
+			Patient user = patientService.updatePassword(newPassword, id, oldPassword);
 			if (user != null) {
 				return user.getId();
 			}
@@ -586,16 +506,14 @@ public class OverallServiceImpl implements OverallService {
 	public boolean setIsDeleted(String objType, String value, Long[] objectIDs) {
 		if ("Patient".equals(objType)) {
 			try {
-				boolean result = patientService.updateIsDeleted(value,
-						objectIDs);
+				boolean result = patientService.updateIsDeleted(value, objectIDs);
 				return result;
 			} catch (RuntimeException e) {
 				return false;
 			}
 		} else if ("Doctor".equals(objType)) {
 			try {
-				boolean result = doctorService
-						.updateIsDeleted(value, objectIDs);
+				boolean result = doctorService.updateIsDeleted(value, objectIDs);
 				return result;
 			} catch (RuntimeException e) {
 				return false;
@@ -615,13 +533,22 @@ public class OverallServiceImpl implements OverallService {
 	public boolean setIsArchived(String objType, String value, Long[] objectIDs) {
 		if ("Order".equals(objType)) {
 			try {
-				boolean result = orderService
-						.updateIsArchived(value, objectIDs);
+				boolean result = orderService.updateIsArchived(value, objectIDs);
 				return result;
 			} catch (RuntimeException e) {
 				return false;
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public OrderBilling createOrderBillingByOrderID(String orderID) {
+		return orderService.createOrderBillingByOrderID(orderID);
+	}
+
+	@Override
+	public String getPayForm(OrderBilling orderBilling) {
+		return paymentService.getPayForm(orderBilling);
 	}
 }

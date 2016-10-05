@@ -1,5 +1,6 @@
 package com.ehealth.mc.service.util;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -7,10 +8,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FormatUtil {
+	
+	public static String BILLING_TIME_FORMATE = "yyyyMMddHHmmssSSS";
 
 	public static String FILE_SUFFIX_TIME_FORMATE = "_yyyyMMdd_HHmmss_SSS";
 
 	public static String MAIL_CONTENT_TIME_FORMATE = "yyyy/MM/dd HH:mm:ss";
+
+	public static SimpleDateFormat billingTimeFormater = new SimpleDateFormat(
+			BILLING_TIME_FORMATE, Locale.getDefault());
 
 	public static SimpleDateFormat mailContentFormater = new SimpleDateFormat(
 			MAIL_CONTENT_TIME_FORMATE, Locale.getDefault());
@@ -26,6 +32,11 @@ public class FormatUtil {
 	public static String getMailContentTime() {
 		Date date = new Date();
 		return mailContentFormater.format(date);
+	}
+	
+	public static String getBillingCode(Date date, Long number){
+		DecimalFormat myFormatter = new DecimalFormat("0000000000");
+		return billingTimeFormater.format(date) + myFormatter.format(number);
 	}
 
 	public static Long getOrderFilterPatientID(String filterText) {
@@ -145,8 +156,7 @@ public class FormatUtil {
 	}
 
 	public static void main(String[] args) {
-		String result = getOrderFilterStatus("CTDoctor/ID eq 1234) and (Status eq 'test123'");
-		System.out.println(result);
+		System.out.println(getBillingCode(new Date(), new Long(888)));
 	}
 
 }

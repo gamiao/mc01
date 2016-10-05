@@ -6,16 +6,20 @@ import java.util.List;
 import org.apache.olingo.commons.api.data.ComplexValue;
 import org.apache.olingo.commons.api.data.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ehealth.mc.bo.Doctor;
+import com.ehealth.mc.bo.OrderBilling;
+import com.ehealth.mc.bo.OrderBillingCL;
 import com.ehealth.mc.bo.OrderConversation;
 import com.ehealth.mc.bo.OrderDetail;
 import com.ehealth.mc.bo.OrderHeader;
 import com.ehealth.mc.bo.OrderHeaderCL;
 import com.ehealth.mc.bo.Patient;
 import com.ehealth.mc.bo.QOrderHeader;
+import com.ehealth.mc.common.JsonAnnotationExclusionStrategy;
 import com.ehealth.mc.dao.OrderBillingCLDAO;
 import com.ehealth.mc.dao.OrderBillingDAO;
 import com.ehealth.mc.dao.OrderConversationDAO;
@@ -27,15 +31,29 @@ import com.ehealth.mc.service.NotificationService;
 import com.ehealth.mc.service.OrderService;
 import com.ehealth.mc.service.PatientService;
 import com.ehealth.mc.service.util.EntityConvertUtil;
+import com.ehealth.mc.service.util.FormatUtil;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 @Service("orderService")
 @Transactional(readOnly = true)
 public class OrderServiceImpl implements OrderService {
 
-	private static Gson gson = new Gson();
+	@Value("${mc.alipay.subject}")
+	public String ALIPAY_PAY_API_SUBJECT;
+
+	@Value("${mc.alipay.description}")
+	public String ALIPAY_PAY_API_DESCRIPTION;
+
+	@Value("${mc.alipay.product_code}")
+	public String ALIPAY_PAY_API_PRODUCT_CODE;
+
+	private static JsonAnnotationExclusionStrategy strategy = new JsonAnnotationExclusionStrategy();
+
+	private static Gson gson = new GsonBuilder().addDeserializationExclusionStrategy(strategy)
+			.addSerializationExclusionStrategy(strategy).create();
 
 	@Autowired
 	private OrderConversationDAO orderConversationDAO;
@@ -101,8 +119,7 @@ public class OrderServiceImpl implements OrderService {
 			throw new RuntimeException("Can't create orderDetail object.");
 		}
 
-		OrderHeader orderHeader = createOrderHeader(e, patient, doctor,
-				orderDetail);
+		OrderHeader orderHeader = createOrderHeader(e, patient, doctor, orderDetail);
 
 		if (orderHeader == null) {
 			throw new RuntimeException("Can't create orderHeader object.");
@@ -132,8 +149,7 @@ public class OrderServiceImpl implements OrderService {
 			}
 		}
 
-		Long orderDetailID = EntityConvertUtil
-				.getOrderDetailIDFromOrderEntity(e);
+		Long orderDetailID = EntityConvertUtil.getOrderDetailIDFromOrderEntity(e);
 		if (orderDetailID == null) {
 			return null;// OrderDetail does not exist
 		} else {
@@ -165,8 +181,8 @@ public class OrderServiceImpl implements OrderService {
 		return updateOrderHeader(e, patient, doctor, orderDetail, orderHeader);
 	}
 
-	private OrderHeader updateOrderHeader(Entity e, Patient patient,
-			Doctor doctor, OrderDetail orderDetail, OrderHeader orderHeader) {
+	private OrderHeader updateOrderHeader(Entity e, Patient patient, Doctor doctor, OrderDetail orderDetail,
+			OrderHeader orderHeader) {
 
 		String beforeChange = gson.toJson(orderHeader);
 		EntityConvertUtil.updateOrderHeader(orderHeader, e);
@@ -177,8 +193,7 @@ public class OrderServiceImpl implements OrderService {
 		String afterChange = gson.toJson(orderHeader);
 		String operator = "S";
 		String operationType = "UPDATE";
-		createOrderHeaderCL(beforeChange, afterChange, orderHeader,
-				operationType, operator);
+		createOrderHeaderCL(beforeChange, afterChange, orderHeader, operationType, operator);
 
 		String nTitle = "咨询(编号：" + orderHeader.getId() + ")的状态有更新";
 		String nDescription = "咨询已经有新的变动，请登录咨询平台并查看详情。";
@@ -187,16 +202,14 @@ public class OrderServiceImpl implements OrderService {
 		return orderHeader;
 	}
 
-	private OrderHeader createOrderHeader(Entity e, Patient patient,
-			Doctor doctor, OrderDetail orderDetail) {
+	private OrderHeader createOrderHeader(Entity e, Patient patient, Doctor doctor, OrderDetail orderDetail) {
 		OrderHeader orderHeader = EntityConvertUtil.getOrderHeader(e);
 		if (orderHeader != null) {
 			orderHeader.setDoctor(doctor);
 			orderHeader.setPatient(patient);
 			orderHeader.setOrderDetail(orderDetail);
 			OrderHeader result = orderHeaderDAO.save(orderHeader);
-			createOrderHeaderCL(null, gson.toJson(orderHeader), result,
-					"CREATE", "P");
+			createOrderHeaderCL(null, gson.toJson(orderHeader), result, "CREATE", "P");
 			return result;
 		}
 		return null;
@@ -215,35 +228,30 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	@Transactional
-	public OrderConversation createOrderConversaction(Entity newEntity,
-			Entity parentEntity) {
+	public OrderConversation createOrderConversaction(Entity newEntity, Entity parentEntity) {
 
 		Long orderHeaderID = EntityConvertUtil.getID(parentEntity);
 		OrderHeader orderHeader = findById(orderHeaderID);
 
 		if (orderHeader != null) {
-			OrderConversation oc = EntityConvertUtil
-					.getOrderConversation(newEntity);
+			OrderConversation oc = EntityConvertUtil.getOrderConversation(newEntity);
 			oc.setOrderHeader(orderHeader);
 			orderConversationDAO.save(oc);
 
 			if (oc.getOwner().equals("D")) {
 				String nTitle = "咨询(编号：" + orderHeader.getId() + ")有新的留言";
 				String nDescription = "咨询已经有新的变动，请登录咨询平台并查看详情。";
-				notificationService.notifyPatient(orderHeader.getPatient(),
-						nTitle, nDescription);
+				notificationService.notifyPatient(orderHeader.getPatient(), nTitle, nDescription);
 			} else if (oc.getOwner().equals("P")) {
 				String nTitle = "咨询(编号：" + orderHeader.getId() + ")有新的留言";
 				String nDescription = "咨询已经有新的变动，请登录咨询平台并查看详情。";
-				notificationService.notifyDoctor(orderHeader.getDoctor(),
-						nTitle, nDescription);
+				notificationService.notifyDoctor(orderHeader.getDoctor(), nTitle, nDescription);
 			}
 
 			List<OrderConversation> convs = orderHeader.getOrderConversations();
 			int doctorTextConvNumber = 0;
 			for (OrderConversation conv : convs) {
-				if (conv != null && "D".equals(conv.getOwner())
-						&& "TEXT".equals(conv.getType())) {
+				if (conv != null && "D".equals(conv.getOwner()) && "TEXT".equals(conv.getType())) {
 					doctorTextConvNumber += 1;
 				}
 			}
@@ -255,13 +263,11 @@ public class OrderServiceImpl implements OrderService {
 				String operator = "S";
 				String operationType = "UPDATE";
 				orderHeaderDAO.save(orderHeader);
-				createOrderHeaderCL(beforeChange, afterChange, orderHeader,
-						operationType, operator);
+				createOrderHeaderCL(beforeChange, afterChange, orderHeader, operationType, operator);
 
 				String nTitle = "咨询(编号：" + orderHeader.getId() + ")的已经完结";
 				String nDescription = "医师已经答复三次，咨询平台自动完结本资讯，请登录咨询平台并查看详情。";
-				notificationService.notifyForOrder(orderHeader, nTitle,
-						nDescription);
+				notificationService.notifyForOrder(orderHeader, nTitle, nDescription);
 
 			}
 
@@ -272,8 +278,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	@Transactional
-	public OrderConversation createImageOrderConversaction(String fileName,
-			Long orderHeaderID, String owner) {
+	public OrderConversation createImageOrderConversaction(String fileName, Long orderHeaderID, String owner) {
 
 		OrderHeader orderHeader = findById(orderHeaderID);
 
@@ -289,13 +294,11 @@ public class OrderServiceImpl implements OrderService {
 			if (oc.getOwner().equals("D")) {
 				String nTitle = "咨询(编号：" + orderHeader.getId() + ")有新的图片消息";
 				String nDescription = "咨询已经有新的变动，请登录咨询平台并查看详情。";
-				notificationService.notifyPatient(orderHeader.getPatient(),
-						nTitle, nDescription);
+				notificationService.notifyPatient(orderHeader.getPatient(), nTitle, nDescription);
 			} else if (oc.getOwner().equals("P")) {
 				String nTitle = "咨询(编号：" + orderHeader.getId() + ")有新的图片消息";
 				String nDescription = "咨询已经有新的变动，请登录咨询平台并查看详情。";
-				notificationService.notifyDoctor(orderHeader.getDoctor(),
-						nTitle, nDescription);
+				notificationService.notifyDoctor(orderHeader.getDoctor(), nTitle, nDescription);
 			}
 			return oc;
 		}
@@ -304,16 +307,14 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	@Transactional(rollbackFor = RuntimeException.class)
-	public boolean updateIsDeleted(String value, Long[] objIDs)
-			throws RuntimeException {
+	public boolean updateIsDeleted(String value, Long[] objIDs) throws RuntimeException {
 		for (Long id : objIDs) {
 			if (id == null) {
 				throw new RuntimeException("Some id is empty!");
 			}
 			OrderHeader obj = orderHeaderDAO.findOne(id);
 			if (obj == null) {
-				throw new RuntimeException("Can not find the object with ID:"
-						+ id);
+				throw new RuntimeException("Can not find the object with ID:" + id);
 			}
 			String beforeChange = gson.toJson(obj);
 			obj.setIsDeleted(value);
@@ -324,8 +325,7 @@ public class OrderServiceImpl implements OrderService {
 
 			try {
 				orderHeaderDAO.save(obj);
-				createOrderHeaderCL(beforeChange, afterChange, obj,
-						operationType, operator);
+				createOrderHeaderCL(beforeChange, afterChange, obj, operationType, operator);
 				String nTitle = "咨询(编号：" + obj.getId() + ")的状态有更新";
 				String nDescription = null;
 
@@ -335,12 +335,10 @@ public class OrderServiceImpl implements OrderService {
 					nDescription = "咨询已经回复为正常咨询，请登录咨询平台并查看详情。";
 				}
 				if (nDescription != null) {
-					notificationService.notifyForOrder(obj, nTitle,
-							nDescription);
+					notificationService.notifyForOrder(obj, nTitle, nDescription);
 				}
 			} catch (Exception e) {
-				throw new RuntimeException("Can't update the object with ID:"
-						+ id);
+				throw new RuntimeException("Can't update the object with ID:" + id);
 			}
 		}
 		return true;
@@ -348,16 +346,14 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	@Transactional(rollbackFor = RuntimeException.class)
-	public boolean updateIsArchived(String value, Long[] objIDs)
-			throws RuntimeException {
+	public boolean updateIsArchived(String value, Long[] objIDs) throws RuntimeException {
 		for (Long id : objIDs) {
 			if (id == null) {
 				throw new RuntimeException("Some id is empty!");
 			}
 			OrderHeader obj = orderHeaderDAO.findOne(id);
 			if (obj == null) {
-				throw new RuntimeException("Can not find the object with ID:"
-						+ id);
+				throw new RuntimeException("Can not find the object with ID:" + id);
 			}
 			String beforeChange = gson.toJson(obj);
 			obj.setIsArchived(value);
@@ -368,8 +364,7 @@ public class OrderServiceImpl implements OrderService {
 
 			try {
 				orderHeaderDAO.save(obj);
-				createOrderHeaderCL(beforeChange, afterChange, obj,
-						operationType, operator);
+				createOrderHeaderCL(beforeChange, afterChange, obj, operationType, operator);
 
 				String nTitle = "咨询(编号：" + obj.getId() + ")的状态有更新";
 				String nDescription = null;
@@ -380,13 +375,11 @@ public class OrderServiceImpl implements OrderService {
 					nDescription = "咨询已经回复为正常咨询，请登录咨询平台并查看详情。";
 				}
 				if (nDescription != null) {
-					notificationService.notifyForOrder(obj, nTitle,
-							nDescription);
+					notificationService.notifyForOrder(obj, nTitle, nDescription);
 				}
 
 			} catch (Exception e) {
-				throw new RuntimeException("Can't update the object with ID:"
-						+ id);
+				throw new RuntimeException("Can't update the object with ID:" + id);
 			}
 		}
 		return true;
@@ -409,26 +402,22 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public List<OrderHeader> findByDoctorIDAndIsArchived(Long doctorID,
-			String isArchivedStr) {
+	public List<OrderHeader> findByDoctorIDAndIsArchived(Long doctorID, String isArchivedStr) {
 		QOrderHeader orderHeader = QOrderHeader.orderHeader;
 		BooleanExpression exp1 = orderHeader.doctor.id.eq(doctorID);
 		BooleanExpression exp2 = orderHeader.isDeleted.eq("N");
 		BooleanExpression exp3 = orderHeader.isArchived.eq(isArchivedStr);
 		BooleanExpression exp4 = orderHeader.status.ne("new");
-		return Lists.newArrayList(orderHeaderDAO.findAll(exp1.and(exp2)
-				.and(exp3).and(exp4)));
+		return Lists.newArrayList(orderHeaderDAO.findAll(exp1.and(exp2).and(exp3).and(exp4)));
 	}
 
 	@Override
-	public List<OrderHeader> findByPatientIDAndIsArchived(Long patientID,
-			String isArchivedStr) {
+	public List<OrderHeader> findByPatientIDAndIsArchived(Long patientID, String isArchivedStr) {
 		QOrderHeader orderHeader = QOrderHeader.orderHeader;
 		BooleanExpression exp1 = orderHeader.patient.id.eq(patientID);
 		BooleanExpression exp2 = orderHeader.isDeleted.eq("N");
 		BooleanExpression exp3 = orderHeader.isArchived.eq(isArchivedStr);
-		return Lists.newArrayList(orderHeaderDAO.findAll(exp1.and(exp2).and(
-				exp3)));
+		return Lists.newArrayList(orderHeaderDAO.findAll(exp1.and(exp2).and(exp3)));
 	}
 
 	@Override
@@ -440,13 +429,11 @@ public class OrderServiceImpl implements OrderService {
 
 		BooleanExpression exp4 = orderHeader.doctor.id.eq(doctorID);
 		BooleanExpression exp5 = orderHeader.doctor.isNull();
-		return Lists.newArrayList(orderHeaderDAO.findAll(exp1.and(exp2)
-				.and(exp3).and(exp4.or(exp5))));
+		return Lists.newArrayList(orderHeaderDAO.findAll(exp1.and(exp2).and(exp3).and(exp4.or(exp5))));
 	}
 
-	private OrderHeaderCL createOrderHeaderCL(String beforeChange,
-			String afterChange, OrderHeader orderHeader, String operationType,
-			String operator) {
+	private OrderHeaderCL createOrderHeaderCL(String beforeChange, String afterChange, OrderHeader orderHeader,
+			String operationType, String operator) {
 		OrderHeaderCL ohChangeLog = new OrderHeaderCL();
 		ohChangeLog.setCreateTime(new Date());
 		ohChangeLog.setType(operationType);
@@ -456,6 +443,52 @@ public class OrderServiceImpl implements OrderService {
 		ohChangeLog.setBeforeChange(beforeChange);
 		ohChangeLog.setAfterChange(afterChange);
 		return orderHeaderCLDAO.save(ohChangeLog);
+	}
+
+	@Override
+	public OrderBilling createOrderBillingByOrderID(String orderID) {
+
+		Long orderHeaderID = EntityConvertUtil.getLong(orderID);
+
+		if (orderHeaderID != null) {
+			OrderHeader orderHeader = findById(orderHeaderID);
+
+			if (orderHeader != null) {
+				OrderBilling orderBilling = new OrderBilling();
+				Date currentTime = new Date();
+
+				orderBilling.setCreateTime(currentTime);
+				orderBilling.setIsDeleted("N");
+				orderBilling.setChannel("alipay");
+				orderBilling.setOrderHeader(orderHeader);
+
+				// Order value
+				orderBilling.setPrice(orderHeader.getDoctor().getPrice().doubleValue());
+				orderBilling.setBillingCode(FormatUtil.getBillingCode(currentTime, orderHeader.getId()));
+				orderBilling.setProductCode(ALIPAY_PAY_API_PRODUCT_CODE);
+				orderBilling.setTitle(ALIPAY_PAY_API_SUBJECT);
+				orderBilling.setDescription(ALIPAY_PAY_API_DESCRIPTION);
+
+				OrderBilling result = orderBillingDAO.save(orderBilling);
+				createOrderBillingCL(null, gson.toJson(result), result, "CREATE", "P");
+
+				return result;
+			}
+		}
+		return null;
+	}
+
+	private OrderBillingCL createOrderBillingCL(String beforeChange, String afterChange, OrderBilling orderBilling,
+			String operationType, String operator) {
+		OrderBillingCL obChangeLog = new OrderBillingCL();
+		obChangeLog.setCreateTime(new Date());
+		obChangeLog.setType(operationType);
+		obChangeLog.setOwner(operator);
+		obChangeLog.setIsDeleted("N");
+		obChangeLog.setOrderBilling(orderBilling);
+		obChangeLog.setBeforeChange(beforeChange);
+		obChangeLog.setAfterChange(afterChange);
+		return orderBillingCLDAO.save(obChangeLog);
 	}
 
 }

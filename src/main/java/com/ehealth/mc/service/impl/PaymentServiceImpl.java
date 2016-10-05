@@ -1,12 +1,16 @@
 package com.ehealth.mc.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ehealth.mc.bo.OrderBilling;
 import com.ehealth.mc.payment.service.AlipayService;
 import com.ehealth.mc.service.PaymentService;
 import com.google.gson.Gson;
 
+@Service("paymentService")
+@Transactional
 public class PaymentServiceImpl implements PaymentService {
 
 	private static Gson gson = new Gson();

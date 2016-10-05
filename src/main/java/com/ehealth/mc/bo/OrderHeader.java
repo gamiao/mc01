@@ -23,6 +23,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.springframework.data.domain.Persistable;
 
+import com.ehealth.mc.common.JsonExclude;
 import com.google.gson.annotations.Expose;
 
 @Entity
@@ -54,6 +55,7 @@ public class OrderHeader implements Serializable, Persistable<Long> {
 	private OrderDetail orderDetail;
 
 	@Expose(serialize = false)
+	@JsonExclude
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "orderHeader", fetch = FetchType.LAZY)
 	private List<OrderConversation> orderConversations;
 

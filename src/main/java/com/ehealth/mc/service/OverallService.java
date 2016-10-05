@@ -12,39 +12,37 @@ import org.apache.olingo.server.api.ServiceMetadata;
 import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.api.uri.UriParameter;
 
+import com.ehealth.mc.bo.OrderBilling;
+
 public interface OverallService {
 
-	Entity readEntityData(EdmEntitySet edmEntitySet,
-			List<UriParameter> keyParams) throws ODataApplicationException;
+	Entity readEntityData(EdmEntitySet edmEntitySet, List<UriParameter> keyParams) throws ODataApplicationException;
 
-	EntityCollection findAll(EdmEntitySet edmEntitySet, UriInfo uriInfo)
-			throws ODataApplicationException;
+	EntityCollection findAll(EdmEntitySet edmEntitySet, UriInfo uriInfo) throws ODataApplicationException;
 
-	Entity createEntityData(ODataRequest request, EdmEntitySet edmEntitySet,
-			Entity requestEntity, OData odata, ServiceMetadata edm)
-			throws ODataApplicationException;
-
-	void updateEntityData(ODataRequest request, List<UriParameter> keyParams,
-			EdmEntitySet edmEntitySet, Entity requestEntity, OData odata,
+	Entity createEntityData(ODataRequest request, EdmEntitySet edmEntitySet, Entity requestEntity, OData odata,
 			ServiceMetadata edm) throws ODataApplicationException;
 
-	String updateEntityAfterFileUploaded(String entityType, String entityID,
-			String method, String fileName);
+	void updateEntityData(ODataRequest request, List<UriParameter> keyParams, EdmEntitySet edmEntitySet,
+			Entity requestEntity, OData odata, ServiceMetadata edm) throws ODataApplicationException;
 
-	Entity createCascatedEntityData(Entity firstEntity, ODataRequest request,
-			EdmEntitySet edmEntitySet, Entity requestEntity, OData odata,
-			ServiceMetadata serviceMetadata) throws ODataApplicationException;
+	String updateEntityAfterFileUploaded(String entityType, String entityID, String method, String fileName);
 
-	Long getLoginUserID(String loginType, String login, String password,
-			String ip, String userAgent);
+	Entity createCascatedEntityData(Entity firstEntity, ODataRequest request, EdmEntitySet edmEntitySet,
+			Entity requestEntity, OData odata, ServiceMetadata serviceMetadata) throws ODataApplicationException;
 
-	Long updatePassword(String loginType, Long id, String oldPassword,
-			String newPassword);
+	Long getLoginUserID(String loginType, String login, String password, String ip, String userAgent);
+
+	Long updatePassword(String loginType, Long id, String oldPassword, String newPassword);
 
 	boolean checkLogin(String loginType, String login);
 
 	boolean setIsDeleted(String objType, String value, Long[] objectIDs);
 
 	boolean setIsArchived(String objType, String value, Long[] objectIDs);
+
+	OrderBilling createOrderBillingByOrderID(String orderID);
+
+	String getPayForm(OrderBilling orderBilling);
 
 }

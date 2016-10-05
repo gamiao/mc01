@@ -16,6 +16,8 @@ import com.ehealth.mc.bo.OrderHeader;
 import com.ehealth.mc.bo.OrderHeaderCL;
 import com.ehealth.mc.bo.Patient;
 import com.ehealth.mc.bo.QOrderHeader;
+import com.ehealth.mc.dao.OrderBillingCLDAO;
+import com.ehealth.mc.dao.OrderBillingDAO;
 import com.ehealth.mc.dao.OrderConversationDAO;
 import com.ehealth.mc.dao.OrderDetailDAO;
 import com.ehealth.mc.dao.OrderHeaderCLDAO;
@@ -43,6 +45,12 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	private OrderHeaderCLDAO orderHeaderCLDAO;
+
+	@Autowired
+	private OrderBillingDAO orderBillingDAO;
+
+	@Autowired
+	private OrderBillingCLDAO orderBillingCLDAO;
 
 	@Autowired
 	private OrderDetailDAO orderDetailDAO;

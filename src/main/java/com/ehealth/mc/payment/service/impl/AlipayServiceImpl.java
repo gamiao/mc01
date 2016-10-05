@@ -1,6 +1,8 @@
 package com.ehealth.mc.payment.service.impl;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
@@ -8,6 +10,8 @@ import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.alipay.api.response.AlipayTradeWapPayResponse;
 import com.ehealth.mc.payment.service.AlipayService;
 
+@Service("alipayService")
+@Transactional
 public class AlipayServiceImpl implements AlipayService {
 	
 	@Value("${mc.base.url}")
@@ -54,7 +58,6 @@ public class AlipayServiceImpl implements AlipayService {
 				form = alipayResponse.getBody();
 			}
 		} catch (Exception e) {
-
 		}
 		return form;
 	}

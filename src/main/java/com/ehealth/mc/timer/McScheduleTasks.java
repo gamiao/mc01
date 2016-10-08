@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.ehealth.mc.controller.FileUploadController;
 import com.ehealth.mc.service.MailingService;
 import com.google.gson.Gson;
 
@@ -23,7 +22,7 @@ public class McScheduleTasks {
 	private static Gson gson = new Gson();
 
 	private static final Logger log = LoggerFactory
-			.getLogger(FileUploadController.class);
+			.getLogger(McScheduleTasks.class);
 
 	@Scheduled(fixedDelayString = "${mc.mail.interval}")
 	public void handleMailSending() {

@@ -22,7 +22,7 @@ public class DoctorController {
 	private static Gson gson = new Gson();
 
 	private static final Logger log = LoggerFactory
-			.getLogger(FileUploadController.class);
+			.getLogger(DoctorController.class);
 
 	@Autowired
 	private ServletContext servletContext;

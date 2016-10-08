@@ -34,7 +34,6 @@ import com.ehealth.mc.bo.Patient;
 import com.ehealth.mc.service.AdminService;
 import com.ehealth.mc.service.DoctorService;
 import com.ehealth.mc.service.LoginLogService;
-import com.ehealth.mc.service.NotificationService;
 import com.ehealth.mc.service.OrderService;
 import com.ehealth.mc.service.OverallService;
 import com.ehealth.mc.service.PatientService;
@@ -67,9 +66,6 @@ public class OverallServiceImpl implements OverallService {
 
 	@Autowired
 	private LoginLogService loginLogService;
-
-	@Autowired
-	private NotificationService notificationService;
 
 	@Override
 	public EntityCollection findAll(EdmEntitySet edmEntitySet, UriInfo uriInfo) {

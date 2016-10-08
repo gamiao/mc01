@@ -27,7 +27,7 @@ public class AccountController {
 	private static Gson gson = new Gson();
 
 	private static final Logger log = LoggerFactory
-			.getLogger(FileUploadController.class);
+			.getLogger(AccountController.class);
 
 	@Autowired
 	private ServletContext servletContext;

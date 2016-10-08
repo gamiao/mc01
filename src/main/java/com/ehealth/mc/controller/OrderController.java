@@ -22,7 +22,7 @@ public class OrderController {
 	private static Gson gson = new Gson();
 
 	private static final Logger log = LoggerFactory
-			.getLogger(FileUploadController.class);
+			.getLogger(OrderController.class);
 
 	@Autowired
 	private ServletContext servletContext;

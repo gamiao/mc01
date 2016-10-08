@@ -472,7 +472,14 @@ public class OrderServiceImpl implements OrderService {
 				orderBilling.setDescription(ALIPAY_PAY_API_DESCRIPTION);
 
 				OrderBilling result = orderBillingDAO.save(orderBilling);
-				createOrderBillingCL(null, gson.toJson(result), result, "CREATE", "P");
+
+				String afterChange = null;
+				try {
+					afterChange = gson.toJson(result);
+				} catch (Exception e) {
+
+				}
+				createOrderBillingCL(null, afterChange, result, "CREATE", "P");
 
 				return result;
 			}

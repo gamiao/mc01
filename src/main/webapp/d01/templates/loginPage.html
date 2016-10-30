@@ -3,15 +3,15 @@
         <div class="">
             <img ng-src="img/rjzh_logo.jpg" width="80%" height="auto" style="display: block; margin-left: auto; margin-right: auto;">
         </div>
-      <div class="list list-inset">
+      <div class="list list-inset" ng-form name="loginForm">
           <label class="item item-input">
-              <input type="text" placeholder="请输入登录名..." ng-model="data.username">
+              <input name="username" type="text" placeholder="请输入登录名..." ng-model="data.username" required>
           </label>
           <label class="item item-input">
-              <input type="password" placeholder="请输入密码..." ng-model="data.password">
+              <input name="password" type="password" placeholder="请输入密码..." ng-model="data.password" required>
           </label>
       </div>
-      <button class="button button-block button-calm" ng-click="login()">登录</button>
+      <button class="button button-block button-calm" ng-disabled="loginForm.$invalid" ng-click="login()">登录</button>
       <a ui-sref="signup" id="login-button17" class="button button-positive  button-block button-clear">注册账户</a>
   </ion-content>
 </ion-view>

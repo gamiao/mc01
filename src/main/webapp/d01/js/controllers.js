@@ -231,7 +231,7 @@ angular.module('app.controllers', [])
     }
 })
 
-.controller('signupPageCtrl', function($scope, $state, $ionicPopup, accountService, ODATA_SERVICE_URL, $odataresource, $ionicHistory) {
+.controller('signupPageCtrl', function($scope, $state, $ionicPopup, accountService, ODATA_SERVICE_URL, $odataresource) {
 	Doctor = $odataresource(ODATA_SERVICE_URL + 'Doctors', 'ID');
 	$scope.user = new Doctor();
 	$scope.temp = {};
@@ -252,7 +252,7 @@ angular.module('app.controllers', [])
 			.success(function(checkLoginResult) {
 				accountService.createUser($scope.user)
 				.success(function(data) {
-					$ionicHistory.goBack();
+					$state.go('login');
 				}).error(function(data) {
 					var alertPopup = $ionicPopup.alert({
 						title: '注册用户失败',
@@ -269,7 +269,7 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('updatePasswordPageCtrl', function($scope, accountService, $ionicPopup, $state, configService, $ionicHistory) {
+.controller('updatePasswordPageCtrl', function($scope, accountService, $ionicPopup, $state, configService) {
 	
 	accountService.checkCurrentUser();
 	
@@ -298,7 +298,7 @@ angular.module('app.controllers', [])
 		} else {
 			console.log("userID: " + configService.userID + " - oldPW: " + oldPassword + " - newPW: " + newPassword);
 			accountService.updatePassword(configService.userID, oldPassword, newPassword).success(function(data) {
-				$ionicHistory.goBack();
+				$state.go('d-sm.doctorInfoPage');
 			}).error(function(data) {
 				var alertPopup = $ionicPopup.alert({
 					title: '密码更新失败',
@@ -566,7 +566,7 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('imageUploadPageCtrl', function($rootScope, $ionicHistory, uploadService, configService, Upload, $scope, accountService, $ionicPopup) {
+.controller('imageUploadPageCtrl', function($rootScope, uploadService, configService, Upload, $scope, accountService, $ionicPopup) {
 	accountService.checkCurrentUser();
 
 	$scope.progressval = 0;
@@ -618,10 +618,12 @@ angular.module('app.controllers', [])
 				configService.getUser()
 				.success(function(data) {
 					configService.currentUser = data;
-					$ionicHistory.goBack();
+					$state.go('d-sm.doctorInfoPage');
 				}).error(function(data) {
-					$ionicHistory.goBack();
+					$state.go('d-sm.doctorInfoPage');
 				});
+			} else {
+				$state.go('d-sm.orderConvsPage');
 			}
 			console.log('Success ');
 		}, function(resp) {

@@ -1,0 +1,5 @@
+<ion-view title="??" id="page12" cache-view="false" >
+    <ion-content scroll="true" overflow-scroll="true" class="iframe-wrapper">
+       <iframe data-tap-disabled="true" src="http://mshfootankle.ttdong.com.cn/mc01/"></iframe>
+    </ion-content>
+</ion-view>

@@ -223,7 +223,7 @@ angular.module('app.controllers', [])
     }
 })
 
-.controller('updatePasswordPageCtrl', function($scope, accountService, $ionicPopup, $state, configService, $ionicHistory) {
+.controller('updatePasswordPageCtrl', function($scope, accountService, $ionicPopup, $state, configService) {
 	accountService.checkCurrentUser();
     $scope.data = {};
  
@@ -250,7 +250,7 @@ angular.module('app.controllers', [])
 		} else {
 			console.log("userID: " + configService.userID + " - oldPW: " + oldPassword + " - newPW: " + newPassword);
 			accountService.updatePassword(configService.userID, oldPassword, newPassword).success(function(data) {
-				$ionicHistory.goBack();
+				$state.go('p-sm.patientInfoPage');
 			}).error(function(data) {
 				var alertPopup = $ionicPopup.alert({
 					title: '密码更新失败',
@@ -287,7 +287,7 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('signupPageCtrl', function($scope, $state, $ionicPopup, accountService, ODATA_SERVICE_URL, $odataresource, $ionicHistory, accountService) {
+.controller('signupPageCtrl', function($scope, $state, $ionicPopup, accountService, ODATA_SERVICE_URL, $odataresource, accountService) {
 	Patient = $odataresource(ODATA_SERVICE_URL + 'Patients', 'ID');
 	$scope.user = new Patient();
 	$scope.temp = {};
@@ -308,7 +308,7 @@ angular.module('app.controllers', [])
 			.success(function(checkLoginResult) {
 				accountService.createUser($scope.user)
 				.success(function(data) {
-					$ionicHistory.goBack();
+					$state.go('login');
 				}).error(function(data) {
 					var alertPopup = $ionicPopup.alert({
 						title: '注册用户失败',
@@ -445,7 +445,7 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('imageUploadPageCtrl', function($rootScope, $ionicHistory, uploadService, Upload, $scope, configService, accountService, $ionicPopup) {
+.controller('imageUploadPageCtrl', function($rootScope, uploadService, Upload, $scope, configService, accountService, $ionicPopup) {
 	accountService.checkCurrentUser();
 
 	$scope.progressval = 0;
@@ -497,10 +497,12 @@ angular.module('app.controllers', [])
 				configService.getUser()
 				.success(function(data) {
 					configService.currentUser = data;
-					$ionicHistory.goBack();
+					$state.go('p-sm.patientInfoPage');
 				}).error(function(data) {
-					$ionicHistory.goBack();
+					$state.go('p-sm.patientInfoPage');
 				});
+			} else {
+				$state.go('p-sm.orderConvsPage');
 			}
 			console.log('Success ');
 		}, function(resp) {

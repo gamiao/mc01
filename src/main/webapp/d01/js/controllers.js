@@ -566,7 +566,7 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('imageUploadPageCtrl', function($rootScope, uploadService, configService, Upload, $scope, accountService, $ionicPopup) {
+.controller('imageUploadPageCtrl', function($rootScope, $state, uploadService, configService, Upload, $scope, accountService, $ionicPopup) {
 	accountService.checkCurrentUser();
 
 	$scope.progressval = 0;

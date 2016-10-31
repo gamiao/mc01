@@ -6,9 +6,9 @@
             <ion-item class="item-icon-right" ng-click="getConvs(currentOrder)" >
                 <p>咨询号：{{currentOrder.ID}} -- {{currentOrder.CreateTime}} （<strong>{{currentOrder.Status, select,
 						ongoing {进行中}
-						unpaid {待付款}
+						unpaid {等待付款}
 						complete {已结束}
-						new {待接单}
+						new {等待确认}
 						other {未知状态}
 				}}</strong>）</p>
 				<h2>医师：{{currentOrder.CTDoctor.Name}}，{{currentOrder.CTDoctor.MedicalLevel}}（<strong>价格：{{currentOrder.CTDoctor.Price}}元</strong>）</h2>
@@ -39,9 +39,9 @@
 		
             <p><strong>当前状态： {{currentOrder.Status, select,
 						ongoing {进行中}
-						unpaid {待付款}
+						unpaid {等待付款}
 						complete {已结束}
-						new {待接单}
+						new {等待确认}
 						other {未知状态}
 				}}</strong></p>
 				

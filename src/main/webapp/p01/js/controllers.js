@@ -336,16 +336,16 @@ angular.module('app.controllers', [])
 
 	$scope.currentOrder = orderService.currentOrder;
 	page = {};
-	page.title = '进行中咨询';
+	page.title = '医生已确认';
 	page.orderType = 'ongoing';
 	if (orderService.currentOrder && orderService.currentOrder.IsArchived === 'Y') {
 		page.title = '历史咨询';
 		page.orderType = 'archived';
 	} else if (orderService.currentOrder && orderService.currentOrder.Status === 'new') {
-		page.title = '待接单';
+		page.title = '等待确认';
 		page.orderType = 'new';
 	} else if (orderService.currentOrder && orderService.currentOrder.Status === 'unpaid') {
-		page.title = '待付款';
+		page.title = '等待付款';
 		page.orderType = 'unpaid';
 	} else if (orderService.currentOrder && orderService.currentOrder.Status === 'complete') {
 		page.title = '已结束';
@@ -407,7 +407,7 @@ angular.module('app.controllers', [])
 					function(order) {
 						orderService.currentOrder = order;
 						$scope.currentOrder = orderService.currentOrder;
-						$scope.page.title = '进行中咨询';
+						$scope.page.title = '医生已确认';
 						$scope.page.orderType = 'ongoing';
 					},
 					function(myOrderConv) {}

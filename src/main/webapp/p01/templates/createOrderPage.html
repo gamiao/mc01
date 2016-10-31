@@ -1,35 +1,48 @@
 <ion-view title="{{pageTitle}}" id="createOrderPage" class=" " cache-view="false" >
     <ion-content padding="true" class="has-header" >
-        <form id="createOrderPage-form" class="list " >
+        <ion-list id="signup-list11" ng-form name="orderForm">
             <label ng-if="!isDoctorFixed" class="item item-input  " id="patientUpdatePage-select1">
-                <span class="input-label">医师选择</span>
-                <input type="text" readonly="true" placeholder="不指定医师">
+                <span class="input-label">不指定医师（提交后，专业医师将为您接诊）</span>
             </label>
             <label ng-if="isDoctorFixed" class="item item-input  " id="patientUpdatePage-select1">
                 <span class="input-label">点击选择医师</span>
-                <input type="text" readonly="true" ng-click="openModal()" placeholder="{{currentOrder.CTDoctor.Name}}">
+                <input type="text" readonly="true" ng-click="openModal()" value="{{currentOrder.CTDoctor.Name}}">
             </label>
 			<ion-item>
-				<ion-label floating >病情描述</ion-label>
-				<textarea style="width:100% " rows="10" placeholder="请填写病情描述....." ng-model="currentOrder.CTDetail.Description">{{currentOrder.CTDetail.Description}}</textarea>
+				<ion-label floating >病情描述(必填)</ion-label>
+				<textarea style="width:100% " name="Description" ng-class="{ 'has-error' : orderForm.Description.$invalid}" ng-maxlength="200" ng-minlength="20" ng-required="true" rows="10" placeholder="请填写病情描述....." ng-model="currentOrder.CTDetail.Description" ></textarea>
+				<span class="form-error" ng-show="orderForm.Description.$error.required">病情描述不能为空</span>
+				<span class="form-error" ng-show="orderForm.Description.$error.minlength">病情描述需在20字以上</span>
+				<span class="form-error" ng-show="orderForm.Description.$error.maxlength">病情描述请不要超过200个字</span>
 			</ion-item>
+				
 			<ion-item>
-				<ion-label floating >主要症状</ion-label>
-				<textarea style="width:100% " rows="6" placeholder="请填写主要症状....." ng-model="currentOrder.CTDetail.Description2">{{currentOrder.CTDetail.Description2}}</textarea>
+				<ion-label floating >主要症状(必填)</ion-label>
+				<textarea style="width:100% " name="Description2" ng-class="{ 'has-error' : orderForm.Description2.$invalid}" ng-maxlength="200" ng-minlength="20" ng-required="true" rows="10" placeholder="请填写主要症状....." ng-model="currentOrder.CTDetail.Description2" ></textarea>
+				<span class="form-error" ng-show="orderForm.Description2.$error.required">主要症状不能为空</span>
+				<span class="form-error" ng-show="orderForm.Description2.$error.minlength">主要症状需在20字以上</span>
+				<span class="form-error" ng-show="orderForm.Description2.$error.maxlength">主要症状请不要超过200个字</span>
 			</ion-item>
+				
 			<ion-item>
 				<ion-label floating >就诊经历</ion-label>
-				<textarea style="width:100% " rows="6" placeholder="请填写就诊经历....." ng-model="currentOrder.CTDetail.Description3">{{currentOrder.CTDetail.Description3}}</textarea>
+				<textarea style="width:100% " name="Description3" ng-class="{ 'has-error' : orderForm.Description3.$invalid}" ng-maxlength="200"  rows="6" placeholder="请填写就诊经历....." ng-model="currentOrder.CTDetail.Description3" ></textarea>
+				<span class="form-error" ng-show="orderForm.Description3.$error.maxlength">就诊经历请不要超过200个字</span>
 			</ion-item>
+			
 			<ion-item>
 				<ion-label floating >其他病史</ion-label>
-				<textarea style="width:100% " rows="6" placeholder="请填写其他病史....." ng-model="currentOrder.CTDetail.Description4">{{currentOrder.CTDetail.Description4}}</textarea>
+				<textarea style="width:100% " name="Description4" ng-class="{ 'has-error' : orderForm.Description4.$invalid}" ng-maxlength="200"  rows="6" placeholder="请填写其他病史....." ng-model="currentOrder.CTDetail.Description4" ></textarea>
+				<span class="form-error" ng-show="orderForm.Description4.$error.maxlength">其他病史请不要超过200个字</span>
 			</ion-item>
+			
 			<ion-item>
 				<ion-label floating >过敏史</ion-label>
-				<textarea style="width:100% " rows="6" placeholder="请填写过敏史....." ng-model="currentOrder.CTDetail.Description5">{{currentOrder.CTDetail.Description5}}</textarea>
+				<textarea style="width:100% " name="Description5" ng-class="{ 'has-error' : orderForm.Description5.$invalid}" ng-maxlength="200"  rows="6" placeholder="请填写过敏史....." ng-model="currentOrder.CTDetail.Description5" ></textarea>
+				<span class="form-error" ng-show="orderForm.Description5.$error.maxlength">过敏史请不要超过200个字</span>
 			</ion-item>
-        </form>
-        <a id="createOrderPage-button" class=" button button-positive  button-block " ng-click="createOrder(currentOrder)" >{{buttonLabel}}</a>
+			
+        </ion-list>
+        <a id="createOrderPage-button" ng-disabled="orderForm.$invalid" class=" button button-positive  button-block " ng-click="createOrder(currentOrder)" >{{buttonLabel}}</a>
     </ion-content>
 </ion-view>

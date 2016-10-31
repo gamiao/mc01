@@ -362,16 +362,16 @@ angular.module('app.controllers', [])
 	currentOrder = orderService.currentItem;
 	$scope.currentOrder = currentOrder;
 	page = {};
-	page.title = '进行中咨询';
+	page.title = '医生已确认';
 	page.orderType = 'ongoing';
 	if (currentOrder && currentOrder.IsArchived === 'Y') {
 		page.title = '历史咨询';
 		page.orderType = 'archived';
 	} else if (currentOrder && currentOrder.Status === 'new') {
-		page.title = '待接单';
+		page.title = '等待确认';
 		page.orderType = 'new';
 	} else if (currentOrder && currentOrder.Status === 'unpaid') {
-		page.title = '待付款';
+		page.title = '等待付款';
 		page.orderType = 'unpaid';
 	} else if (currentOrder && currentOrder.Status === 'complete') {
 		page.title = '已完结';

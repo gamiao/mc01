@@ -3,19 +3,17 @@
             <ion-list id="signup-list11" ng-form name="signupForm">
                 <label class="item item-input" id="signup-input14"  ng-class="{ 'has-error' : signupForm.Login.$invalid}" >
                     <span class="input-label">登录账户名</span>
-                    <input name="Login" type="text" placeholder="" ng-model="user.Login" ng-minlength="2" ng-maxlength="10" required>
+                    <input name="Login" type="text" placeholder="" ng-model="user.Login" ng-pattern="/^[A-Za-z0-9]{2,10}$/" ng-minlength="2" ng-maxlength="10" required>
                 </label>
 				<span class="form-error" ng-show="signupForm.Login.$error.required">登录名不能为空</span>
-				<span class="form-error" ng-show="signupForm.Login.$error.minlength">登录名不能短于2个字符</span>
-				<span class="form-error" ng-show="signupForm.Login.$error.maxlength">登录名不能超过10字符</span>
+				<span class="form-error" ng-show="signupForm.Login.$invalid">登录名由英文和数字组成，长度为2-10</span>
 				
 				<label class="item item-input" id="page8-input2" ng-class="{ 'has-error' : signupForm.Password.$invalid}" >
 					<span class="input-label">密码</span>
-					<input name="Password" type="password" placeholder="" ng-model="user.Password" ng-minlength="6" ng-maxlength="10" required>
+					<input name="Password" type="password" placeholder="" ng-model="user.Password" ng-pattern="/^[A-Za-z0-9]{6,10}$/"  ng-minlength="6" ng-maxlength="10" required>
 				</label>
 				<span class="form-error" ng-show="signupForm.Password.$error.required">密码不能为空</span>
-				<span class="form-error" ng-show="signupForm.Password.$error.minlength">密码不能短于6个字符</span>
-				<span class="form-error" ng-show="signupForm.Password.$error.maxlength">密码不能超过10字符</span>
+				<span class="form-error" ng-show="signupForm.Password.$invalid">密码由英文和数字组成，长度为6-10</span>
 				
 				<label class="item item-input" id="page8-input2">
 					<span class="input-label">再次输入密码</span>

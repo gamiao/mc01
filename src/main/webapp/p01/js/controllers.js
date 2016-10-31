@@ -277,7 +277,7 @@ angular.module('app.controllers', [])
 				text: '<b>指定医生</b>'
 			}],
 			titleText: '新建咨询',
-			cancelText: '取消',
+			cancelText: '返回',
 			buttonClicked: function(index) {
 				orderService.isExistingOrder = false;
 				orderService.isDoctorFixed = (1 === index);

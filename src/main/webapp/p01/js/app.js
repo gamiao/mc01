@@ -7,7 +7,21 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('app', ['ionic', 'ngMessageFormat', 'app.controllers', 'ngFileUpload', 'app.routes', 'app.services', 'app.directives','ODataResources', 'monospaced.elastic', 'angularMoment', 'jett.ionic.filter.bar'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $ionicHistory) {
+	
+	/*
+  
+	$ionicPlatform.registerBackButtonAction(function (event) {
+	 //if specified state matches else go back
+	  if ($ionicHistory.currentStateName() === 'p-sm.indexPage'){
+		event.preventDefault();
+	  } else {
+		$ionicHistory.goBack();
+	  }
+	}, 999);
+	*/
+	
+	
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)

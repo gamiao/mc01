@@ -29,4 +29,10 @@ public interface PatientService {
 
 	List<Patient> findByIsDeleted(String isDeleted);
 
+	Patient findOneByMail(String mail);
+
+	void mailAccountInfo(Patient user);
+
+	boolean mailAccountInfoByMail(String mail);
+
 }

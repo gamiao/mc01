@@ -26,8 +26,7 @@ public class AccountController {
 
 	private static Gson gson = new Gson();
 
-	private static final Logger log = LoggerFactory
-			.getLogger(AccountController.class);
+	private static final Logger log = LoggerFactory.getLogger(AccountController.class);
 
 	@Autowired
 	private ServletContext servletContext;
@@ -38,8 +37,8 @@ public class AccountController {
 	public static final String[] VALID_LOGIN_TYPES = { "S", "D", "P" };
 
 	@RequestMapping(method = RequestMethod.POST, value = "/login/{loginType}")
-	public @ResponseBody String login(@PathVariable String loginType,
-			@RequestBody String requestBody, final HttpServletRequest request) {
+	public @ResponseBody String login(@PathVariable String loginType, @RequestBody String requestBody,
+			final HttpServletRequest request) {
 
 		String returnMsg = "{\"result\":\"E\"}";
 		if (isLoginTypeValid(loginType)) {
@@ -50,20 +49,17 @@ public class AccountController {
 			String userAgent = request.getHeader("User-Agent");
 
 			try {
-				requestObject = gson.fromJson(requestBody,
-						new TypeToken<Map<String, String>>() {
-						}.getType());
+				requestObject = gson.fromJson(requestBody, new TypeToken<Map<String, String>>() {
+				}.getType());
 			} catch (JsonSyntaxException e) {
 			}
 			if (requestObject != null) {
 				String login = requestObject.get("login");
 				String password = requestObject.get("password");
 				if (login != null && password != null) {
-					Long userID = overallService.getLoginUserID(loginType,
-							login, password, ip, userAgent);
+					Long userID = overallService.getLoginUserID(loginType, login, password, ip, userAgent);
 					if (userID != null) {
-						return "{\"result\":\"S\",\"userID\":"
-								+ userID.toString() + "}";
+						return "{\"result\":\"S\",\"userID\":" + userID.toString() + "}";
 					}
 				}
 			}
@@ -73,8 +69,7 @@ public class AccountController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/updatePassword/{loginType}")
-	public @ResponseBody String updatePassword(@PathVariable String loginType,
-			@RequestBody String requestBody) {
+	public @ResponseBody String updatePassword(@PathVariable String loginType, @RequestBody String requestBody) {
 
 		String returnMsg = "{\"result\":\"E\"}";
 		if (isLoginTypeValid(loginType)) {
@@ -82,9 +77,8 @@ public class AccountController {
 			Map<String, String> requestObject = null;
 
 			try {
-				requestObject = gson.fromJson(requestBody,
-						new TypeToken<Map<String, String>>() {
-						}.getType());
+				requestObject = gson.fromJson(requestBody, new TypeToken<Map<String, String>>() {
+				}.getType());
 			} catch (JsonSyntaxException e) {
 			}
 			if (requestObject != null) {
@@ -93,11 +87,9 @@ public class AccountController {
 				String newPassword = requestObject.get("newPassword");
 				String oldPassword = requestObject.get("oldPassword");
 				if (id != null && oldPassword != null && newPassword != null) {
-					Long userID = overallService.updatePassword(loginType, id,
-							oldPassword, newPassword);
+					Long userID = overallService.updatePassword(loginType, id, oldPassword, newPassword);
 					if (userID != null) {
-						return "{\"result\":\"S\",\"userID\":"
-								+ userID.toString() + "}";
+						return "{\"result\":\"S\",\"userID\":" + userID.toString() + "}";
 					}
 				}
 			}
@@ -107,8 +99,7 @@ public class AccountController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/checkLogin/{loginType}")
-	public @ResponseBody String checkLogin(@PathVariable String loginType,
-			@RequestBody String requestBody) {
+	public @ResponseBody String checkLogin(@PathVariable String loginType, @RequestBody String requestBody) {
 
 		String returnMsg = "{\"result\":\"E\"}";
 		if (isLoginTypeValid(loginType)) {
@@ -116,15 +107,35 @@ public class AccountController {
 			Map<String, String> requestObject = null;
 
 			try {
-				requestObject = gson.fromJson(requestBody,
-						new TypeToken<Map<String, String>>() {
-						}.getType());
+				requestObject = gson.fromJson(requestBody, new TypeToken<Map<String, String>>() {
+				}.getType());
 			} catch (JsonSyntaxException e) {
 			}
 			if (requestObject != null) {
 				String login = requestObject.get("login");
-				if (login != null
-						&& overallService.checkLogin(loginType, login)) {
+				if (login != null && overallService.checkLogin(loginType, login)) {
+					return "{\"result\":\"S\"}";
+				}
+			}
+		}
+
+		return returnMsg;
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/mailPassword/{loginType}")
+	public @ResponseBody String getPassword(@PathVariable String loginType, @RequestBody String requestBody) {
+		String returnMsg = "{\"result\":\"E\"}";
+		Map<String, String> requestObject = null;
+
+		if (isLoginTypeValid(loginType)) {
+			try {
+				requestObject = gson.fromJson(requestBody, new TypeToken<Map<String, String>>() {
+				}.getType());
+			} catch (JsonSyntaxException e) {
+			}
+			if (requestObject != null) {
+				String mail = requestObject.get("mail");
+				if (mail != null && overallService.mailPassword(mail, loginType)) {
 					return "{\"result\":\"S\"}";
 				}
 			}

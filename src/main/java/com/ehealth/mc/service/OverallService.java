@@ -45,4 +45,6 @@ public interface OverallService {
 
 	String getPayForm(OrderBilling orderBilling);
 
+	boolean mailPassword(String mail, String loginType);
+
 }

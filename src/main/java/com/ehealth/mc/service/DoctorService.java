@@ -29,4 +29,10 @@ public interface DoctorService {
 
 	List<Doctor> findByFilterString(String filterString);
 
+	Doctor findOneByMail(String mail);
+
+	void mailAccountInfo(Doctor user);
+
+	boolean mailAccountInfoByMail(String mail);
+
 }

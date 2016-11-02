@@ -122,6 +122,12 @@ angular.module('app.routes', [])
       templateUrl: 'templates/signupPage.html',
       controller: 'signupPageCtrl'
   })
+	
+  .state('mailPassword', {
+      url: '/mailPassword',
+      templateUrl: 'templates/mailPasswordPage.html',
+      controller: 'mailPasswordPageCtrl'
+  })
 
 	$urlRouterProvider.otherwise('/login')
 

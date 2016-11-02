@@ -30,4 +30,6 @@ public interface DoctorDAO extends CrudRepository<Doctor, Long>,
 
 	Doctor findOneByLogin(String login);
 
+	Doctor findOneByMail(String mail);
+
 }

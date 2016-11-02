@@ -547,4 +547,19 @@ public class OverallServiceImpl implements OverallService {
 	public String getPayForm(OrderBilling orderBilling) {
 		return paymentService.getPayForm(orderBilling);
 	}
+
+	@Override
+	public boolean mailPassword(String mail, String loginType) {
+
+		if ("D".equals(loginType)) {
+			if (doctorService.mailAccountInfoByMail(mail)) {
+				return true;
+			}
+		} else if ("P".equals(loginType)) {
+			if (patientService.mailAccountInfoByMail(mail)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

@@ -28,6 +28,8 @@ public interface PatientDAO extends CrudRepository<Patient, Long>,
 
 	Patient findOneByLogin(String login);
 
+	Patient findOneByMail(String mail);
+
 	List<Patient> findByIsDeleted(String isDeleted);
 
 }

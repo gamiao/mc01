@@ -164,6 +164,45 @@ angular.module('app.controllers', [])
             return promise;
         },
 		
+        mailPassword: function(mail) {
+            var deferred = $q.defer();
+            var promise = deferred.promise;
+ 
+            var requestData = {};
+			requestData.mail = mail;
+			
+			var req = {
+				method: 'POST',
+				url: "/mc01/spring/mailPassword/P",
+				data: requestData,
+				headers: {'Content-Type': 'application/json'}
+			}
+
+			$http(req).
+			success(function(data, status, headers, config) 
+			{
+				if(status === 200 && data.result ==='S' ){
+					deferred.resolve('找回账户密码成功');
+				}else{
+					deferred.reject('请检查邮箱是否正确！');
+				}
+			}).
+			error(function(data, status, headers, config) 
+			{
+				deferred.reject('服务器暂时无法响应，请稍后再试');
+			});
+			
+            promise.success = function(fn) {
+                promise.then(fn);
+                return promise;
+            }
+            promise.error = function(fn) {
+                promise.then(null, fn);
+                return promise;
+            }
+            return promise;
+        },
+		
         updatePassword: function(id, oldPassword, newPassword) {
             var deferred = $q.defer();
             var promise = deferred.promise;
@@ -204,6 +243,27 @@ angular.module('app.controllers', [])
             }
             return promise;
         }
+    }
+})
+
+.controller('mailPasswordPageCtrl', function($scope, accountService, $ionicPopup, $state) {
+    $scope.data = {};
+ 
+    $scope.mailPassword = function() {
+        console.log("mail: " + $scope.data.mail );
+        accountService.mailPassword($scope.data.mail).success(function(data) {
+            var alertPopup = $ionicPopup.alert({
+                title: '找回密码成功',
+                template: '已将您的登录名和密码发到您的邮箱中，请查看后重新登录！'
+            }).then(function(res) {
+				$state.go('login');
+            });
+        }).error(function(data) {
+            var alertPopup = $ionicPopup.alert({
+                title: '找回密码成功',
+                template: data
+            });
+        });
     }
 })
 

@@ -126,7 +126,7 @@ public class OrderServiceImpl implements OrderService {
 		}
 
 		String nTitle = "新咨询(编号：" + orderHeader.getId() + ")已经建立";
-		String nDescription = "新资讯已经成功创建，请登录咨询平台并查看详情。";
+		String nDescription = "新咨询已经成功创建，请登录咨询平台并查看详情。";
 		notificationService.notifyForOrder(orderHeader, nTitle, nDescription);
 		return orderHeader;
 	}
@@ -266,7 +266,7 @@ public class OrderServiceImpl implements OrderService {
 				createOrderHeaderCL(beforeChange, afterChange, orderHeader, operationType, operator);
 
 				String nTitle = "咨询(编号：" + orderHeader.getId() + ")的已经完结";
-				String nDescription = "医师已经答复三次，咨询平台自动完结本资讯，请登录咨询平台并查看详情。";
+				String nDescription = "医师已经答复三次，咨询平台自动完结本咨询，请登录咨询平台并查看详情。";
 				notificationService.notifyForOrder(orderHeader, nTitle, nDescription);
 
 			}

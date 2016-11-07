@@ -1,7 +1,7 @@
 <ion-view view-title="医师登录--瑞金足踝" name="login-view" cache-view="false" >
   <ion-content class="padding">
         <div class="">
-            <img ng-src="img/rjzh_logo.jpg" width="80%" height="auto" style="display: block; margin-left: auto; margin-right: auto;">
+            <img ng-src="img/rjzh_logo.jpg" width="70%" height="auto" style="display: block; margin-left: auto; margin-right: auto;">
         </div>
       <div class="list list-inset" ng-form name="loginForm">
           <label class="item item-input">
@@ -12,7 +12,13 @@
           </label>
       </div>
       <button class="button button-block button-calm" ng-disabled="loginForm.$invalid" ng-click="login()">登录</button>
-      <a ui-sref="signup" class="button button-positive  button-block button-clear">注册账户</a>
-      <a ui-sref="mailPassword" class="button button-positive  button-block button-clear">找回密码</a>
+	<div class="row">
+        <div class="col col-50" >
+			<a ui-sref="signup" class="button button-positive  button-block button-clear  icon ion-locked"><strong> 注册账户</strong></a>
+        </div>
+        <div class="col col-50" >
+			<a ui-sref="mailPassword" class="button button-positive  button-block button-clear icon ion-person"><strong> 找回密码</strong></a>
+        </div>
+	</div>
   </ion-content>
 </ion-view>

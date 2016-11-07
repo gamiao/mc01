@@ -33,7 +33,7 @@ public class EntityConvertUtil {
 				obj = original;
 			} else {
 				obj.setCreateTime(new Date());
-				obj.setIsDeleted("N");
+				obj.setIsDeleted("Y");
 				obj.setAvatar(DOCTOR_DEFAULT_AVATAR);
 				obj.setLogin(getPropertyStringValue(e, "Login"));
 				obj.setPassword(getPropertyStringValue(e, "Password"));

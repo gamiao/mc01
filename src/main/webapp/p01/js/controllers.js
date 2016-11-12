@@ -706,9 +706,7 @@ angular.module('app.controllers', [])
 		myOrder.$save(
 			function(myOrder) {
 				orderService.currentOrder = myOrder;
-				$state.go('p-sm.orderDetailPage', null, {
-					reload: true
-				});
+				$state.go('p-sm.openOrderPage');
 			},
 			function(myOrder) {
 

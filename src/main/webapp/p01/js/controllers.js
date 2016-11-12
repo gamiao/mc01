@@ -692,6 +692,7 @@ angular.module('app.controllers', [])
 		myOrder.CTPatient = {};
 		myOrder.CTPatient.ID = configService.userID;
 		myOrder.CTDetail = {};
+		myOrder.CTDetail.IssueAge = tempOrder.CTDetail.IssueAge;
 		myOrder.CTDetail.Description = tempOrder.CTDetail.Description;
 		myOrder.CTDetail.Description2 = tempOrder.CTDetail.Description2;
 		myOrder.CTDetail.Description3 = tempOrder.CTDetail.Description3;

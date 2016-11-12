@@ -11,7 +11,7 @@
 
 				<label class="item item-input " ng-class="{ 'has-error' : orderForm.IssueAge.$invalid}" >
 					<span class="input-label">发病年龄</span>
-					<input name="IssueAge" type="number" ng-model="currentOrder.CTDetail.Price" ng-min="1" ng-max="150" required>
+					<input name="IssueAge" type="number" ng-model="currentOrder.CTDetail.IssueAge" ng-min="1" ng-max="150" required>
 				</label>
 				<span class="form-error" ng-show="orderForm.IssueAge.$error.required">发病年龄不能为空</span>
 				<span class="form-error" ng-show="orderForm.IssueAge.$invalid && !orderForm.IssueAge.$pristine">请填写正确的发病年龄</span>

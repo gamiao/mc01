@@ -16,8 +16,8 @@
             <ion-item  ng-if="page.orderType === 'ongoing'" class="item-avatar item-icon-right" id="100345-list-item6" ng-click="getConvs(currentOrder)" >
                 <img ng-src="../uploadedImg/{{currentOrder.CTPatient.Avatar}}">
                 <h2>患者：{{currentOrder.CTPatient.Name}}（价格：{{currentOrder.CTDoctor.Price}}元）</h2>
-                <p><strong>咨询进行中，点击与患者互动</strong></p>
-                <i class="icon ion-android-chat "></i>
+                <p style="color: red"><strong>咨询进行中，点击与患者互动</strong></p>
+                <i class="icon ion-android-chat assertive"></i>
             </ion-item>
             <ion-item ng-if="page.orderType === 'new'" class="item-avatar item-icon-right" id="100345-list-item6" ng-click="pickup(currentOrder)" >
                 <img ng-src="../uploadedImg/{{currentOrder.CTPatient.Avatar}}">
@@ -37,7 +37,7 @@
 									other {}}}</p>
 
             <p>
-                <strong>出生日期：</strong>{{currentOrder.CTPatient.Birthday}}</p>
+                <strong>发病年龄：</strong>{{currentOrder.CTDetail.IssueAge}}</p>
 
             <p>
                 <strong>手机号码：</strong>{{currentOrder.CTPatient.Mobile}}</p>

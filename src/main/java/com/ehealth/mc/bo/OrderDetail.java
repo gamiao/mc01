@@ -34,6 +34,9 @@ public class OrderDetail implements Serializable, Persistable<Long> {
 	@Column(name = "title")
 	private String title;
 
+	@Column(name = "issue_age")
+	private int issueAge;
+
 	@Column(name = "create_time")
 	private Date createTime;
 
@@ -138,6 +141,14 @@ public class OrderDetail implements Serializable, Persistable<Long> {
 	@Override
 	public boolean isNew() {
 		return null == id;
+	}
+
+	public int getIssueAge() {
+		return issueAge;
+	}
+
+	public void setIssueAge(int issueAge) {
+		this.issueAge = issueAge;
 	}
 
 }

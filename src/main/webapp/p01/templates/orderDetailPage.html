@@ -4,25 +4,25 @@
 		    
             <ion-item ng-if="page.orderType === 'archived'"  class="item-avatar item-icon-right" id="100345-list-item6" ng-click="getConvs(currentOrder)" >
                 <img ng-src="../uploadedImg/{{currentOrder.CTDoctor.Avatar}}">
-                <h2>应诊：{{currentOrder.CTDoctor.Name}}（价格：{{currentOrder.CTDoctor.Price}}元）</h2>
+                <h2>应诊：{{currentOrder.CTDoctor.Name}}</h2>
                 <p><strong>咨询已存档，点击查看历史</strong></p>
                 <i class="icon ion-locked "></i>
             </ion-item>
             <ion-item ng-if="page.orderType === 'complete'"  class="item-avatar item-icon-right" id="100345-list-item6" ng-click="getConvs(currentOrder)" >
                 <img ng-src="../uploadedImg/{{currentOrder.CTDoctor.Avatar}}">
-                <h2>应诊：{{currentOrder.CTDoctor.Name}}（价格：{{currentOrder.CTDoctor.Price}}元）</h2>
+                <h2>应诊：{{currentOrder.CTDoctor.Name}}</h2>
                 <p><strong>咨询已结束，点击查看历史</strong></p>
                 <i class="icon ion-locked "></i>
             </ion-item>
-            <ion-item  ng-if="page.orderType === 'ongoing'" class="item-avatar item-icon-right" id="100345-list-item6" ng-click="getConvs(currentOrder)" >
+            <ion-item  ng-if="page.orderType === 'ongoing'" class="item-avatar item-icon-right " id="100345-list-item6" ng-click="getConvs(currentOrder)" >
                 <img ng-src="../uploadedImg/{{currentOrder.CTDoctor.Avatar}}">
-                <h2>应诊：{{currentOrder.CTDoctor.Name}}（价格：{{currentOrder.CTDoctor.Price}}元）</h2>
-                <p><strong>咨询进行中，点击与医生互动</strong></p>
-                <i class="icon ion-android-chat "></i>
+                <h2>应诊：{{currentOrder.CTDoctor.Name}}</h2>
+                <p style="color: red"><strong>咨询进行中，点击与医生互动</strong></p>
+                <i class="icon ion-android-chat assertive"></i>
             </ion-item>
             <ion-item  ng-if="page.orderType === 'unpaid'" class="item-avatar item-icon-right" id="100345-list-item6" ng-click="pay(currentOrder)" >
                 <img ng-src="../uploadedImg/{{currentOrder.CTDoctor.Avatar}}">
-                <h2>应诊：{{currentOrder.CTDoctor.Name}}（价格：{{currentOrder.CTDoctor.Price}}元）</h2>
+                <h2>应诊：{{currentOrder.CTDoctor.Name}}</h2>
                 <p><strong>医生已接单，点击付款</strong></p>
                 <i class="icon ion-social-bitcoin "></i>
             </ion-item>
@@ -43,7 +43,7 @@
 									other {}}}</p>
 
             <p>
-                <strong>出生日期：</strong>{{currentOrder.CTPatient.Birthday}}</p>
+                <strong>发病年龄：</strong>{{currentOrder.CTDetail.IssueAge}}</p>
 
             <p>
                 <strong>手机号码：</strong>{{currentOrder.CTPatient.Mobile}}</p>

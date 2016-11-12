@@ -170,6 +170,7 @@ public class EntityConvertUtil {
 			e.addProperty(new Property(null, "ID", ValueType.PRIMITIVE, d.getId()));
 			e.addProperty(new Property(null, "Type", ValueType.PRIMITIVE, d.getType()));
 			e.addProperty(new Property(null, "Title", ValueType.PRIMITIVE, d.getTitle()));
+			e.addProperty(new Property(null, "IssueAge", ValueType.PRIMITIVE, d.getIssueAge()));
 			e.addProperty(new Property(null, "Description", ValueType.PRIMITIVE, d.getDescription()));
 			e.addProperty(new Property(null, "Description2", ValueType.PRIMITIVE, d.getDescription2()));
 			e.addProperty(new Property(null, "Description3", ValueType.PRIMITIVE, d.getDescription3()));
@@ -262,6 +263,7 @@ public class EntityConvertUtil {
 			e.addProperty(new Property(null, "Owner", ValueType.PRIMITIVE, "P"));
 			e.addProperty(new Property(null, "Type", ValueType.PRIMITIVE, "TEXT"));
 			e.addProperty(new Property(null, "Title", ValueType.PRIMITIVE, d.getTitle()));
+			e.addProperty(new Property(null, "IssueAge", ValueType.PRIMITIVE, d.getIssueAge()));
 			e.addProperty(new Property(null, "Description", ValueType.PRIMITIVE, d.getDescription()));
 			e.addProperty(new Property(null, "Description2", ValueType.PRIMITIVE, d.getDescription2()));
 			e.addProperty(new Property(null, "Description3", ValueType.PRIMITIVE, d.getDescription3()));
@@ -374,6 +376,8 @@ public class EntityConvertUtil {
 						d.setType((p.getValue().toString()));
 					} else if ("Title".equals(p.getName())) {
 						d.setTitle((p.getValue().toString()));
+					} else if ("IssueAge".equals(p.getName())) {
+						d.setIssueAge((new Integer(p.getValue().toString())));
 					} else if ("Description".equals(p.getName())) {
 						d.setDescription((p.getValue().toString()));
 					} else if ("Description2".equals(p.getName())) {

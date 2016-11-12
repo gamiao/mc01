@@ -1,4 +1,4 @@
-<ion-view title="医生已确认" id="openOrderPage" class=" " cache-view="false" >
+<ion-view title="进行中咨询" id="openOrderPage" class=" " cache-view="false" >
     <ion-nav-buttons side="secondary">
 		<button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()">
 		</button>
@@ -18,7 +18,7 @@
 						new {等待确认}
 						other {未知状态}
 				}}</strong>）</h2>
-				<p>{{order.CTDoctor.MedicalLevel}}（<strong>价格：{{order.CTDoctor.Price}}元</strong>）</p>
+				<p>{{order.CTDoctor.MedicalLevel}}</p>
                 <p>病情：{{order.CTDetail.Description}}</p>
             </ion-item>
             <ion-item ng-if="!order.CTDoctor.ID" class="item-thumbnail-left" ng-click="getDetail(order)" >

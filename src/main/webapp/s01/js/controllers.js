@@ -362,7 +362,7 @@ angular.module('app.controllers', [])
 	currentOrder = orderService.currentItem;
 	$scope.currentOrder = currentOrder;
 	page = {};
-	page.title = '医生已确认';
+	page.title = '进行中咨询';
 	page.orderType = 'ongoing';
 	if (currentOrder && currentOrder.IsArchived === 'Y') {
 		page.title = '历史咨询';

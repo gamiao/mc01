@@ -33,12 +33,10 @@
 						<option value="M">男</option>
 					</select>
 				</label>
-				<label class="item item-input " id="form-Address" ng-class="{ 'has-error' : signupForm.Address.$invalid}" >
+				<label class="item item-input " id="form-Address" >
 					<span class="input-label">住址</span>
-					<input name="Address" type="text" placeholder="" ng-model="user.Address" ng-minlength="8" required>
+					<input type="text" placeholder="" ng-model="user.Address">
 				</label>
-				<span class="form-error" ng-show="signupForm.Address.$error.required">住址不能为空</span>
-				<span class="form-error" ng-show="signupForm.Address.$error.minlength">请填写详细住址，如：xx省xx市xx区/县/镇...门牌号</span>
 				
 				<label class="item item-input " id="form-Mail" ng-class="{ 'has-error' : signupForm.Mail.$invalid}" >
 					<span class="input-label">电子邮箱</span>
@@ -46,11 +44,6 @@
 				</label>
 				<span class="form-error" ng-show="signupForm.Mail.$error.required">电子邮箱不能为空</span>
 				<span class="form-error" ng-show="signupForm.Mail.$invalid && !signupForm.Mail.$pristine">电子邮箱地址不符合格式</span>
-				
-				<label class="item item-input " id="form-Birthday">
-					<span class="input-label">出生日期</span>
-					<input type="date" >
-				</label>
 				
 				<label class="item item-input " id="form-Mobile" ng-class="{ 'has-error' : signupForm.Mobile.$invalid}" >
 					<span class="input-label">手机号码</span>

@@ -43,7 +43,7 @@ public class MailingRecord implements Serializable, Persistable<Long> {
 	@Column(name = "mail_result")
 	private String mailResult;
 
-	@Column(name = "mail_result_detail")
+	@Column(name = "mail_result_detail", length = 1000)
 	private String mailResultDetail;
 
 	@Column(name = "create_time")

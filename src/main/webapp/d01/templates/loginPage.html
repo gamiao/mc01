@@ -11,13 +11,13 @@
               <input name="password" type="password" placeholder="请输入密码..." ng-model="data.password" required>
           </label>
       </div>
-      <button class="button button-block button-calm" ng-disabled="loginForm.$invalid" ng-click="login()">登录</button>
+      <button class="button button-block button-calm" ng-disabled="loginForm.$invalid" ng-click="login()"><strong>登录</strong></button>
 	<div class="row">
         <div class="col col-50" >
-			<a ui-sref="mailPassword" class="button button-positive  button-block button-clear icon ion-locked"><strong> 找回密码</strong></a>
+			<a ui-sref="mailPassword" class="button button-positive  button-block button-clear icon ion-locked"> 找回密码</a>
         </div>
         <div class="col col-50" >
-			<a ui-sref="signup" class="button button-positive  button-block button-clear  icon ion-person"><strong> 注册账户</strong></a>
+			<a ui-sref="signup" class="button button-positive  button-block button-clear  icon ion-person"> 注册账户</a>
         </div>
 	</div>
   </ion-content>

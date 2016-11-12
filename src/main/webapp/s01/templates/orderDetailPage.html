@@ -45,6 +45,8 @@
 						other {未知状态}
 				}}</strong></p>
 				
+			<p><strong>发病年龄：</strong>{{currentOrder.CTDetail.IssueAge}}</p>
+				
 			<p><strong>病情描述:</strong></p>
 			<textarea style="width:100% " rows="10" readonly="true">{{currentOrder.CTDetail.Description}}</textarea>
 
@@ -109,9 +111,6 @@
 					<strong>邮箱：</strong>{{currentOrder.CTPatient.Mail}}</p>
 
 				<p>
-					<strong>出生日期：</strong>{{currentOrder.CTPatient.Birthday}}</p>
-
-				<p>
 					<strong>手机号码：</strong>{{currentOrder.CTPatient.Mobile}}</p>
 			</div>
 		
@@ -153,9 +152,6 @@
 
 				<p>
 					<strong>邮箱：</strong>{{currentOrder.CTDoctor.Mail}}</p>
-
-				<p>
-					<strong>出生日期：</strong>{{currentOrder.CTDoctor.Birthday}}</p>
 
 				<p>
 					<strong>手机号码：</strong>{{currentOrder.CTDoctor.Mobile}}</p>

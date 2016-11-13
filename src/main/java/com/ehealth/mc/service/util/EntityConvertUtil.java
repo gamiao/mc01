@@ -135,7 +135,8 @@ public class EntityConvertUtil {
 			e.addProperty(new Property(null, "Mobile", ValueType.PRIMITIVE, d.getMobile()));
 			e.addProperty(new Property(null, "Mail", ValueType.PRIMITIVE, d.getMail()));
 			e.addProperty(new Property(null, "Birthday", ValueType.PRIMITIVE, d.getBirthday()));
-			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE, d.getCreateTime()));
+			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE,
+					FormatUtil.getUIShowingTime(d.getCreateTime())));
 			e.addProperty(new Property(null, "MedicalLevel", ValueType.PRIMITIVE, d.getMedicalLevel()));
 			e.addProperty(new Property(null, "Price", ValueType.PRIMITIVE, d.getPrice()));
 			e.setId(EntityUtil.createId(McEdmUtil.ES_DOCTORS_NAME, d.getId()));
@@ -157,7 +158,8 @@ public class EntityConvertUtil {
 			e.addProperty(new Property(null, "Mobile", ValueType.PRIMITIVE, d.getMobile()));
 			e.addProperty(new Property(null, "Mail", ValueType.PRIMITIVE, d.getMail()));
 			e.addProperty(new Property(null, "Birthday", ValueType.PRIMITIVE, d.getBirthday()));
-			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE, d.getCreateTime()));
+			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE,
+					FormatUtil.getUIShowingTime(d.getCreateTime())));
 			e.setId(EntityUtil.createId(McEdmUtil.ES_PATIENTS_NAME, d.getId()));
 			return e;
 		}
@@ -177,7 +179,8 @@ public class EntityConvertUtil {
 			e.addProperty(new Property(null, "Description4", ValueType.PRIMITIVE, d.getDescription4()));
 			e.addProperty(new Property(null, "Description5", ValueType.PRIMITIVE, d.getDescription5()));
 			e.addProperty(new Property(null, "Pics", ValueType.PRIMITIVE, d.getPictures()));
-			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE, d.getCreateTime()));
+			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE,
+					FormatUtil.getUIShowingTime(d.getCreateTime())));
 			e.setId(EntityUtil.createId(McEdmUtil.ES_ORDER_DETAILS_NAME, d.getId()));
 			return e;
 		}
@@ -236,7 +239,8 @@ public class EntityConvertUtil {
 			e.addProperty(new Property(null, "Title", ValueType.PRIMITIVE, d.getTitle()));
 			e.addProperty(new Property(null, "Description", ValueType.PRIMITIVE, d.getDescription()));
 			e.addProperty(new Property(null, "Pics", ValueType.PRIMITIVE, d.getPictures()));
-			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE, d.getCreateTime()));
+			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE,
+					FormatUtil.getUIShowingTime(d.getCreateTime())));
 			e.setId(EntityUtil.createId(McEdmUtil.ES_ORDER_CONVS_NAME, d.getId()));
 			return e;
 		}
@@ -270,7 +274,8 @@ public class EntityConvertUtil {
 			e.addProperty(new Property(null, "Description4", ValueType.PRIMITIVE, d.getDescription4()));
 			e.addProperty(new Property(null, "Description5", ValueType.PRIMITIVE, d.getDescription5()));
 			e.addProperty(new Property(null, "Pics", ValueType.PRIMITIVE, d.getPictures()));
-			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE, d.getCreateTime()));
+			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE,
+					FormatUtil.getUIShowingTime(d.getCreateTime())));
 			e.setId(EntityUtil.createId(McEdmUtil.ES_ORDER_CONVS_NAME, 0));
 			return e;
 		}
@@ -290,7 +295,8 @@ public class EntityConvertUtil {
 			e.addProperty(new Property(null, "CTDoctor", ValueType.COMPLEX, getComplexValue(getEntity(d.getDoctor()))));
 			e.addProperty(
 					new Property(null, "CTDetail", ValueType.COMPLEX, getComplexValue(getEntity(d.getOrderDetail()))));
-			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE, d.getCreateTime()));
+			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE,
+					FormatUtil.getUIShowingTime(d.getCreateTime())));
 			e.setId(EntityUtil.createId(McEdmUtil.ES_ORDERS_NAME, d.getId()));
 			return e;
 		}
@@ -310,7 +316,8 @@ public class EntityConvertUtil {
 			e.addProperty(new Property(null, "CTDoctor", ValueType.COMPLEX, getComplexValue(getEntity(d.getDoctor()))));
 			e.addProperty(
 					new Property(null, "CTDetail", ValueType.COMPLEX, getComplexValue(getEntity(d.getOrderDetail()))));
-			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE, d.getCreateTime()));
+			e.addProperty(new Property(null, "CreateTime", ValueType.PRIMITIVE,
+					FormatUtil.getUIShowingTime(d.getCreateTime())));
 
 			EntityCollection convs = new EntityCollection();
 			if (d.getOrderDetail() != null) {

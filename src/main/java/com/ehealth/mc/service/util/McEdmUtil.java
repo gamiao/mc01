@@ -134,7 +134,7 @@ public class McEdmUtil {
 			CsdlProperty name = new CsdlProperty().setName("Name")
 					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty createTime = new CsdlProperty().setName("CreateTime")
-					.setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
+					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty gender = new CsdlProperty().setName("Gender")
 					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty avatar = new CsdlProperty().setName("Avatar")
@@ -177,7 +177,7 @@ public class McEdmUtil {
 			CsdlProperty name = new CsdlProperty().setName("Name")
 					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty createTime = new CsdlProperty().setName("CreateTime")
-					.setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
+					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty gender = new CsdlProperty().setName("Gender")
 					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty avatar = new CsdlProperty().setName("Avatar")
@@ -211,7 +211,7 @@ public class McEdmUtil {
 			CsdlProperty type = new CsdlProperty().setName("Type")
 					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty createTime = new CsdlProperty().setName("CreateTime")
-					.setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
+					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty title = new CsdlProperty().setName("Title")
 					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty issueAge = new CsdlProperty().setName("IssueAge")
@@ -249,7 +249,7 @@ public class McEdmUtil {
 			CsdlProperty owner = new CsdlProperty().setName("Owner")
 					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty createTime = new CsdlProperty().setName("CreateTime")
-					.setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
+					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty title = new CsdlProperty().setName("Title")
 					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty description = new CsdlProperty().setName("Description")
@@ -275,7 +275,7 @@ public class McEdmUtil {
 			CsdlProperty status = new CsdlProperty().setName("Status")
 					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty createTime = new CsdlProperty().setName("CreateTime")
-					.setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
+					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty isArchived = new CsdlProperty().setName("IsArchived")
 					.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 			CsdlProperty isEnabled = new CsdlProperty().setName("IsEnabled")

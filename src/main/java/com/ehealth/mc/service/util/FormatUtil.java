@@ -40,6 +40,8 @@ public class FormatUtil {
 	}
 
 	public static String getUIShowingTime(Date date) {
+		if (date == null)
+			return null;
 		return uiShowingFormater.format(date);
 	}
 

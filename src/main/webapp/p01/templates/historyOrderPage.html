@@ -11,14 +11,21 @@
             <ion-item class="item-thumbnail-left" ng-click="getDetail(order)" >
                 <img ng-src="../uploadedImg/{{order.CTDoctor.Avatar}}">
                 <p>咨询号：{{order.ID}} -- {{order.CreateTime}}</p>
-				<h2>医师：{{order.CTDoctor.Name}}（<strong>{{order.Status, select,
+				<h2 class="{{order.Status, select,
+						ongoing {assertive}
+						unpaid {dark}
+						complete {dark}
+						new {positive}
+						other {dark}
+				}}">
+				
+				<strong>{{order.CTDoctor.MedicalLevel}}：{{order.CTDoctor.Name}} （{{order.Status, select,
 						ongoing {进行中}
 						unpaid {等待付款}
 						complete {已结束}
 						new {等待确认}
 						other {未知状态}
-				}}</strong>）</h2>
-				<p>{{order.CTDoctor.MedicalLevel}}</p>
+				}}）</strong></h2>
                 <p>病情：{{order.CTDetail.Description}}</p>
             </ion-item>
         </ion-list>

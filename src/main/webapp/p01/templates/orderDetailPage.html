@@ -4,32 +4,32 @@
 		    
             <ion-item ng-if="page.orderType === 'archived'"  class="item-avatar item-icon-right" id="100345-list-item6" ng-click="getConvs(currentOrder)" >
                 <img ng-src="../uploadedImg/{{currentOrder.CTDoctor.Avatar}}">
-                <h2>应诊：{{currentOrder.CTDoctor.Name}}</h2>
-                <p><strong>咨询已存档，点击查看历史</strong></p>
+                <h2><strong>咨询已存档，点击查看历史</strong></h2>
+                <p><strong>应诊：{{currentOrder.CTDoctor.Name}}({{currentOrder.CTDoctor.MedicalLevel}})</strong></p>
                 <i class="icon ion-locked "></i>
             </ion-item>
             <ion-item ng-if="page.orderType === 'complete'"  class="item-avatar item-icon-right" id="100345-list-item6" ng-click="getConvs(currentOrder)" >
                 <img ng-src="../uploadedImg/{{currentOrder.CTDoctor.Avatar}}">
-                <h2>应诊：{{currentOrder.CTDoctor.Name}}</h2>
-                <p><strong>咨询已结束，点击查看历史</strong></p>
+                <h2><strong>咨询已结束，点击查看历史</strong></h2>
+                <p><strong>应诊：{{currentOrder.CTDoctor.Name}}({{currentOrder.CTDoctor.MedicalLevel}})</strong></p>
                 <i class="icon ion-locked "></i>
             </ion-item>
             <ion-item  ng-if="page.orderType === 'ongoing'" class="item-avatar item-icon-right " id="100345-list-item6" ng-click="getConvs(currentOrder)" >
                 <img ng-src="../uploadedImg/{{currentOrder.CTDoctor.Avatar}}">
-                <h2>应诊：{{currentOrder.CTDoctor.Name}}</h2>
-                <p style="color: red"><strong>咨询进行中，点击与医生互动</strong></p>
+                <h2 class="assertive"><strong>咨询进行中，点击与医生互动</strong></h2>
+                <p><strong>应诊：{{currentOrder.CTDoctor.Name}}({{currentOrder.CTDoctor.MedicalLevel}})</strong></p>
                 <i class="icon ion-android-chat assertive"></i>
             </ion-item>
             <ion-item  ng-if="page.orderType === 'unpaid'" class="item-avatar item-icon-right" id="100345-list-item6" ng-click="pay(currentOrder)" >
                 <img ng-src="../uploadedImg/{{currentOrder.CTDoctor.Avatar}}">
-                <h2>应诊：{{currentOrder.CTDoctor.Name}}</h2>
-                <p><strong>医生已接单，点击付款</strong></p>
+                <h2><strong>医生已接单，点击付款</strong></h2>
+                <p><strong>应诊：{{currentOrder.CTDoctor.Name}}({{currentOrder.CTDoctor.MedicalLevel}})</strong></p>
                 <i class="icon ion-social-bitcoin "></i>
             </ion-item>
             <ion-item ng-if="page.orderType === 'new'" class="item-avatar item-icon-right" id="100345-list-item6" >
                 <img ng-src="../uploadedImg/doctor_default01.png">
-                <h2><strong>提交成功 请耐心等待医生确认</strong></h2>
-                <i class="icon ion-locked "></i>
+                <h2 class="positive"><strong>提交成功 请耐心等待医生确认</strong></h2>
+                <i class="icon ion-locked  positive"></i>
             </ion-item>
         </ion-list>
         <div id="100345-markdown2" style="color:#000000;" class=" ">

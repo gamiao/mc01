@@ -17,6 +17,8 @@ public class FormatUtil {
 
 	public static String UI_SHOWING_TIME_FORMATE = "yyyy-MM-dd HH:mm:ss";
 
+	public static String ONLY_DATE_FORMATE = "yyyy-MM-dd";
+
 	public static SimpleDateFormat billingTimeFormater = new SimpleDateFormat(BILLING_TIME_FORMATE,
 			Locale.getDefault());
 
@@ -29,9 +31,21 @@ public class FormatUtil {
 	public static SimpleDateFormat fileSuffixFormater = new SimpleDateFormat(FILE_SUFFIX_TIME_FORMATE,
 			Locale.getDefault());
 
+	public static SimpleDateFormat onlyDateFormater = new SimpleDateFormat(ONLY_DATE_FORMATE,
+			Locale.getDefault());
+
 	public static String getFileSuffix() {
 		Date date = new Date();
 		return fileSuffixFormater.format(date);
+	}
+
+	public static Date getParsedDate(String dateString) {
+		Date date = null;
+		try {
+			date = onlyDateFormater.parse(dateString);
+		} catch (Exception e) {
+		}
+		return date;
 	}
 
 	public static String getMailContentTime() {

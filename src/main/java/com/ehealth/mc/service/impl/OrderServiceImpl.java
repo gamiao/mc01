@@ -50,6 +50,9 @@ public class OrderServiceImpl implements OrderService {
 	@Value("${mc.alipay.product_code}")
 	public String ALIPAY_PAY_API_PRODUCT_CODE;
 
+	@Value("${mc.order.complete.silentDay}")
+	public Integer COMPLETE_ORDER_SILENT_DAY;
+
 	private static JsonAnnotationExclusionStrategy strategy = new JsonAnnotationExclusionStrategy();
 
 	private static Gson gson = new GsonBuilder().addDeserializationExclusionStrategy(strategy)
@@ -186,6 +189,8 @@ public class OrderServiceImpl implements OrderService {
 
 		String beforeChange = gson.toJson(orderHeader);
 		EntityConvertUtil.updateOrderHeader(orderHeader, e);
+
+		String afterStatus = orderHeader.getStatus();
 		orderHeader.setDoctor(doctor);
 		// TODO need to know who make this change.
 
@@ -197,6 +202,13 @@ public class OrderServiceImpl implements OrderService {
 
 		String nTitle = "咨询(编号：" + orderHeader.getId() + ")的状态有更新";
 		String nDescription = "咨询已经有新的变动，请登录咨询平台并查看详情。";
+
+		if (afterStatus.equals("reject")) {
+			nDescription = "咨询已被医师拒接，请在历史列表查看。";
+		} else if (afterStatus.equals("complete")) {
+			nDescription = "咨询已被医师置为完成，请在历史列表查看。";
+		}
+
 		notificationService.notifyForOrder(orderHeader, nTitle, nDescription);
 
 		return orderHeader;
@@ -498,6 +510,48 @@ public class OrderServiceImpl implements OrderService {
 		obChangeLog.setBeforeChange(beforeChange);
 		obChangeLog.setAfterChange(afterChange);
 		return orderBillingCLDAO.save(obChangeLog);
+	}
+
+	@Override
+	@Transactional
+	public Integer completeAllNoResponseOrder() {
+		Date currentTime = new Date();
+		Date checkDateBefore = new Date(currentTime.getTime() - COMPLETE_ORDER_SILENT_DAY * 24 * 3600 * 1000);
+		QOrderHeader qOrderHeader = QOrderHeader.orderHeader;
+		BooleanExpression exp1 = qOrderHeader.status.eq("ongoing");
+		List<OrderHeader> ongoingOrders = Lists.newArrayList(orderHeaderDAO.findAll(exp1));
+		for (OrderHeader oh : ongoingOrders) {
+			if (oh != null && "ongoing".equals(oh.getStatus()) && oh.getOrderConversations() != null) {
+				List<OrderConversation> convs = oh.getOrderConversations();
+				OrderConversation latestConv = null;
+				Date latestDate = FormatUtil.getParsedDate("1970-01-01");
+				for (OrderConversation conv : convs) {
+					Date convDate = conv.getCreateTime();
+					if (latestDate.before(convDate)) {
+						latestDate = convDate;
+						latestConv = conv;
+					}
+				}
+				if (latestConv != null && latestConv.getOwner().equals("D") && latestConv.getCreateTime() != null) {
+					Date convTime = latestConv.getCreateTime();
+					if (convTime.before(checkDateBefore)) {
+						String beforeChange = gson.toJson(oh);
+						oh.setStatus("complete");
+						oh.setIsArchived("Y");
+						String afterChange = gson.toJson(oh);
+						String operator = "S";
+						String operationType = "UPDATE";
+						orderHeaderDAO.save(oh);
+						createOrderHeaderCL(beforeChange, afterChange, oh, operationType, operator);
+
+						String nTitle = "咨询(编号：" + oh.getId() + ")的已经完结";
+						String nDescription = "医师答复已过" + COMPLETE_ORDER_SILENT_DAY + "天等待时间，咨询平台自动完结本咨询，请登录咨询平台并在历史订单中查看。";
+						notificationService.notifyForOrder(oh, nTitle, nDescription);
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 }

@@ -38,4 +38,6 @@ public interface OrderService {
 
 	OrderBilling createOrderBillingByOrderID(String orderID);
 
+	Integer completeAllNoResponseOrder();
+
 }

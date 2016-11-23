@@ -47,4 +47,6 @@ public interface OverallService {
 
 	boolean mailPassword(String mail, String loginType);
 
+	Integer completeAllNoResponseOrder();
+
 }

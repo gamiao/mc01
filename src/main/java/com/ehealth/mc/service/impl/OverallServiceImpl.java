@@ -562,4 +562,9 @@ public class OverallServiceImpl implements OverallService {
 		}
 		return false;
 	}
+
+	@Override
+	public Integer completeAllNoResponseOrder() {
+		return orderService.completeAllNoResponseOrder();
+	}
 }

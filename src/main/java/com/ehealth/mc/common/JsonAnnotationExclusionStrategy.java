@@ -12,6 +12,6 @@ public class JsonAnnotationExclusionStrategy implements ExclusionStrategy {
 
 	@Override
 	public boolean shouldSkipField(FieldAttributes f) {
-		return f.getAnnotation(JsonExclude.class) != null;
+		return f.getName().equals("orderConversations");
 	}
 }

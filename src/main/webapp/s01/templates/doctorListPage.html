@@ -18,9 +18,12 @@
 				<h2><strong>{{doctor.Name}},{{doctor.Gender, select,
 									F {女}
 									M {男}
-									other {}}}, 手机号码:{{doctor.Mobile}}</strong></h2>
+									other {}}}, 
+							账户状态：{{doctor.IsDeleted, select,
+											Y {停用}
+											other {正常}
+				}}</strong></h2>
                 <p><strong>{{doctor.MedicalLevel}}, 咨询价格：{{doctor.Price}}元</strong></p>
-                <p>邮箱地址： {{doctor.Mail}}</p>
             </ion-item>
         </ion-list>
     </ion-list>

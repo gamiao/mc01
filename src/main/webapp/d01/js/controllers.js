@@ -567,36 +567,111 @@ angular.module('app.controllers', [])
 		orderService.currentOrder = ObjectData;
 		$state.go('d-sm.orderConvsPage');
 	}
+	
+	$scope.complete = function(order) {
+		actionSheetTiyle = "请确认";
+		closeButtonLabel = "确定关闭";
+		$scope.hideSheet = $ionicActionSheet.show({
+				buttons: [{
+					text: closeButtonLabel
+				}],
+				titleText: actionSheetTiyle,
+				cancelText: '先不关闭',
+				buttonClicked: function(index) {
+					order.Status = 'complete';
+					order.IsArchived = 'Y';
+					order.$update(
+						function(order) {
+							orderService.currentOrder = order;
+							$scope.currentOrder = orderService.currentOrder;
+							$scope.page.title = '已结束';
+							$scope.page.orderType = 'complete';
+						},
+						function(myOrderConv) {}
+					);
+
+					return true;
+				}
+			});
+
+
+	}
+	
 
 	$scope.pickup = function(order) {
 		actionSheetTiyle = "请确认";
 		pickupButtonLabel = "确定接单";
-		if (order.Doctor === null) {
+		rejectButtonLabel = "拒绝接单";
+		if (order.CTDoctor === null) {
+			
+			$scope.hideSheet = $ionicActionSheet.show({
+				buttons: [{
+					text: pickupButtonLabel
+				}],
+				titleText: actionSheetTiyle,
+				cancelText: '先不接单',
+				buttonClicked: function(index) {
+					order.CTDoctor = {};
+					order.CTDoctor.ID = configService.userID;
+					order.Status = 'ongoing';
+					order.$update(
+						function(order) {
+							orderService.currentOrder = order;
+							$scope.currentOrder = orderService.currentOrder;
+							$scope.page.title = '进行中咨询';
+							$scope.page.orderType = 'ongoing';
+						},
+						function(myOrderConv) {}
+					);
 
+					return true;
+				}
+			});
+
+		} else {
+			
+			$scope.hideSheet = $ionicActionSheet.show({
+				buttons: [{
+					text: pickupButtonLabel
+				}, {
+					text: rejectButtonLabel
+				}],
+				titleText: actionSheetTiyle,
+				cancelText: '先不接单',
+				buttonClicked: function(index) {
+					order.CTDoctor = {};
+					order.CTDoctor.ID = configService.userID;
+					if(index === 0) {
+						order.Status = 'ongoing';
+						order.$update(
+							function(order) {
+								orderService.currentOrder = order;
+								$scope.currentOrder = orderService.currentOrder;
+								$scope.page.title = '进行中咨询';
+								$scope.page.orderType = 'ongoing';
+							},
+							function(myOrderConv) {}
+						);
+					} else {
+						order.Status = 'reject';
+						order.IsArchived = 'Y';
+						order.$update(
+							function(order) {
+								orderService.currentOrder = order;
+								$scope.currentOrder = orderService.currentOrder;
+								$scope.page.title = '已结束';
+								$scope.page.orderType = 'complete';
+							},
+							function(myOrderConv) {}
+						);
+						
+					}
+
+					return true;
+				}
+			});
+			
 		}
-		$scope.hideSheet = $ionicActionSheet.show({
-			buttons: [{
-				text: pickupButtonLabel
-			}],
-			titleText: actionSheetTiyle,
-			cancelText: '先不接单',
-			buttonClicked: function(index) {
-				order.CTDoctor = {};
-				order.CTDoctor.ID = configService.userID;
-				order.Status = 'ongoing';
-				order.$update(
-					function(order) {
-						orderService.currentOrder = order;
-						$scope.currentOrder = orderService.currentOrder;
-						$scope.page.title = '进行中咨询';
-						$scope.page.orderType = 'ongoing';
-					},
-					function(myOrderConv) {}
-				);
-
-				return true;
-			}
-		});
 	}
 })
 

@@ -26,6 +26,10 @@
                 <i class="icon ion-checkmark positive "></i>
             </ion-item>
         </ion-list>
+		<div id="100345-markdown2" ng-if="page.orderType === 'ongoing'" >
+			<button class="button button-block button-calm" ng-click="complete(currentOrder)"><strong>关闭咨询</strong></button>
+		</div>
+		   
         <div id="100345-markdown2" style="color:#000000;" class=" ">
             <p>
                 <strong>患者姓名：</strong>{{currentOrder.CTPatient.Name}}</p>

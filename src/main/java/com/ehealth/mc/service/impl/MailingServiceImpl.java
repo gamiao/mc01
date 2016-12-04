@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.mail.internet.MimeMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,8 +54,7 @@ public class MailingServiceImpl implements MailingService {
 
 		for (PatientNotification notification : availablePatientNotifications) {
 			if (notification != null) {
-				List<MailingRecord> mailingRecords = getMailingRecordsByNotification(
-						"P", notification.getId());
+				List<MailingRecord> mailingRecords = getMailingRecordsByNotification("P", notification.getId());
 
 				String mailResult = null;
 
@@ -78,8 +81,8 @@ public class MailingServiceImpl implements MailingService {
 
 		for (PatientNotification notification : sendingPatientNotifications) {
 			String toMailAddr = notification.getPatient().getMail();
-			sendMail(MAIL_SENDER, toMailAddr, notification.getId(), "P",
-					notification.getTitle(), notification.getDescription());
+			sendMail(MAIL_SENDER, toMailAddr, notification.getId(), "P", notification.getTitle(),
+					notification.getDescription());
 		}
 
 	}
@@ -87,15 +90,13 @@ public class MailingServiceImpl implements MailingService {
 	@Override
 	public void handleAllDoctorMailNotifications() {
 
-		List<DoctorNotification> availableDoctorNotifications = notificationService
-				.getAvailableDoctorNotifications();
+		List<DoctorNotification> availableDoctorNotifications = notificationService.getAvailableDoctorNotifications();
 
 		List<DoctorNotification> sendingDoctorNotifications = new ArrayList<DoctorNotification>();
 
 		for (DoctorNotification notification : availableDoctorNotifications) {
 			if (notification != null) {
-				List<MailingRecord> mailingRecords = getMailingRecordsByNotification(
-						"D", notification.getId());
+				List<MailingRecord> mailingRecords = getMailingRecordsByNotification("D", notification.getId());
 
 				String mailResult = null;
 
@@ -122,14 +123,13 @@ public class MailingServiceImpl implements MailingService {
 
 		for (DoctorNotification notification : sendingDoctorNotifications) {
 			String toMailAddr = notification.getDoctor().getMail();
-			sendMail(MAIL_SENDER, toMailAddr, notification.getId(), "D",
-					notification.getTitle(), notification.getDescription());
+			sendMail(MAIL_SENDER, toMailAddr, notification.getId(), "D", notification.getTitle(),
+					notification.getDescription());
 		}
 
 	}
 
-	private List<MailingRecord> getMailingRecordsByNotification(String nType,
-			Long nID) {
+	private List<MailingRecord> getMailingRecordsByNotification(String nType, Long nID) {
 		QMailingRecord mailingRecord = QMailingRecord.mailingRecord;
 		BooleanExpression exp1 = mailingRecord.notificationID.eq(nID);
 		BooleanExpression exp2 = mailingRecord.notificationType.eq(nType);
@@ -137,19 +137,22 @@ public class MailingServiceImpl implements MailingService {
 	}
 
 	@Override
-	public MailingRecord sendMail(String mailFrom, String mailTo,
-			Long notificationID, String notificationType, String subject,
-			String text) {
+	public MailingRecord sendMail(String mailFrom, String mailTo, Long notificationID, String notificationType,
+			String subject, String text) {
 		String mailResult = "S";
 		String mailResultDetail = null;
 
-		SimpleMailMessage msg = new SimpleMailMessage();
-		msg.setFrom(mailFrom);
-		msg.setTo(mailTo);
-		msg.setSubject(subject);
-		msg.setText(text);
+		JavaMailSender javaMailSender = (JavaMailSender) mailSender;
+		MimeMessage mime = javaMailSender.createMimeMessage();
+		MimeMessageHelper helper;
 		try {
-			mailSender.send(msg);
+			helper = new MimeMessageHelper(mime, false, "utf-8");
+			helper.setFrom(mailFrom);
+			helper.setTo(mailTo);
+			helper.setCc(mailFrom);
+			helper.setSubject(subject);
+			helper.setText(text);
+			javaMailSender.send(mime);
 		} catch (Exception e) {
 			mailResult = "E";
 			mailResultDetail = e.getMessage();

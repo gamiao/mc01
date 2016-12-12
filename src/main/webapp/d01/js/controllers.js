@@ -575,8 +575,8 @@ angular.module('app.controllers', [])
 				buttons: [{
 					text: closeButtonLabel
 				}],
-				titleText: actionSheetTiyle,
-				cancelText: '先不关闭',
+				titleText: '确定本次咨询完成？关闭后请进入历史咨询查看。',
+				cancelText: '返回',
 				buttonClicked: function(index) {
 					order.Status = 'complete';
 					order.IsArchived = 'Y';
@@ -586,6 +586,7 @@ angular.module('app.controllers', [])
 							$scope.currentOrder = orderService.currentOrder;
 							$scope.page.title = '已结束';
 							$scope.page.orderType = 'complete';
+							$state.go('d-sm.openOrderPage');
 						},
 						function(myOrderConv) {}
 					);
@@ -608,8 +609,8 @@ angular.module('app.controllers', [])
 				buttons: [{
 					text: pickupButtonLabel
 				}],
-				titleText: actionSheetTiyle,
-				cancelText: '先不接单',
+				titleText: '请确认是否接单',
+				cancelText: '返回',
 				buttonClicked: function(index) {
 					order.CTDoctor = {};
 					order.CTDoctor.ID = configService.userID;
@@ -636,8 +637,8 @@ angular.module('app.controllers', [])
 				}, {
 					text: rejectButtonLabel
 				}],
-				titleText: actionSheetTiyle,
-				cancelText: '先不接单',
+				titleText: '请确认接单或者拒接，拒绝接单后，本订单将关闭。',
+				cancelText: '返回',
 				buttonClicked: function(index) {
 					order.CTDoctor = {};
 					order.CTDoctor.ID = configService.userID;
@@ -661,6 +662,7 @@ angular.module('app.controllers', [])
 								$scope.currentOrder = orderService.currentOrder;
 								$scope.page.title = '已结束';
 								$scope.page.orderType = 'complete';
+								$state.go('d-sm.openOrderPage');
 							},
 							function(myOrderConv) {}
 						);

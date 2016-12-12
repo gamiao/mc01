@@ -22,6 +22,12 @@ angular.module('app', ['ionic', 'ngMessageFormat', 'app.controllers', 'ngFileUpl
   });
 })
 
+.config(function($ionicConfigProvider) 
+{
+  // Remove back button text completely
+  $ionicConfigProvider.backButton.previousTitleText(false).text('');
+})
+
 /*
 var myModule = angular.module("MyModule",['ODataResources']);
 myModule.controller("MyController",function($scope,$odataresource){

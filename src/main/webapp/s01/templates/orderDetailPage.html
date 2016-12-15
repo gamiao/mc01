@@ -9,6 +9,7 @@
 						unpaid {等待付款}
 						complete {已结束}
 						new {等待确认}
+						reject {已拒绝}
 						other {未知状态}
 				}}</strong>）</p>
 				<h2>医师：{{currentOrder.CTDoctor.Name}}，{{currentOrder.CTDoctor.MedicalLevel}}（<strong>价格：{{currentOrder.CTDoctor.Price}}元</strong>）</h2>
@@ -27,21 +28,14 @@
 		
             <p><strong>创建时间：</strong>{{currentOrder.CreateTime}}</p>
 		
-            <p><strong>是否可见：</strong>{{currentOrder.IsDeleted, select,
-					    Y {停用}
-						other {正常}
-				}}</p>
-		
-            <p><strong>是否已存档：</strong>{{currentOrder.IsArchived, select,
-					    Y {是}
-						other {不是}
-				}}</p>
+            <p><strong>支付状态：</strong>免费阶段，暂未开放支付</p>
 		
             <p><strong>当前状态： {{currentOrder.Status, select,
 						ongoing {进行中}
 						unpaid {等待付款}
 						complete {已结束}
 						new {等待确认}
+						reject {已拒绝}
 						other {未知状态}
 				}}</strong></p>
 				
@@ -168,20 +162,16 @@
 	<ion-footer-bar>
 		<div class="tabs tabs-icon-top tabs-color-dark">
 		  <a ng-if="currentOrder.IsDeleted === 'N'" ng-click="changeIsDeleted(currentOrder)" class="tab-item">
-			<i class="icon ion-locked"></i>
-			<strong>停用</strong>
+			<i class="icon ion-android-delete"></i>
+			<strong>删除</strong>
 		  </a>
-		  <a ng-if="currentOrder.IsDeleted === 'Y'" ng-click="changeIsDeleted(currentOrder)" class="tab-item">
-			<i class="icon ion-unlocked"></i>
-			<strong>启用</strong>
+		  <a ng-if="currentOrder.Status === 'complete'" ng-click="reopenOrComplete(currentOrder)" class="tab-item">
+			<i class="icon ion-refresh"></i>
+			<strong>重启</strong>
 		  </a>
-		  <a ng-if="currentOrder.IsArchived === 'N'" ng-click="changeIsArchived(currentOrder)" class="tab-item">
-			<i class="icon ion-archive"></i>
-			<strong>存档</strong>
-		  </a>
-		  <a ng-if="currentOrder.IsArchived === 'Y'" ng-click="changeIsArchived(currentOrder)" class="tab-item">
-			<i class="icon ion-share"></i>
-			<strong>恢复</strong>
+		  <a ng-if="currentOrder.Status === 'ongoing'" ng-click="reopenOrComplete(currentOrder)" class="tab-item">
+			<i class="icon ion-close-circled"></i>
+			<strong>关闭</strong>
 		  </a>
 		</div>
 	</ion-footer-bar>

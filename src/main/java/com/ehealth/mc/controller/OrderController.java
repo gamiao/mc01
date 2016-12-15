@@ -21,8 +21,7 @@ public class OrderController {
 
 	private static Gson gson = new Gson();
 
-	private static final Logger log = LoggerFactory
-			.getLogger(OrderController.class);
+	private static final Logger log = LoggerFactory.getLogger(OrderController.class);
 
 	@Autowired
 	private ServletContext servletContext;
@@ -30,12 +29,11 @@ public class OrderController {
 	@Autowired
 	private OverallService overallService;
 
-	public static final String[] VALID_ACTION_TYPES = { "setIsDeleted",
-			"setIsArchived" };
+	public static final String[] VALID_ACTION_TYPES = { "setIsDeleted", "setIsArchived", "reopenOrders",
+			"completeOrders" };
 
 	@RequestMapping(method = RequestMethod.POST, value = "/O/{actionType}")
-	public @ResponseBody String entityAction(@PathVariable String actionType,
-			@RequestBody String requestBody) {
+	public @ResponseBody String entityAction(@PathVariable String actionType, @RequestBody String requestBody) {
 
 		String returnMsg = "{\"result\":\"E\"}";
 		if (isActionTypeValid(actionType)) {
@@ -49,9 +47,53 @@ public class OrderController {
 				if (result != null) {
 					return result;
 				}
+			} else if ("reopenOrders".equals(actionType)) {
+				String result = reopenOrders(requestBody);
+				if (result != null) {
+					return result;
+				}
+			} else if ("completeOrders".equals(actionType)) {
+				String result = completeOrders(requestBody);
+				if (result != null) {
+					return result;
+				}
 			}
 		}
 		return returnMsg;
+	}
+
+	public String reopenOrders(String requestBody) {
+		BooleanValueObjIDs obj = null;
+		try {
+			obj = gson.fromJson(requestBody, BooleanValueObjIDs.class);
+		} catch (JsonSyntaxException e) {
+		}
+		if (obj != null && obj.value != null && obj.objectIDs != null && obj.objectIDs.length > 0) {
+			if ("reopen".equals(obj.value)) {
+				boolean result = overallService.reopenOrders(obj.objectIDs);
+				if (result) {
+					return "{\"result\":\"S\"}";
+				}
+			}
+		}
+		return null;
+	}
+
+	public String completeOrders(String requestBody) {
+		BooleanValueObjIDs obj = null;
+		try {
+			obj = gson.fromJson(requestBody, BooleanValueObjIDs.class);
+		} catch (JsonSyntaxException e) {
+		}
+		if (obj != null && obj.value != null && obj.objectIDs != null && obj.objectIDs.length > 0) {
+			if ("complete".equals(obj.value)) {
+				boolean result = overallService.completeOrders(obj.objectIDs);
+				if (result) {
+					return "{\"result\":\"S\"}";
+				}
+			}
+		}
+		return null;
 	}
 
 	public String setIsDeleted(String requestBody) {
@@ -60,11 +102,9 @@ public class OrderController {
 			obj = gson.fromJson(requestBody, BooleanValueObjIDs.class);
 		} catch (JsonSyntaxException e) {
 		}
-		if (obj != null && obj.value != null && obj.objectIDs != null
-				&& obj.objectIDs.length > 0) {
+		if (obj != null && obj.value != null && obj.objectIDs != null && obj.objectIDs.length > 0) {
 			if ("Y".equals(obj.value) || "N".equals(obj.value)) {
-				boolean result = overallService.setIsDeleted("Order",
-						obj.value, obj.objectIDs);
+				boolean result = overallService.setIsDeleted("Order", obj.value, obj.objectIDs);
 				if (result) {
 					return "{\"result\":\"S\"}";
 				}
@@ -80,11 +120,9 @@ public class OrderController {
 			obj = gson.fromJson(requestBody, BooleanValueObjIDs.class);
 		} catch (JsonSyntaxException e) {
 		}
-		if (obj != null && obj.value != null && obj.objectIDs != null
-				&& obj.objectIDs.length > 0) {
+		if (obj != null && obj.value != null && obj.objectIDs != null && obj.objectIDs.length > 0) {
 			if ("Y".equals(obj.value) || "N".equals(obj.value)) {
-				boolean result = overallService.setIsArchived("Order",
-						obj.value, obj.objectIDs);
+				boolean result = overallService.setIsArchived("Order", obj.value, obj.objectIDs);
 				if (result) {
 					return "{\"result\":\"S\"}";
 				}

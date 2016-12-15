@@ -118,6 +118,7 @@ public class OverallServiceImpl implements OverallService {
 				Long patientID = FormatUtil.getOrderFilterPatientID(filterStr);
 				Long doctorID = FormatUtil.getOrderFilterDoctorID(filterStr);
 				String isArchivedStr = FormatUtil.getOrderFilterIsArchived(filterStr);
+				String isDeletedString = FormatUtil.getCommonFilterIsDeleted(filterStr);
 				String status = FormatUtil.getOrderFilterStatus(filterStr);
 				if (patientID != null) {
 					if ("Y".equals(isArchivedStr) || "N".equals(isArchivedStr)) {
@@ -133,6 +134,8 @@ public class OverallServiceImpl implements OverallService {
 					} else {
 						queryResult = orderService.findByDoctorID(doctorID);
 					}
+				} else if (isDeletedString != null) {
+					queryResult = orderService.findByIsDeleted(isDeletedString);
 				}
 			} else {
 				queryResult = orderService.findAll();
@@ -496,6 +499,16 @@ public class OverallServiceImpl implements OverallService {
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public boolean reopenOrders(Long[] objectIDs) {
+		return orderService.reopenOrders(objectIDs);
+	}
+
+	@Override
+	public boolean completeOrders(Long[] objectIDs) {
+		return orderService.completeOrders(objectIDs);
 	}
 
 	@Override

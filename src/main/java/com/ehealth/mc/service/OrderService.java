@@ -36,8 +36,14 @@ public interface OrderService {
 
 	List<OrderHeader> findByPatientIDAndIsArchived(Long patientID, String isArchivedStr);
 
+	List<OrderHeader> findByIsDeleted(String isDeleted);
+
 	OrderBilling createOrderBillingByOrderID(String orderID);
 
 	Integer completeAllNoResponseOrder();
+
+	boolean reopenOrders(Long[] objIDs);
+
+	boolean completeOrders(Long[] objectIDs);
 
 }

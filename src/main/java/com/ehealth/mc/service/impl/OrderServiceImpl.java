@@ -319,6 +319,100 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	@Transactional(rollbackFor = RuntimeException.class)
+	public boolean reopenOrders(Long[] objIDs) throws RuntimeException {
+		for (Long id : objIDs) {
+			if (id == null) {
+				throw new RuntimeException("Some id is empty!");
+			}
+			OrderHeader obj = orderHeaderDAO.findOne(id);
+			if (obj == null) {
+				throw new RuntimeException("Can not find the object with ID:" + id);
+			}
+			if (!"complete".equals(obj.getStatus())) {
+				throw new RuntimeException("The order status is not complete, ID:" + id);
+			}
+			String beforeChange = gson.toJson(obj);
+			OrderConversation oc = new OrderConversation();
+			oc.setCreateTime(new Date());
+			oc.setType("TEXT");
+			oc.setOwner("S");
+			oc.setOrderHeader(obj);
+			oc.setTitle("本订单已被管理员重启");
+			oc.setDescription("本订单已被管理员重启");
+			orderConversationDAO.save(oc);
+
+			obj.setStatus("ongoing");
+			obj.setIsArchived("N");
+			String afterChange = gson.toJson(obj);
+
+			String operator = "S";
+			String operationType = "UPDATE";
+
+			try {
+				orderHeaderDAO.save(obj);
+				createOrderHeaderCL(beforeChange, afterChange, obj, operationType, operator);
+				String nTitle = "咨询(编号：" + obj.getId() + ")的状态有更新";
+				String nDescription = "咨询已被重启，请登录咨询平台并查看详情。";
+
+				if (nDescription != null) {
+					notificationService.notifyForOrder(obj, nTitle, nDescription);
+				}
+			} catch (Exception e) {
+				throw new RuntimeException("Can't update the object with ID:" + id);
+			}
+		}
+		return true;
+	}
+
+	@Override
+	@Transactional(rollbackFor = RuntimeException.class)
+	public boolean completeOrders(Long[] objIDs) throws RuntimeException {
+		for (Long id : objIDs) {
+			if (id == null) {
+				throw new RuntimeException("Some id is empty!");
+			}
+			OrderHeader obj = orderHeaderDAO.findOne(id);
+			if (obj == null) {
+				throw new RuntimeException("Can not find the object with ID:" + id);
+			}
+			if (!"ongoing".equals(obj.getStatus())) {
+				throw new RuntimeException("The order status is not ongoing, ID:" + id);
+			}
+			String beforeChange = gson.toJson(obj);
+			OrderConversation oc = new OrderConversation();
+			oc.setCreateTime(new Date());
+			oc.setType("TEXT");
+			oc.setOwner("S");
+			oc.setOrderHeader(obj);
+			oc.setTitle("本订单已被管理员关闭");
+			oc.setDescription("本订单已被管理员关闭");
+			orderConversationDAO.save(oc);
+
+			obj.setStatus("complete");
+			obj.setIsArchived("Y");
+			String afterChange = gson.toJson(obj);
+
+			String operator = "S";
+			String operationType = "UPDATE";
+
+			try {
+				orderHeaderDAO.save(obj);
+				createOrderHeaderCL(beforeChange, afterChange, obj, operationType, operator);
+				String nTitle = "咨询(编号：" + obj.getId() + ")的状态有更新";
+				String nDescription = "咨询已被关闭，请登录咨询平台并查看详情。";
+
+				if (nDescription != null) {
+					notificationService.notifyForOrder(obj, nTitle, nDescription);
+				}
+			} catch (Exception e) {
+				throw new RuntimeException("Can't update the object with ID:" + id);
+			}
+		}
+		return true;
+	}
+
+	@Override
+	@Transactional(rollbackFor = RuntimeException.class)
 	public boolean updateIsDeleted(String value, Long[] objIDs) throws RuntimeException {
 		for (Long id : objIDs) {
 			if (id == null) {
@@ -545,13 +639,19 @@ public class OrderServiceImpl implements OrderService {
 						createOrderHeaderCL(beforeChange, afterChange, oh, operationType, operator);
 
 						String nTitle = "咨询(编号：" + oh.getId() + ")的已经完结";
-						String nDescription = "医师答复已过" + COMPLETE_ORDER_SILENT_DAY + "天等待时间，咨询平台自动完结本咨询，请登录咨询平台并在历史订单中查看。";
+						String nDescription = "医师答复已过" + COMPLETE_ORDER_SILENT_DAY
+								+ "天等待时间，咨询平台自动完结本咨询，请登录咨询平台并在历史订单中查看。";
 						notificationService.notifyForOrder(oh, nTitle, nDescription);
 					}
 				}
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public List<OrderHeader> findByIsDeleted(String isDeleted) {
+		return orderHeaderDAO.findByIsDeleted(isDeleted);
 	}
 
 }

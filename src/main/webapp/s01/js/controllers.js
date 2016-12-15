@@ -183,7 +183,7 @@ angular.module('app.controllers', [])
 
     function getItems () {
       var items = [];
-	  items = Order.odata().query();
+	  items = Order.odata().filter("IsDeleted", "N").query();
       $scope.items = items;
     }
 	
@@ -277,12 +277,14 @@ angular.module('app.controllers', [])
 	image.src3 = 'add_img.png';
 	$scope.image = image;
 	
-	$scope.changeIsArchived = function(object) {
-		var actionMsg = '存档';
-		var valueChangeTo = 'Y';
-		if(object.IsDeleted === 'Y'){
-			actionMsg = '恢复';
-			valueChangeTo = 'N';
+	$scope.reopenOrComplete = function(object) {
+		var actionMsg = '重启';
+		var valueChangeTo = 'reopen';
+		var requestURL = '/O/reopenOrders';
+		if(object.Status === 'ongoing'){
+			actionMsg = '关闭';
+			valueChangeTo = 'complete';
+			requestURL = '/O/completeOrders';
 		}
 		
 		var objectIDs = [];
@@ -299,7 +301,7 @@ angular.module('app.controllers', [])
 			titleText: '请确认是否'+ actionMsg,
 			cancelText: '取消',
 			buttonClicked: function(index) {
-				configService.postToController('/O/setIsArchived', requestObject)
+				configService.postToController(requestURL, requestObject)
 				.success(function(data) {
 					object.$refresh(
 						function(obj) {
@@ -319,10 +321,10 @@ angular.module('app.controllers', [])
 	}
 	
 	$scope.changeIsDeleted = function(object) {
-		var actionMsg = '禁用';
+		var actionMsg = '删除';
 		var valueChangeTo = 'Y';
 		if(object.IsDeleted === 'Y'){
-			actionMsg = '启用';
+			actionMsg = '恢复';
 			valueChangeTo = 'N';
 		}
 		
@@ -337,7 +339,7 @@ angular.module('app.controllers', [])
 			buttons: [{
 				text: '<b>'+actionMsg+'</b>'
 			}],
-			titleText: '请确认是否'+ actionMsg,
+			titleText: '请确认是否删除该订单，删除后将无法再次查看。',
 			cancelText: '取消',
 			buttonClicked: function(index) {
 				configService.postToController('/O/setIsDeleted', requestObject)
@@ -345,6 +347,7 @@ angular.module('app.controllers', [])
 					object.$refresh(
 						function(obj) {
 							$scope.currentOrder = obj;
+							$state.go('s-sm.orderListPage');
 						},
 						function(obj) {}
 					);

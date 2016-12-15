@@ -1,4 +1,4 @@
-<ion-view view-title="咨询管理">
+<ion-view view-title="咨询管理" cache-view="false" >
 
   <ion-nav-buttons side="secondary">
     <button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()">
@@ -18,6 +18,7 @@
 						unpaid {等待付款}
 						complete {已结束}
 						new {等待确认}
+						reject {已拒绝}
 						other {未知状态}
 				}}</strong>）</p>
 				<h2>医师：{{order.CTDoctor.Name}}，{{order.CTDoctor.MedicalLevel}}（<strong>价格：{{order.CTDoctor.Price}}元</strong>）</h2>

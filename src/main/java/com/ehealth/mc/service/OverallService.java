@@ -49,4 +49,8 @@ public interface OverallService {
 
 	Integer completeAllNoResponseOrder();
 
+	boolean reopenOrders(Long[] objectIDs);
+
+	boolean completeOrders(Long[] objectIDs);
+
 }

@@ -658,10 +658,6 @@ angular.module('app.controllers', [])
 						order.IsArchived = 'Y';
 						order.$update(
 							function(order) {
-								orderService.currentOrder = order;
-								$scope.currentOrder = orderService.currentOrder;
-								$scope.page.title = '已结束';
-								$scope.page.orderType = 'complete';
 								$state.go('d-sm.openOrderPage');
 							},
 							function(myOrderConv) {}
@@ -715,7 +711,7 @@ angular.module('app.controllers', [])
 		var file = e.target.files[0];
 		angular.element(document.getElementById('browseBtn')).val('');
 		
-		if(file && file.size && file.size < 2100000) {
+		if(file && file.size && file.size < 8400000) {
 			var fileReader = new FileReader();
 			fileReader.onload = function(event) {
 				$rootScope.$broadcast('event:file:selected', {

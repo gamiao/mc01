@@ -1,11 +1,11 @@
 <ion-view title="{{page.title}}（{{currentOrder.ID}}）" id="orderDetail" class=" "  cache-view="false" >
     <ion-content padding="true" class="has-header">
         <ion-list id="100345-list8" class=" ">
-            <ion-item ng-if="page.orderType === 'archived'"  class="item-avatar item-icon-right" id="100345-list-item6" ng-click="getConvs(currentOrder)" >
+            <ion-item ng-if="page.orderType === 'reject'"  class="item-avatar item-icon-right" id="100345-list-item6" ng-click="getConvs(currentOrder)" >
                 <img ng-src="../uploadedImg/{{currentOrder.CTPatient.Avatar}}">
-                <h2><strong>咨询已存档，点击查看历史</strong></h2>
+                <h2 class="assertive"><strong>医生拒绝接单，咨询已结束</strong></h2>
                 <p><strong>患者：{{currentOrder.CTPatient.Name}}</strong></p>
-                <i class="icon ion-locked "></i>
+                <i class="icon ion-locked assertive"></i>
             </ion-item>
             <ion-item ng-if="page.orderType === 'complete'"  class="item-avatar item-icon-right" id="100345-list-item6" ng-click="getConvs(currentOrder)" >
                 <img ng-src="../uploadedImg/{{currentOrder.CTPatient.Avatar}}">
@@ -15,9 +15,9 @@
             </ion-item>
             <ion-item  ng-if="page.orderType === 'ongoing'" class="item-avatar item-icon-right" id="100345-list-item6" ng-click="getConvs(currentOrder)" >
                 <img ng-src="../uploadedImg/{{currentOrder.CTPatient.Avatar}}">
-                <h2 class="assertive"><strong>咨询进行中，点击与患者互动</strong></h2>
+                <h2 class="positive"><strong>咨询进行中，点击与患者互动</strong></h2>
                 <p><strong>患者：{{currentOrder.CTPatient.Name}}</strong></p>
-                <i class="icon ion-android-chat assertive"></i>
+                <i class="icon ion-android-chat positive"></i>
             </ion-item>
             <ion-item ng-if="page.orderType === 'new'" class="item-avatar item-icon-right" id="100345-list-item6" ng-click="pickup(currentOrder)" >
                 <img ng-src="../uploadedImg/{{currentOrder.CTPatient.Avatar}}">
@@ -27,7 +27,7 @@
             </ion-item>
         </ion-list>
 		<div id="100345-markdown2" ng-if="page.orderType === 'ongoing'" >
-			<button class="button button-block button-calm" ng-click="complete(currentOrder)"><strong>关闭咨询</strong></button>
+			<button class="button button-block button-assertive" ng-click="complete(currentOrder)"><strong>关闭咨询</strong></button>
 		</div>
 		   
         <div id="100345-markdown2" style="color:#000000;" class=" ">

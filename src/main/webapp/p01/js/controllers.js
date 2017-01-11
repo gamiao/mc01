@@ -398,9 +398,9 @@ angular.module('app.controllers', [])
 	page = {};
 	page.title = '进行中咨询';
 	page.orderType = 'ongoing';
-	if (orderService.currentOrder && orderService.currentOrder.IsArchived === 'Y') {
-		page.title = '历史咨询';
-		page.orderType = 'archived';
+	if (orderService.currentOrder && orderService.currentOrder.Status === 'reject') {
+		page.title = '已拒绝';
+		page.orderType = 'reject';
 	} else if (orderService.currentOrder && orderService.currentOrder.Status === 'new') {
 		page.title = '等待确认';
 		page.orderType = 'new';

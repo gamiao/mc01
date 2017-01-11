@@ -12,10 +12,11 @@
                 <img ng-src="../uploadedImg/{{order.CTDoctor.Avatar}}">
                 <p>咨询号：{{order.ID}} -- {{order.CreateTime}}</p>
 				<h2 class="{{order.Status, select,
-						ongoing {assertive}
-						unpaid {dark}
+						ongoing {positive}
+						unpaid {assertive}
 						complete {dark}
-						new {positive}
+						new {dark}
+						reject {assertive}
 						other {dark}
 				}}">
 				
